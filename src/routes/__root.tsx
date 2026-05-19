@@ -79,10 +79,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
       { name: "author", content: "Balance Activo" },
       { property: "og:title", content: "Balance Activo — Contabilidad y Facturación RD" },
-      { property: "og:description", content: "Gestiona NCF, ITBIS, asientos y reportes DGII desde una sola plataforma." },
+      { property: "og:description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Balance Activo — Contabilidad y Facturación RD" },
+      { name: "twitter:description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/9cf77c78-838b-44cd-bc20-e7a60c0762d7" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/9cf77c78-838b-44cd-bc20-e7a60c0762d7" },
     ],
     links: [
       {
