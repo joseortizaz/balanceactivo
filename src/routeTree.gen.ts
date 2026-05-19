@@ -13,11 +13,17 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
+import { Route as AuthenticatedFacturasRouteImport } from './routes/_authenticated/facturas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
 import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
+import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated/cobros'
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
+import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -38,12 +44,22 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
+  id: '/reportes',
+  path: '/reportes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedProveedoresRoute =
   AuthenticatedProveedoresRouteImport.update({
     id: '/proveedores',
     path: '/proveedores',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedFacturasRoute = AuthenticatedFacturasRouteImport.update({
+  id: '/facturas',
+  path: '/facturas',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -60,31 +76,64 @@ const AuthenticatedConfiguracionRoute =
     path: '/configuracion',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCobrosRoute = AuthenticatedCobrosRouteImport.update({
+  id: '/cobros',
+  path: '/cobros',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
   id: '/clientes',
   path: '/clientes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
+  id: '/asientos',
+  path: '/asientos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedFacturasNuevaRoute =
+  AuthenticatedFacturasNuevaRouteImport.update({
+    id: '/nueva',
+    path: '/nueva',
+    getParentRoute: () => AuthenticatedFacturasRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/asientos': typeof AuthenticatedAsientosRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
+  '/cobros': typeof AuthenticatedCobrosRoute
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/reportes': typeof AuthenticatedReportesRoute
+  '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/asientos': typeof AuthenticatedAsientosRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
+  '/cobros': typeof AuthenticatedCobrosRoute
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/reportes': typeof AuthenticatedReportesRoute
+  '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,11 +141,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/asientos': typeof AuthenticatedAsientosRoute
+  '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
+  '/_authenticated/cobros': typeof AuthenticatedCobrosRoute
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
   '/_authenticated/cuentas': typeof AuthenticatedCuentasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
+  '/_authenticated/reportes': typeof AuthenticatedReportesRoute
+  '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,32 +159,50 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/asientos'
+    | '/auditoria'
     | '/clientes'
+    | '/cobros'
     | '/configuracion'
     | '/cuentas'
     | '/dashboard'
+    | '/facturas'
     | '/proveedores'
+    | '/reportes'
+    | '/facturas/nueva'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
+    | '/asientos'
+    | '/auditoria'
     | '/clientes'
+    | '/cobros'
     | '/configuracion'
     | '/cuentas'
     | '/dashboard'
+    | '/facturas'
     | '/proveedores'
+    | '/reportes'
+    | '/facturas/nueva'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/asientos'
+    | '/_authenticated/auditoria'
     | '/_authenticated/clientes'
+    | '/_authenticated/cobros'
     | '/_authenticated/configuracion'
     | '/_authenticated/cuentas'
     | '/_authenticated/dashboard'
+    | '/_authenticated/facturas'
     | '/_authenticated/proveedores'
+    | '/_authenticated/reportes'
+    | '/_authenticated/facturas/nueva'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,11 +242,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/reportes': {
+      id: '/_authenticated/reportes'
+      path: '/reportes'
+      fullPath: '/reportes'
+      preLoaderRoute: typeof AuthenticatedReportesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/proveedores': {
       id: '/_authenticated/proveedores'
       path: '/proveedores'
       fullPath: '/proveedores'
       preLoaderRoute: typeof AuthenticatedProveedoresRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/facturas': {
+      id: '/_authenticated/facturas'
+      path: '/facturas'
+      fullPath: '/facturas'
+      preLoaderRoute: typeof AuthenticatedFacturasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard': {
@@ -197,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfiguracionRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/cobros': {
+      id: '/_authenticated/cobros'
+      path: '/cobros'
+      fullPath: '/cobros'
+      preLoaderRoute: typeof AuthenticatedCobrosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/clientes': {
       id: '/_authenticated/clientes'
       path: '/clientes'
@@ -204,23 +298,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/auditoria': {
+      id: '/_authenticated/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AuthenticatedAuditoriaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/asientos': {
+      id: '/_authenticated/asientos'
+      path: '/asientos'
+      fullPath: '/asientos'
+      preLoaderRoute: typeof AuthenticatedAsientosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/facturas/nueva': {
+      id: '/_authenticated/facturas/nueva'
+      path: '/nueva'
+      fullPath: '/facturas/nueva'
+      preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
+      parentRoute: typeof AuthenticatedFacturasRoute
+    }
   }
 }
 
+interface AuthenticatedFacturasRouteChildren {
+  AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
+}
+
+const AuthenticatedFacturasRouteChildren: AuthenticatedFacturasRouteChildren = {
+  AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
+}
+
+const AuthenticatedFacturasRouteWithChildren =
+  AuthenticatedFacturasRoute._addFileChildren(
+    AuthenticatedFacturasRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
+  AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
+  AuthenticatedCobrosRoute: typeof AuthenticatedCobrosRoute
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
   AuthenticatedCuentasRoute: typeof AuthenticatedCuentasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFacturasRoute: typeof AuthenticatedFacturasRouteWithChildren
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
+  AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAsientosRoute: AuthenticatedAsientosRoute,
+  AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
+  AuthenticatedCobrosRoute: AuthenticatedCobrosRoute,
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
   AuthenticatedCuentasRoute: AuthenticatedCuentasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFacturasRoute: AuthenticatedFacturasRouteWithChildren,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
+  AuthenticatedReportesRoute: AuthenticatedReportesRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

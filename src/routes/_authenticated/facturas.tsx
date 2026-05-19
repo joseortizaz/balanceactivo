@@ -1,0 +1,45 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { PageHeader } from "@/components/PageHeader";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { fmtMoney, fmtDate } from "@/lib/format";
+
+export const Route = createFileRoute("/_authenticated/facturas")({ component: Facturas });
+
+function Facturas() {
+  const { data } = useQuery({
+    queryKey: ["facturas"],
+    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento)").order("created_at", { ascending: false })).data ?? [],
+  });
+  return (
+    <div>
+      <PageHeader title="Facturas" action={<Link to="/facturas/nueva"><Button><Plus className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
+      <Card className="p-0 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary"><tr>
+            <th className="text-left p-3">NCF</th><th className="text-left p-3">Fecha</th><th className="text-left p-3">Cliente</th>
+            <th className="text-right p-3">Subtotal</th><th className="text-right p-3">ITBIS</th><th className="text-right p-3">Total</th>
+            <th className="text-left p-3">Estado</th>
+          </tr></thead>
+          <tbody>
+            {(data ?? []).map((f: any) => (
+              <tr key={f.id} className="border-t border-border">
+                <td className="p-3 font-mono">{f.ncf}</td>
+                <td className="p-3">{fmtDate(f.fecha)}</td>
+                <td className="p-3">{f.clientes?.razon_social}</td>
+                <td className="p-3 text-right">{fmtMoney(f.subtotal)}</td>
+                <td className="p-3 text-right">{fmtMoney(f.itbis)}</td>
+                <td className="p-3 text-right font-semibold">{fmtMoney(f.total)}</td>
+                <td className="p-3"><span className={f.estado === "pagada" ? "text-green-600" : "text-amber-600"}>{f.estado}</span></td>
+              </tr>
+            ))}
+            {(!data || data.length === 0) && <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Sin facturas</td></tr>}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+}
