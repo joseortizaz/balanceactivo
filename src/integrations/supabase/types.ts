@@ -579,9 +579,11 @@ export type Database = {
         Row: {
           created_at: string
           direccion: string | null
+          firma_url: string | null
           id: string
           itbis_tasa_principal: number
           itbis_tasa_reducida: number
+          logo_url: string | null
           nombre_comercial: string | null
           razon_social: string
           regimen_fiscal: Database["public"]["Enums"]["regimen_fiscal"]
@@ -594,9 +596,11 @@ export type Database = {
         Insert: {
           created_at?: string
           direccion?: string | null
+          firma_url?: string | null
           id?: string
           itbis_tasa_principal?: number
           itbis_tasa_reducida?: number
+          logo_url?: string | null
           nombre_comercial?: string | null
           razon_social: string
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
@@ -609,9 +613,11 @@ export type Database = {
         Update: {
           created_at?: string
           direccion?: string | null
+          firma_url?: string | null
           id?: string
           itbis_tasa_principal?: number
           itbis_tasa_reducida?: number
+          logo_url?: string | null
           nombre_comercial?: string | null
           razon_social?: string
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
