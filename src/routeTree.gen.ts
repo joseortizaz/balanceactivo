@@ -13,8 +13,11 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
 import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
+import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -35,9 +38,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedProveedoresRoute =
+  AuthenticatedProveedoresRouteImport.update({
+    id: '/proveedores',
+    path: '/proveedores',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCuentasRoute = AuthenticatedCuentasRouteImport.update({
+  id: '/cuentas',
+  path: '/cuentas',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedConfiguracionRoute =
@@ -46,20 +60,31 @@ const AuthenticatedConfiguracionRoute =
     path: '/configuracion',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/clientes': typeof AuthenticatedClientesRoute
   '/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/proveedores': typeof AuthenticatedProveedoresRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/clientes': typeof AuthenticatedClientesRoute
   '/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/proveedores': typeof AuthenticatedProveedoresRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,22 +92,44 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_authenticated/clientes': typeof AuthenticatedClientesRoute
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
+  '/_authenticated/cuentas': typeof AuthenticatedCuentasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/configuracion' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/clientes'
+    | '/configuracion'
+    | '/cuentas'
+    | '/dashboard'
+    | '/proveedores'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/configuracion' | '/dashboard'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/clientes'
+    | '/configuracion'
+    | '/cuentas'
+    | '/dashboard'
+    | '/proveedores'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/_authenticated/clientes'
     | '/_authenticated/configuracion'
+    | '/_authenticated/cuentas'
     | '/_authenticated/dashboard'
+    | '/_authenticated/proveedores'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -122,11 +169,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/proveedores': {
+      id: '/_authenticated/proveedores'
+      path: '/proveedores'
+      fullPath: '/proveedores'
+      preLoaderRoute: typeof AuthenticatedProveedoresRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cuentas': {
+      id: '/_authenticated/cuentas'
+      path: '/cuentas'
+      fullPath: '/cuentas'
+      preLoaderRoute: typeof AuthenticatedCuentasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/configuracion': {
@@ -136,17 +197,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfiguracionRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/clientes': {
+      id: '/_authenticated/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof AuthenticatedClientesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
+  AuthenticatedCuentasRoute: typeof AuthenticatedCuentasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedClientesRoute: AuthenticatedClientesRoute,
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
+  AuthenticatedCuentasRoute: AuthenticatedCuentasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
