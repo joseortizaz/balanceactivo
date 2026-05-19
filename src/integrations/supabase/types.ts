@@ -679,6 +679,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       registrar_cobro: {
         Args: {
           _factura_id: string
@@ -691,7 +692,11 @@ export type Database = {
       seed_tenant_defaults: { Args: { _tenant_id: string }; Returns: undefined }
     }
     Enums: {
-      app_role: "administrador" | "contador" | "agente_facturacion"
+      app_role:
+        | "administrador"
+        | "contador"
+        | "agente_facturacion"
+        | "super_admin"
       condicion_pago: "contado" | "credito"
       estado_factura: "pendiente" | "pagada" | "anulada"
       regimen_fiscal: "ordinario" | "rst"
@@ -831,7 +836,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["administrador", "contador", "agente_facturacion"],
+      app_role: [
+        "administrador",
+        "contador",
+        "agente_facturacion",
+        "super_admin",
+      ],
       condicion_pago: ["contado", "credito"],
       estado_factura: ["pendiente", "pagada", "anulada"],
       regimen_fiscal: ["ordinario", "rst"],

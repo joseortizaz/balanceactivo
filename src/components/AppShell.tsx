@@ -1,13 +1,14 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks } from "lucide-react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; roles?: AppRole[] };
 
 const NAV: Item[] = [
+  { to: "/superadmin", label: "Super Admin", icon: Crown, roles: ["super_admin"] },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/facturas", label: "Facturas", icon: FileText, roles: ["administrador", "agente_facturacion", "contador"] },
   { to: "/cobros", label: "Cobros", icon: Wallet, roles: ["administrador", "agente_facturacion"] },
