@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedFacturasRouteImport } from './routes/_authenticated/facturas'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
+  id: '/superadmin',
+  path: '/superadmin',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
   id: '/reportes',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/reportes': typeof AuthenticatedReportesRoute
+  '/superadmin': typeof AuthenticatedSuperadminRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRoutesByTo {
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/reportes': typeof AuthenticatedReportesRoute
+  '/superadmin': typeof AuthenticatedSuperadminRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRoutesById {
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/_authenticated/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
+  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
 }
 export interface FileRouteTypes {
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/facturas'
     | '/proveedores'
     | '/reportes'
+    | '/superadmin'
     | '/facturas/nueva'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/facturas'
     | '/proveedores'
     | '/reportes'
+    | '/superadmin'
     | '/facturas/nueva'
   id:
     | '__root__'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/_authenticated/facturas'
     | '/_authenticated/proveedores'
     | '/_authenticated/reportes'
+    | '/_authenticated/superadmin'
     | '/_authenticated/facturas/nueva'
   fileRoutesById: FileRoutesById
 }
@@ -241,6 +253,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/superadmin': {
+      id: '/_authenticated/superadmin'
+      path: '/superadmin'
+      fullPath: '/superadmin'
+      preLoaderRoute: typeof AuthenticatedSuperadminRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/reportes': {
       id: '/_authenticated/reportes'
@@ -346,6 +365,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFacturasRoute: typeof AuthenticatedFacturasRouteWithChildren
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
+  AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -359,6 +379,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFacturasRoute: AuthenticatedFacturasRouteWithChildren,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
+  AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -374,3 +395,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
