@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, FileText, Shield, BarChart3 } from "lucide-react";
+import logo from "@/assets/logo-balance-activo.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -12,10 +13,9 @@ function Index() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">B</div>
-            <span className="font-semibold text-foreground">Balance Activo</span>
-          </div>
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="Balance Activo" className="h-10 w-auto" />
+          </Link>
           <div className="flex gap-2">
             <Link to="/login"><Button variant="ghost">Iniciar sesión</Button></Link>
             <Link to="/signup"><Button>Crear empresa</Button></Link>
@@ -48,6 +48,34 @@ function Index() {
           </Card>
         ))}
       </section>
+      <footer className="border-t border-border mt-auto">
+        <div className="max-w-6xl mx-auto px-6 py-10 grid gap-8 md:grid-cols-3">
+          <div>
+            <img src={logo} alt="Balance Activo" className="h-10 w-auto mb-3" />
+            <p className="text-sm text-muted-foreground">
+              Contabilidad y facturación para República Dominicana.
+            </p>
+          </div>
+          <div>
+            <div className="font-semibold text-foreground mb-2 text-sm">Contacto</div>
+            <a href="mailto:info@balanceactivo.net" className="text-sm text-muted-foreground hover:text-primary">
+              info@balanceactivo.net
+            </a>
+          </div>
+          <div>
+            <div className="font-semibold text-foreground mb-2 text-sm">Legal</div>
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              <li><span className="opacity-60">Políticas de privacidad (próximamente)</span></li>
+              <li><span className="opacity-60">Términos y condiciones (próximamente)</span></li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border">
+          <div className="max-w-6xl mx-auto px-6 py-4 text-xs text-muted-foreground text-center">
+            © {new Date().getFullYear()} Balance Activo. Todos los derechos reservados.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
