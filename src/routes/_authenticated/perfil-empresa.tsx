@@ -79,8 +79,8 @@ function EmpresaTab({ canEdit }: { canEdit: boolean }) {
     const path = `${auth.tenantId}/${kind}.${ext}`;
     const { error } = await supabase.storage.from("tenant-assets").upload(path, file, { upsert: true, contentType: file.type });
     if (error) { toast.error(error.message); return; }
-    const col = kind === "logo" ? "logo_url" : "firma_url";
-    const { error: upErr } = await supabase.from("tenants").update({ [col]: path }).eq("id", auth.tenantId);
+    const update = kind === "logo" ? { logo_url: path } : { firma_url: path };
+    const { error: upErr } = await supabase.from("tenants").update(update).eq("id", auth.tenantId);
     if (upErr) { toast.error(upErr.message); return; }
     toast.success(`${kind === "logo" ? "Logo" : "Firma"} actualizada`);
     qc.invalidateQueries({ queryKey: ["tenant"] });
@@ -90,8 +90,8 @@ function EmpresaTab({ canEdit }: { canEdit: boolean }) {
     if (!auth.tenantId || !tenant) return;
     const path = kind === "logo" ? tenant.logo_url : tenant.firma_url;
     if (path) await supabase.storage.from("tenant-assets").remove([path]);
-    const col = kind === "logo" ? "logo_url" : "firma_url";
-    await supabase.from("tenants").update({ [col]: null }).eq("id", auth.tenantId);
+    const update = kind === "logo" ? { logo_url: null } : { firma_url: null };
+    await supabase.from("tenants").update(update).eq("id", auth.tenantId);
     qc.invalidateQueries({ queryKey: ["tenant"] });
     toast.success("Eliminada");
   };
