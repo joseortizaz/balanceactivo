@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat } from "lucide-react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ const NAV: Item[] = [
   { to: "/recurrentes", label: "Facturas Recurrentes", icon: Repeat, roles: ["administrador", "agente_facturacion"] },
   { to: "/cobros", label: "Cobros", icon: Wallet, roles: ["administrador", "agente_facturacion"] },
   { to: "/clientes", label: "Clientes", icon: Users, roles: ["administrador", "agente_facturacion", "contador"] },
+  { to: "/productos", label: "Productos", icon: Package, roles: ["administrador", "agente_facturacion", "contador"] },
   { to: "/proveedores", label: "Proveedores", icon: Truck, roles: ["administrador", "contador"] },
   { to: "/cuentas", label: "Catálogo de Cuentas", icon: BookOpen, roles: ["administrador", "contador"] },
   { to: "/asientos", label: "Asientos", icon: ListChecks, roles: ["administrador", "contador"] },

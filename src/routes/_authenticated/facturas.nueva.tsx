@@ -20,6 +20,7 @@ type Cuota = { fecha: string; monto: number };
 function NuevaFactura() {
   const navigate = useNavigate();
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
+  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos" as any).select("id, nombre, codigo, precio, tasa_itbis").eq("activo", true).order("nombre")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
   const [tipoNcf, setTipoNcf] = useState<"B01"|"B02"|"B04"|"B15">("B02");
   const [condicion, setCondicion] = useState<"contado"|"credito">("contado");
@@ -38,6 +39,15 @@ function NuevaFactura() {
   }, [lineas, descuentoValor, tipoDescuento]);
 
   const setLinea = (i: number, patch: Partial<Linea>) => setLineas(lineas.map((l, idx) => idx === i ? { ...l, ...patch } : l));
+  const seleccionarProducto = (i: number, productoId: string) => {
+    const p: any = (productos ?? []).find((x: any) => x.id === productoId);
+    if (!p) return;
+    setLinea(i, {
+      descripcion: p.codigo ? `${p.codigo} — ${p.nombre}` : p.nombre,
+      precio: Number(p.precio ?? 0),
+      tasa_itbis: Number(p.tasa_itbis ?? 18),
+    });
+  };
   const addLinea = () => setLineas([...lineas, { descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const delLinea = (i: number) => setLineas(lineas.filter((_, idx) => idx !== i));
 
@@ -132,7 +142,20 @@ function NuevaFactura() {
             <div className="space-y-2">
               {lineas.map((l, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-end">
-                  <div className="col-span-5"><Input placeholder="Descripción" value={l.descripcion} onChange={(e) => setLinea(i, { descripcion: e.target.value })} /></div>
+                  <div className="col-span-5 space-y-1">
+                    <Select onValueChange={(v) => seleccionarProducto(i, v)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Elegir producto…" /></SelectTrigger>
+                      <SelectContent>
+                        {(productos ?? []).map((p: any) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.codigo ? `${p.codigo} — ` : ""}{p.nombre} ({fmtMoney(p.precio)})
+                          </SelectItem>
+                        ))}
+                        {(!productos || productos.length === 0) && <div className="px-2 py-1 text-xs text-muted-foreground">Sin productos</div>}
+                      </SelectContent>
+                    </Select>
+                    <Input placeholder="Descripción" value={l.descripcion} onChange={(e) => setLinea(i, { descripcion: e.target.value })} />
+                  </div>
                   <div className="col-span-2"><Input type="number" step="0.001" placeholder="Cant" value={l.cantidad} onChange={(e) => setLinea(i, { cantidad: Number(e.target.value) })} /></div>
                   <div className="col-span-2"><Input type="number" step="0.01" placeholder="Precio" value={l.precio} onChange={(e) => setLinea(i, { precio: Number(e.target.value) })} /></div>
                   <div className="col-span-2">
