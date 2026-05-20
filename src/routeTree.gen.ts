@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
+import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -58,6 +59,12 @@ const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
   path: '/reportes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedRecurrentesRoute =
+  AuthenticatedRecurrentesRouteImport.update({
+    id: '/recurrentes',
+    path: '/recurrentes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedProveedoresRoute =
   AuthenticatedProveedoresRouteImport.update({
     id: '/proveedores',
@@ -144,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -164,6 +172,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -186,6 +195,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
+  '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/perfil-empresa'
     | '/proveedores'
+    | '/recurrentes'
     | '/reportes'
     | '/superadmin'
     | '/cotizaciones/nueva'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/perfil-empresa'
     | '/proveedores'
+    | '/recurrentes'
     | '/reportes'
     | '/superadmin'
     | '/cotizaciones/nueva'
@@ -249,6 +261,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/perfil-empresa'
     | '/_authenticated/proveedores'
+    | '/_authenticated/recurrentes'
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
     | '/_authenticated/cotizaciones/nueva'
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/reportes'
       fullPath: '/reportes'
       preLoaderRoute: typeof AuthenticatedReportesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/recurrentes': {
+      id: '/_authenticated/recurrentes'
+      path: '/recurrentes'
+      fullPath: '/recurrentes'
+      preLoaderRoute: typeof AuthenticatedRecurrentesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/proveedores': {
@@ -412,6 +432,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
+  AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
@@ -430,6 +451,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
+  AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
