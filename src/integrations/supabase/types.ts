@@ -754,6 +754,48 @@ export type Database = {
           },
         ]
       }
+      productos: {
+        Row: {
+          activo: boolean
+          codigo: string | null
+          created_at: string
+          descripcion: string | null
+          id: string
+          nombre: string
+          precio: number
+          tasa_itbis: number
+          tenant_id: string
+          unidad: string
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          codigo?: string | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          precio?: number
+          tasa_itbis?: number
+          tenant_id: string
+          unidad?: string
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          codigo?: string | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          precio?: number
+          tasa_itbis?: number
+          tenant_id?: string
+          unidad?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
