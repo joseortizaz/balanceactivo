@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { fmtMoney, fmtDate } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/facturas")({ component: Facturas });
+export const Route = createFileRoute("/_authenticated/facturas/")({ component: Facturas });
 
 function Facturas() {
   const { data } = useQuery({
