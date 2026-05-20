@@ -20,7 +20,7 @@ function Cotizaciones() {
   });
 
   const cambiarEstado = useMutation({
-    mutationFn: async ({ id, estado }: { id: string; estado: string }) => {
+    mutationFn: async ({ id, estado }: { id: string; estado: "borrador"|"enviada"|"aprobada"|"rechazada"|"convertida"|"vencida" }) => {
       const { error } = await supabase.from("cotizaciones").update({ estado }).eq("id", id);
       if (error) throw error;
     },
