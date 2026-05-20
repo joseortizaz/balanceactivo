@@ -221,6 +221,113 @@ export type Database = {
           },
         ]
       }
+      cotizacion_lineas: {
+        Row: {
+          cantidad: number
+          cotizacion_id: string
+          descripcion: string
+          id: string
+          itbis: number
+          precio: number
+          subtotal: number
+          tasa_itbis: number
+          tenant_id: string
+          total: number
+        }
+        Insert: {
+          cantidad?: number
+          cotizacion_id: string
+          descripcion: string
+          id?: string
+          itbis?: number
+          precio?: number
+          subtotal?: number
+          tasa_itbis?: number
+          tenant_id: string
+          total?: number
+        }
+        Update: {
+          cantidad?: number
+          cotizacion_id?: string
+          descripcion?: string
+          id?: string
+          itbis?: number
+          precio?: number
+          subtotal?: number
+          tasa_itbis?: number
+          tenant_id?: string
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotizacion_lineas_cotizacion_id_fkey"
+            columns: ["cotizacion_id"]
+            isOneToOne: false
+            referencedRelation: "cotizaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cotizaciones: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          created_by: string | null
+          descuento: number
+          descuento_valor: number
+          estado: Database["public"]["Enums"]["estado_cotizacion"]
+          factura_id: string | null
+          fecha: string
+          id: string
+          itbis: number
+          notas: string | null
+          numero: string
+          subtotal: number
+          tenant_id: string
+          tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+          total: number
+          validez_dias: number
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          created_by?: string | null
+          descuento?: number
+          descuento_valor?: number
+          estado?: Database["public"]["Enums"]["estado_cotizacion"]
+          factura_id?: string | null
+          fecha?: string
+          id?: string
+          itbis?: number
+          notas?: string | null
+          numero: string
+          subtotal?: number
+          tenant_id: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
+          total?: number
+          validez_dias?: number
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          created_by?: string | null
+          descuento?: number
+          descuento_valor?: number
+          estado?: Database["public"]["Enums"]["estado_cotizacion"]
+          factura_id?: string | null
+          fecha?: string
+          id?: string
+          itbis?: number
+          notas?: string | null
+          numero?: string
+          subtotal?: number
+          tenant_id?: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
+          total?: number
+          validez_dias?: number
+        }
+        Relationships: []
+      }
       cuentas_contables: {
         Row: {
           activo: boolean
@@ -271,6 +378,50 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      factura_cuotas: {
+        Row: {
+          created_at: string
+          estado: Database["public"]["Enums"]["estado_cuota"]
+          factura_id: string
+          fecha_vencimiento: string
+          id: string
+          monto: number
+          monto_pagado: number
+          numero_cuota: number
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_cuota"]
+          factura_id: string
+          fecha_vencimiento: string
+          id?: string
+          monto: number
+          monto_pagado?: number
+          numero_cuota: number
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          estado?: Database["public"]["Enums"]["estado_cuota"]
+          factura_id?: string
+          fecha_vencimiento?: string
+          id?: string
+          monto?: number
+          monto_pagado?: number
+          numero_cuota?: number
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "factura_cuotas_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "facturas"
             referencedColumns: ["id"]
           },
         ]
@@ -329,6 +480,44 @@ export type Database = {
           },
         ]
       }
+      factura_recurrente_lineas: {
+        Row: {
+          cantidad: number
+          descripcion: string
+          id: string
+          precio: number
+          recurrente_id: string
+          tasa_itbis: number
+          tenant_id: string
+        }
+        Insert: {
+          cantidad?: number
+          descripcion: string
+          id?: string
+          precio?: number
+          recurrente_id: string
+          tasa_itbis?: number
+          tenant_id: string
+        }
+        Update: {
+          cantidad?: number
+          descripcion?: string
+          id?: string
+          precio?: number
+          recurrente_id?: string
+          tasa_itbis?: number
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "factura_recurrente_lineas_recurrente_id_fkey"
+            columns: ["recurrente_id"]
+            isOneToOne: false
+            referencedRelation: "facturas_recurrentes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facturas: {
         Row: {
           asiento_id: string | null
@@ -337,6 +526,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           descuento: number
+          descuento_valor: number
           estado: Database["public"]["Enums"]["estado_factura"]
           fecha: string
           fecha_vencimiento: string | null
@@ -346,6 +536,7 @@ export type Database = {
           ncf: string
           subtotal: number
           tenant_id: string
+          tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
           tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
           total: number
         }
@@ -356,6 +547,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descuento?: number
+          descuento_valor?: number
           estado?: Database["public"]["Enums"]["estado_factura"]
           fecha?: string
           fecha_vencimiento?: string | null
@@ -365,6 +557,7 @@ export type Database = {
           ncf: string
           subtotal?: number
           tenant_id: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
           tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
           total?: number
         }
@@ -375,6 +568,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descuento?: number
+          descuento_valor?: number
           estado?: Database["public"]["Enums"]["estado_factura"]
           fecha?: string
           fecha_vencimiento?: string | null
@@ -384,6 +578,7 @@ export type Database = {
           ncf?: string
           subtotal?: number
           tenant_id?: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
           tipo_ncf?: Database["public"]["Enums"]["tipo_ncf"]
           total?: number
         }
@@ -410,6 +605,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      facturas_recurrentes: {
+        Row: {
+          activo: boolean
+          cliente_id: string
+          condicion_pago: Database["public"]["Enums"]["condicion_pago"]
+          created_at: string
+          created_by: string | null
+          descuento_valor: number
+          dia_emision: number
+          fecha_fin: string | null
+          fecha_inicio: string
+          frecuencia: Database["public"]["Enums"]["frecuencia_recurrencia"]
+          id: string
+          nombre: string
+          notas: string | null
+          num_cuotas: number
+          proxima_emision: string
+          tenant_id: string
+          tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+          tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Insert: {
+          activo?: boolean
+          cliente_id: string
+          condicion_pago?: Database["public"]["Enums"]["condicion_pago"]
+          created_at?: string
+          created_by?: string | null
+          descuento_valor?: number
+          dia_emision?: number
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          frecuencia?: Database["public"]["Enums"]["frecuencia_recurrencia"]
+          id?: string
+          nombre: string
+          notas?: string | null
+          num_cuotas?: number
+          proxima_emision?: string
+          tenant_id: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
+          tipo_ncf?: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Update: {
+          activo?: boolean
+          cliente_id?: string
+          condicion_pago?: Database["public"]["Enums"]["condicion_pago"]
+          created_at?: string
+          created_by?: string | null
+          descuento_valor?: number
+          dia_emision?: number
+          fecha_fin?: string | null
+          fecha_inicio?: string
+          frecuencia?: Database["public"]["Enums"]["frecuencia_recurrencia"]
+          id?: string
+          nombre?: string
+          notas?: string | null
+          num_cuotas?: number
+          proxima_emision?: string
+          tenant_id?: string
+          tipo_descuento?: Database["public"]["Enums"]["tipo_descuento"]
+          tipo_ncf?: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Relationships: []
       }
       logs_auditoria: {
         Row: {
@@ -666,18 +924,50 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calcular_descuento_abs: {
+        Args: {
+          _subtotal: number
+          _tipo: Database["public"]["Enums"]["tipo_descuento"]
+          _valor: number
+        }
+        Returns: number
+      }
+      convertir_cotizacion_a_factura: {
+        Args: {
+          _condicion: Database["public"]["Enums"]["condicion_pago"]
+          _cotizacion_id: string
+          _cuotas?: Json
+          _tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Returns: string
+      }
+      crear_cotizacion: {
+        Args: {
+          _cliente_id: string
+          _descuento_valor: number
+          _fecha: string
+          _lineas: Json
+          _notas: string
+          _tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+          _validez_dias: number
+        }
+        Returns: string
+      }
       crear_factura: {
         Args: {
           _cliente_id: string
           _condicion: Database["public"]["Enums"]["condicion_pago"]
-          _descuento: number
+          _cuotas?: Json
+          _descuento_valor: number
           _fecha: string
           _lineas: Json
+          _tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
           _tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
         }
         Returns: string
       }
       current_tenant_id: { Args: never; Returns: string }
+      generar_facturas_recurrentes: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -704,7 +994,23 @@ export type Database = {
         | "agente_facturacion"
         | "super_admin"
       condicion_pago: "contado" | "credito"
+      estado_cotizacion:
+        | "borrador"
+        | "enviada"
+        | "aprobada"
+        | "rechazada"
+        | "convertida"
+        | "vencida"
+      estado_cuota: "pendiente" | "pagada" | "vencida" | "parcial"
       estado_factura: "pendiente" | "pagada" | "anulada"
+      frecuencia_recurrencia:
+        | "diaria"
+        | "semanal"
+        | "quincenal"
+        | "mensual"
+        | "bimestral"
+        | "trimestral"
+        | "anual"
       regimen_fiscal: "ordinario" | "rst"
       tipo_cuenta:
         | "activo"
@@ -713,6 +1019,7 @@ export type Database = {
         | "ingreso"
         | "costo"
         | "gasto"
+      tipo_descuento: "porcentaje" | "monto"
       tipo_documento: "rnc_empresa" | "rnc_persona" | "cedula"
       tipo_ncf: "B01" | "B02" | "B04" | "B15"
     }
@@ -849,9 +1156,28 @@ export const Constants = {
         "super_admin",
       ],
       condicion_pago: ["contado", "credito"],
+      estado_cotizacion: [
+        "borrador",
+        "enviada",
+        "aprobada",
+        "rechazada",
+        "convertida",
+        "vencida",
+      ],
+      estado_cuota: ["pendiente", "pagada", "vencida", "parcial"],
       estado_factura: ["pendiente", "pagada", "anulada"],
+      frecuencia_recurrencia: [
+        "diaria",
+        "semanal",
+        "quincenal",
+        "mensual",
+        "bimestral",
+        "trimestral",
+        "anual",
+      ],
       regimen_fiscal: ["ordinario", "rst"],
       tipo_cuenta: ["activo", "pasivo", "capital", "ingreso", "costo", "gasto"],
+      tipo_descuento: ["porcentaje", "monto"],
       tipo_documento: ["rnc_empresa", "rnc_persona", "cedula"],
       tipo_ncf: ["B01", "B02", "B04", "B15"],
     },

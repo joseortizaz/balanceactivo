@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2 } from "lucide-react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,8 @@ const NAV: Item[] = [
   { to: "/superadmin", label: "Super Admin", icon: Crown, roles: ["super_admin"] },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/facturas", label: "Facturas", icon: FileText, roles: ["administrador", "agente_facturacion", "contador"] },
+  { to: "/cotizaciones", label: "Cotizaciones", icon: FileSpreadsheet, roles: ["administrador", "agente_facturacion", "contador"] },
+  { to: "/recurrentes", label: "Facturas Recurrentes", icon: Repeat, roles: ["administrador", "agente_facturacion"] },
   { to: "/cobros", label: "Cobros", icon: Wallet, roles: ["administrador", "agente_facturacion"] },
   { to: "/clientes", label: "Clientes", icon: Users, roles: ["administrador", "agente_facturacion", "contador"] },
   { to: "/proveedores", label: "Proveedores", icon: Truck, roles: ["administrador", "contador"] },

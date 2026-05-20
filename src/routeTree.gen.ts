@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
+import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -25,7 +26,9 @@ import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
+import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
+import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -56,6 +59,12 @@ const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
   path: '/reportes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedRecurrentesRoute =
+  AuthenticatedRecurrentesRouteImport.update({
+    id: '/recurrentes',
+    path: '/recurrentes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedProveedoresRoute =
   AuthenticatedProveedoresRouteImport.update({
     id: '/proveedores',
@@ -110,10 +119,22 @@ const AuthenticatedFacturasIndexRoute =
     path: '/facturas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCotizacionesIndexRoute =
+  AuthenticatedCotizacionesIndexRouteImport.update({
+    id: '/cotizaciones/',
+    path: '/cotizaciones/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFacturasNuevaRoute =
   AuthenticatedFacturasNuevaRouteImport.update({
     id: '/facturas/nueva',
     path: '/facturas/nueva',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCotizacionesNuevaRoute =
+  AuthenticatedCotizacionesNuevaRouteImport.update({
+    id: '/cotizaciones/nueva',
+    path: '/cotizaciones/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -130,9 +151,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -148,9 +172,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
+  '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRoutesById {
@@ -168,9 +195,12 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
+  '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
+  '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRouteTypes {
@@ -188,9 +218,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/perfil-empresa'
     | '/proveedores'
+    | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/cotizaciones/'
     | '/facturas/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -206,9 +239,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/perfil-empresa'
     | '/proveedores'
+    | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/cotizaciones'
     | '/facturas'
   id:
     | '__root__'
@@ -225,9 +261,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/perfil-empresa'
     | '/_authenticated/proveedores'
+    | '/_authenticated/recurrentes'
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
+    | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
+    | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
   fileRoutesById: FileRoutesById
 }
@@ -280,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/reportes'
       fullPath: '/reportes'
       preLoaderRoute: typeof AuthenticatedReportesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/recurrentes': {
+      id: '/_authenticated/recurrentes'
+      path: '/recurrentes'
+      fullPath: '/recurrentes'
+      preLoaderRoute: typeof AuthenticatedRecurrentesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/proveedores': {
@@ -352,11 +398,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFacturasIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/cotizaciones/': {
+      id: '/_authenticated/cotizaciones/'
+      path: '/cotizaciones'
+      fullPath: '/cotizaciones/'
+      preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/facturas/nueva': {
       id: '/_authenticated/facturas/nueva'
       path: '/facturas/nueva'
       fullPath: '/facturas/nueva'
       preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cotizaciones/nueva': {
+      id: '/_authenticated/cotizaciones/nueva'
+      path: '/cotizaciones/nueva'
+      fullPath: '/cotizaciones/nueva'
+      preLoaderRoute: typeof AuthenticatedCotizacionesNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -372,9 +432,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
+  AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
+  AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
+  AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
 }
 
@@ -388,9 +451,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
+  AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
+  AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
+  AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
 }
 
@@ -407,13 +473,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
