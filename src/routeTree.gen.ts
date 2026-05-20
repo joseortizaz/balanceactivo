@@ -17,7 +17,6 @@ import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authentic
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
-import { Route as AuthenticatedFacturasRouteImport } from './routes/_authenticated/facturas'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
 import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
@@ -25,6 +24,7 @@ import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 
 const SignupRoute = SignupRouteImport.update({
@@ -68,11 +68,6 @@ const AuthenticatedPerfilEmpresaRoute =
     path: '/perfil-empresa',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedFacturasRoute = AuthenticatedFacturasRouteImport.update({
-  id: '/facturas',
-  path: '/facturas',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -109,11 +104,17 @@ const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
   path: '/asientos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFacturasIndexRoute =
+  AuthenticatedFacturasIndexRouteImport.update({
+    id: '/facturas/',
+    path: '/facturas/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFacturasNuevaRoute =
   AuthenticatedFacturasNuevaRouteImport.update({
-    id: '/nueva',
-    path: '/nueva',
-    getParentRoute: () => AuthenticatedFacturasRoute,
+    id: '/facturas/nueva',
+    path: '/facturas/nueva',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -127,12 +128,12 @@ export interface FileRoutesByFullPath {
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/facturas/': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,12 +146,12 @@ export interface FileRoutesByTo {
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/facturas': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -165,12 +166,12 @@ export interface FileRoutesById {
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
   '/_authenticated/cuentas': typeof AuthenticatedCuentasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/facturas': typeof AuthenticatedFacturasRouteWithChildren
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -185,12 +186,12 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/cuentas'
     | '/dashboard'
-    | '/facturas'
     | '/perfil-empresa'
     | '/proveedores'
     | '/reportes'
     | '/superadmin'
     | '/facturas/nueva'
+    | '/facturas/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -203,12 +204,12 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/cuentas'
     | '/dashboard'
-    | '/facturas'
     | '/perfil-empresa'
     | '/proveedores'
     | '/reportes'
     | '/superadmin'
     | '/facturas/nueva'
+    | '/facturas'
   id:
     | '__root__'
     | '/'
@@ -222,12 +223,12 @@ export interface FileRouteTypes {
     | '/_authenticated/configuracion'
     | '/_authenticated/cuentas'
     | '/_authenticated/dashboard'
-    | '/_authenticated/facturas'
     | '/_authenticated/perfil-empresa'
     | '/_authenticated/proveedores'
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
     | '/_authenticated/facturas/nueva'
+    | '/_authenticated/facturas/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -295,13 +296,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilEmpresaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/facturas': {
-      id: '/_authenticated/facturas'
-      path: '/facturas'
-      fullPath: '/facturas'
-      preLoaderRoute: typeof AuthenticatedFacturasRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -351,28 +345,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAsientosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/facturas/': {
+      id: '/_authenticated/facturas/'
+      path: '/facturas'
+      fullPath: '/facturas/'
+      preLoaderRoute: typeof AuthenticatedFacturasIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/facturas/nueva': {
       id: '/_authenticated/facturas/nueva'
-      path: '/nueva'
+      path: '/facturas/nueva'
       fullPath: '/facturas/nueva'
       preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
-      parentRoute: typeof AuthenticatedFacturasRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
-
-interface AuthenticatedFacturasRouteChildren {
-  AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
-}
-
-const AuthenticatedFacturasRouteChildren: AuthenticatedFacturasRouteChildren = {
-  AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
-}
-
-const AuthenticatedFacturasRouteWithChildren =
-  AuthenticatedFacturasRoute._addFileChildren(
-    AuthenticatedFacturasRouteChildren,
-  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
@@ -382,11 +370,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
   AuthenticatedCuentasRoute: typeof AuthenticatedCuentasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedFacturasRoute: typeof AuthenticatedFacturasRouteWithChildren
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
+  AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
+  AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -397,11 +386,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
   AuthenticatedCuentasRoute: AuthenticatedCuentasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedFacturasRoute: AuthenticatedFacturasRouteWithChildren,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
+  AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
+  AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -417,3 +407,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
