@@ -122,6 +122,7 @@ export type Database = {
           email: string | null
           id: string
           nombre_comercial: string | null
+          provincia: string | null
           razon_social: string
           telefono: string | null
           tenant_id: string
@@ -135,6 +136,7 @@ export type Database = {
           email?: string | null
           id?: string
           nombre_comercial?: string | null
+          provincia?: string | null
           razon_social: string
           telefono?: string | null
           tenant_id: string
@@ -148,6 +150,7 @@ export type Database = {
           email?: string | null
           id?: string
           nombre_comercial?: string | null
+          provincia?: string | null
           razon_social?: string
           telefono?: string | null
           tenant_id?: string
