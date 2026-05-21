@@ -876,6 +876,84 @@ export type Database = {
         }
         Relationships: []
       }
+      gastos: {
+        Row: {
+          asiento_id: string | null
+          categoria: Database["public"]["Enums"]["categoria_gasto_606"]
+          concepto: string
+          condicion_pago: Database["public"]["Enums"]["condicion_pago"]
+          created_at: string
+          created_by: string | null
+          cuenta_gasto_id: string
+          cuenta_pago_id: string | null
+          estado: Database["public"]["Enums"]["estado_gasto"]
+          fecha: string
+          fecha_vencimiento: string | null
+          id: string
+          isr_retenido: number
+          itbis: number
+          itbis_retenido: number
+          monto_pagado: number
+          ncf: string | null
+          notas: string | null
+          proveedor_id: string
+          subtotal: number
+          tenant_id: string
+          tipo_ncf_compra: Database["public"]["Enums"]["tipo_ncf_compra"]
+          total: number
+        }
+        Insert: {
+          asiento_id?: string | null
+          categoria?: Database["public"]["Enums"]["categoria_gasto_606"]
+          concepto: string
+          condicion_pago?: Database["public"]["Enums"]["condicion_pago"]
+          created_at?: string
+          created_by?: string | null
+          cuenta_gasto_id: string
+          cuenta_pago_id?: string | null
+          estado?: Database["public"]["Enums"]["estado_gasto"]
+          fecha?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          isr_retenido?: number
+          itbis?: number
+          itbis_retenido?: number
+          monto_pagado?: number
+          ncf?: string | null
+          notas?: string | null
+          proveedor_id: string
+          subtotal?: number
+          tenant_id: string
+          tipo_ncf_compra?: Database["public"]["Enums"]["tipo_ncf_compra"]
+          total?: number
+        }
+        Update: {
+          asiento_id?: string | null
+          categoria?: Database["public"]["Enums"]["categoria_gasto_606"]
+          concepto?: string
+          condicion_pago?: Database["public"]["Enums"]["condicion_pago"]
+          created_at?: string
+          created_by?: string | null
+          cuenta_gasto_id?: string
+          cuenta_pago_id?: string | null
+          estado?: Database["public"]["Enums"]["estado_gasto"]
+          fecha?: string
+          fecha_vencimiento?: string | null
+          id?: string
+          isr_retenido?: number
+          itbis?: number
+          itbis_retenido?: number
+          monto_pagado?: number
+          ncf?: string | null
+          notas?: string | null
+          proveedor_id?: string
+          subtotal?: number
+          tenant_id?: string
+          tipo_ncf_compra?: Database["public"]["Enums"]["tipo_ncf_compra"]
+          total?: number
+        }
+        Relationships: []
+      }
       isr_escalas: {
         Row: {
           anio: number
@@ -1170,6 +1248,45 @@ export type Database = {
           total_deducciones?: number
           total_ingresos?: number
           total_neto?: number
+        }
+        Relationships: []
+      }
+      pagos_gasto: {
+        Row: {
+          asiento_id: string | null
+          created_at: string
+          created_by: string | null
+          cuenta_pago_id: string
+          fecha: string
+          gasto_id: string
+          id: string
+          metodo: string | null
+          monto: number
+          tenant_id: string
+        }
+        Insert: {
+          asiento_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuenta_pago_id: string
+          fecha?: string
+          gasto_id: string
+          id?: string
+          metodo?: string | null
+          monto: number
+          tenant_id: string
+        }
+        Update: {
+          asiento_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuenta_pago_id?: string
+          fecha?: string
+          gasto_id?: string
+          id?: string
+          metodo?: string | null
+          monto?: number
+          tenant_id?: string
         }
         Relationships: []
       }
@@ -1613,6 +1730,10 @@ export type Database = {
       generar_facturas_recurrentes: { Args: never; Returns: number }
       generar_ir3: { Args: { _anio: number; _mes: number }; Returns: Json }
       generar_regalia_pascual: { Args: { _anio: number }; Returns: string }
+      get_cuenta_id: {
+        Args: { _codigo: string; _tenant: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1626,6 +1747,17 @@ export type Database = {
         Args: {
           _factura_id: string
           _fecha: string
+          _metodo: string
+          _monto: number
+        }
+        Returns: string
+      }
+      registrar_gasto: { Args: { _gasto_id: string }; Returns: string }
+      registrar_pago_gasto: {
+        Args: {
+          _cuenta_pago_id: string
+          _fecha: string
+          _gasto_id: string
           _metodo: string
           _monto: number
         }
@@ -1654,6 +1786,16 @@ export type Database = {
         | "contador"
         | "agente_facturacion"
         | "super_admin"
+      categoria_gasto_606:
+        | "01_personal"
+        | "02_trabajos_suministros"
+        | "03_arrendamientos"
+        | "04_activos_fijos"
+        | "05_operacionales"
+        | "06_financieros"
+        | "07_seguros"
+        | "08_combustibles"
+        | "09_otros"
       condicion_pago: "contado" | "credito"
       estado_cotizacion:
         | "borrador"
@@ -1665,6 +1807,7 @@ export type Database = {
       estado_cuota: "pendiente" | "pagada" | "vencida" | "parcial"
       estado_empleado: "activo" | "suspendido" | "terminado"
       estado_factura: "pendiente" | "pagada" | "anulada"
+      estado_gasto: "pendiente" | "pagado" | "anulado"
       estado_nomina: "borrador" | "cerrada" | "pagada"
       estado_prestamo: "activo" | "cancelado" | "pagado"
       forma_pago_empleado: "mensual" | "quincenal" | "semanal"
@@ -1702,6 +1845,7 @@ export type Database = {
       tipo_descuento: "porcentaje" | "monto"
       tipo_documento: "rnc_empresa" | "rnc_persona" | "cedula"
       tipo_ncf: "B01" | "B02" | "B04" | "B15"
+      tipo_ncf_compra: "B01" | "B11" | "B14" | "B15"
       tipo_nomina: "regular" | "regalia_pascual" | "bonificacion"
     }
     CompositeTypes: {
@@ -1836,6 +1980,17 @@ export const Constants = {
         "agente_facturacion",
         "super_admin",
       ],
+      categoria_gasto_606: [
+        "01_personal",
+        "02_trabajos_suministros",
+        "03_arrendamientos",
+        "04_activos_fijos",
+        "05_operacionales",
+        "06_financieros",
+        "07_seguros",
+        "08_combustibles",
+        "09_otros",
+      ],
       condicion_pago: ["contado", "credito"],
       estado_cotizacion: [
         "borrador",
@@ -1848,6 +2003,7 @@ export const Constants = {
       estado_cuota: ["pendiente", "pagada", "vencida", "parcial"],
       estado_empleado: ["activo", "suspendido", "terminado"],
       estado_factura: ["pendiente", "pagada", "anulada"],
+      estado_gasto: ["pendiente", "pagado", "anulado"],
       estado_nomina: ["borrador", "cerrada", "pagada"],
       estado_prestamo: ["activo", "cancelado", "pagado"],
       forma_pago_empleado: ["mensual", "quincenal", "semanal"],
@@ -1882,6 +2038,7 @@ export const Constants = {
       tipo_descuento: ["porcentaje", "monto"],
       tipo_documento: ["rnc_empresa", "rnc_persona", "cedula"],
       tipo_ncf: ["B01", "B02", "B04", "B15"],
+      tipo_ncf_compra: ["B01", "B11", "B14", "B15"],
       tipo_nomina: ["regular", "regalia_pascual", "bonificacion"],
     },
   },
