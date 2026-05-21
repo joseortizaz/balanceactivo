@@ -113,6 +113,30 @@ export type Database = {
           },
         ]
       }
+      cargos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          nombre: string
+          tenant_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre: string
+          tenant_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       clientes: {
         Row: {
           activo: boolean
@@ -381,6 +405,144 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      departamentos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          nombre: string
+          tenant_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre: string
+          tenant_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
+      empleados: {
+        Row: {
+          apellidos: string
+          banco: string | null
+          cargo_id: string | null
+          cedula: string
+          codigo: string | null
+          created_at: string
+          cuenta_bancaria: string | null
+          departamento_id: string | null
+          dependientes: number
+          direccion: string | null
+          email: string | null
+          estado: Database["public"]["Enums"]["estado_empleado"]
+          estado_civil: string | null
+          fecha_ingreso: string
+          fecha_nacimiento: string | null
+          fecha_salida: string | null
+          forma_pago: Database["public"]["Enums"]["forma_pago_empleado"]
+          id: string
+          motivo_salida:
+            | Database["public"]["Enums"]["motivo_terminacion"]
+            | null
+          nombres: string
+          notas: string | null
+          salario_base: number
+          sexo: string | null
+          telefono: string | null
+          tenant_id: string
+          tipo_contrato: Database["public"]["Enums"]["tipo_contrato"]
+          tipo_cuenta: string | null
+          updated_at: string
+        }
+        Insert: {
+          apellidos: string
+          banco?: string | null
+          cargo_id?: string | null
+          cedula: string
+          codigo?: string | null
+          created_at?: string
+          cuenta_bancaria?: string | null
+          departamento_id?: string | null
+          dependientes?: number
+          direccion?: string | null
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_empleado"]
+          estado_civil?: string | null
+          fecha_ingreso?: string
+          fecha_nacimiento?: string | null
+          fecha_salida?: string | null
+          forma_pago?: Database["public"]["Enums"]["forma_pago_empleado"]
+          id?: string
+          motivo_salida?:
+            | Database["public"]["Enums"]["motivo_terminacion"]
+            | null
+          nombres: string
+          notas?: string | null
+          salario_base?: number
+          sexo?: string | null
+          telefono?: string | null
+          tenant_id: string
+          tipo_contrato?: Database["public"]["Enums"]["tipo_contrato"]
+          tipo_cuenta?: string | null
+          updated_at?: string
+        }
+        Update: {
+          apellidos?: string
+          banco?: string | null
+          cargo_id?: string | null
+          cedula?: string
+          codigo?: string | null
+          created_at?: string
+          cuenta_bancaria?: string | null
+          departamento_id?: string | null
+          dependientes?: number
+          direccion?: string | null
+          email?: string | null
+          estado?: Database["public"]["Enums"]["estado_empleado"]
+          estado_civil?: string | null
+          fecha_ingreso?: string
+          fecha_nacimiento?: string | null
+          fecha_salida?: string | null
+          forma_pago?: Database["public"]["Enums"]["forma_pago_empleado"]
+          id?: string
+          motivo_salida?:
+            | Database["public"]["Enums"]["motivo_terminacion"]
+            | null
+          nombres?: string
+          notas?: string | null
+          salario_base?: number
+          sexo?: string | null
+          telefono?: string | null
+          tenant_id?: string
+          tipo_contrato?: Database["public"]["Enums"]["tipo_contrato"]
+          tipo_cuenta?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empleados_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empleados_departamento_id_fkey"
+            columns: ["departamento_id"]
+            isOneToOne: false
+            referencedRelation: "departamentos"
             referencedColumns: ["id"]
           },
         ]
@@ -672,6 +834,39 @@ export type Database = {
         }
         Relationships: []
       }
+      isr_escalas: {
+        Row: {
+          anio: number
+          cuota_fija: number
+          desde: number
+          hasta: number | null
+          id: string
+          tasa: number
+          tenant_id: string
+          tramo: number
+        }
+        Insert: {
+          anio: number
+          cuota_fija?: number
+          desde: number
+          hasta?: number | null
+          id?: string
+          tasa: number
+          tenant_id: string
+          tramo: number
+        }
+        Update: {
+          anio?: number
+          cuota_fija?: number
+          desde?: number
+          hasta?: number | null
+          id?: string
+          tasa?: number
+          tenant_id?: string
+          tramo?: number
+        }
+        Relationships: []
+      }
       logs_auditoria: {
         Row: {
           accion: string
@@ -753,6 +948,185 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      nomina_conceptos: {
+        Row: {
+          afecta_isr: boolean
+          afecta_tss: boolean
+          concepto: string
+          created_at: string
+          detalle_id: string
+          id: string
+          monto: number
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_concepto_nomina"]
+        }
+        Insert: {
+          afecta_isr?: boolean
+          afecta_tss?: boolean
+          concepto: string
+          created_at?: string
+          detalle_id: string
+          id?: string
+          monto?: number
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_concepto_nomina"]
+        }
+        Update: {
+          afecta_isr?: boolean
+          afecta_tss?: boolean
+          concepto?: string
+          created_at?: string
+          detalle_id?: string
+          id?: string
+          monto?: number
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_concepto_nomina"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nomina_conceptos_detalle_id_fkey"
+            columns: ["detalle_id"]
+            isOneToOne: false
+            referencedRelation: "nomina_detalle"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nomina_detalle: {
+        Row: {
+          afp: number
+          afp_patronal: number
+          created_at: string
+          empleado_id: string
+          id: string
+          infotep_patronal: number
+          isr: number
+          neto_pagar: number
+          nomina_id: string
+          otras_deducciones: number
+          salario_base: number
+          sfs: number
+          sfs_patronal: number
+          srl_patronal: number
+          tenant_id: string
+          total_deducciones: number
+          total_ingresos: number
+        }
+        Insert: {
+          afp?: number
+          afp_patronal?: number
+          created_at?: string
+          empleado_id: string
+          id?: string
+          infotep_patronal?: number
+          isr?: number
+          neto_pagar?: number
+          nomina_id: string
+          otras_deducciones?: number
+          salario_base?: number
+          sfs?: number
+          sfs_patronal?: number
+          srl_patronal?: number
+          tenant_id: string
+          total_deducciones?: number
+          total_ingresos?: number
+        }
+        Update: {
+          afp?: number
+          afp_patronal?: number
+          created_at?: string
+          empleado_id?: string
+          id?: string
+          infotep_patronal?: number
+          isr?: number
+          neto_pagar?: number
+          nomina_id?: string
+          otras_deducciones?: number
+          salario_base?: number
+          sfs?: number
+          sfs_patronal?: number
+          srl_patronal?: number
+          tenant_id?: string
+          total_deducciones?: number
+          total_ingresos?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nomina_detalle_empleado_id_fkey"
+            columns: ["empleado_id"]
+            isOneToOne: false
+            referencedRelation: "empleados"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nomina_detalle_nomina_id_fkey"
+            columns: ["nomina_id"]
+            isOneToOne: false
+            referencedRelation: "nominas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nominas: {
+        Row: {
+          asiento_id: string | null
+          asiento_pago_id: string | null
+          created_at: string
+          created_by: string | null
+          estado: Database["public"]["Enums"]["estado_nomina"]
+          fecha_pago: string
+          forma_pago: Database["public"]["Enums"]["forma_pago_empleado"]
+          id: string
+          nombre: string
+          notas: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          tenant_id: string
+          total_aportes_patronales: number
+          total_deducciones: number
+          total_ingresos: number
+          total_neto: number
+        }
+        Insert: {
+          asiento_id?: string | null
+          asiento_pago_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_nomina"]
+          fecha_pago?: string
+          forma_pago?: Database["public"]["Enums"]["forma_pago_empleado"]
+          id?: string
+          nombre: string
+          notas?: string | null
+          periodo_fin: string
+          periodo_inicio: string
+          tenant_id: string
+          total_aportes_patronales?: number
+          total_deducciones?: number
+          total_ingresos?: number
+          total_neto?: number
+        }
+        Update: {
+          asiento_id?: string | null
+          asiento_pago_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_nomina"]
+          fecha_pago?: string
+          forma_pago?: Database["public"]["Enums"]["forma_pago_empleado"]
+          id?: string
+          nombre?: string
+          notas?: string | null
+          periodo_fin?: string
+          periodo_inicio?: string
+          tenant_id?: string
+          total_aportes_patronales?: number
+          total_deducciones?: number
+          total_ingresos?: number
+          total_neto?: number
+        }
+        Relationships: []
       }
       productos: {
         Row: {
@@ -932,6 +1306,57 @@ export type Database = {
         }
         Relationships: []
       }
+      tss_tasas: {
+        Row: {
+          activo: boolean
+          afp_empleado: number
+          afp_empleador: number
+          created_at: string
+          id: string
+          infotep_empleador: number
+          salario_minimo_cotizable: number
+          sfs_empleado: number
+          sfs_empleador: number
+          srl_empleador: number
+          tenant_id: string
+          tope_afp: number
+          tope_sfs: number
+          vigente_desde: string
+        }
+        Insert: {
+          activo?: boolean
+          afp_empleado?: number
+          afp_empleador?: number
+          created_at?: string
+          id?: string
+          infotep_empleador?: number
+          salario_minimo_cotizable?: number
+          sfs_empleado?: number
+          sfs_empleador?: number
+          srl_empleador?: number
+          tenant_id: string
+          tope_afp?: number
+          tope_sfs?: number
+          vigente_desde?: string
+        }
+        Update: {
+          activo?: boolean
+          afp_empleado?: number
+          afp_empleador?: number
+          created_at?: string
+          id?: string
+          infotep_empleador?: number
+          salario_minimo_cotizable?: number
+          sfs_empleado?: number
+          sfs_empleador?: number
+          srl_empleador?: number
+          tenant_id?: string
+          tope_afp?: number
+          tope_sfs?: number
+          vigente_desde?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -977,6 +1402,11 @@ export type Database = {
         }
         Returns: number
       }
+      calcular_isr_mensual: {
+        Args: { _gravable_mensual: number; _tenant: string }
+        Returns: number
+      }
+      cerrar_nomina: { Args: { _nomina_id: string }; Returns: string }
       convertir_cotizacion_a_factura: {
         Args: {
           _condicion: Database["public"]["Enums"]["condicion_pago"]
@@ -1021,6 +1451,7 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      procesar_nomina: { Args: { _nomina_id: string }; Returns: number }
       registrar_cobro: {
         Args: {
           _factura_id: string
@@ -1030,6 +1461,11 @@ export type Database = {
         }
         Returns: string
       }
+      registrar_pago_nomina: {
+        Args: { _cuenta_codigo: string; _nomina_id: string }
+        Returns: string
+      }
+      seed_nomina_defaults: { Args: { _tenant_id: string }; Returns: undefined }
       seed_tenant_defaults: { Args: { _tenant_id: string }; Returns: undefined }
     }
     Enums: {
@@ -1047,7 +1483,10 @@ export type Database = {
         | "convertida"
         | "vencida"
       estado_cuota: "pendiente" | "pagada" | "vencida" | "parcial"
+      estado_empleado: "activo" | "suspendido" | "terminado"
       estado_factura: "pendiente" | "pagada" | "anulada"
+      estado_nomina: "borrador" | "cerrada" | "pagada"
+      forma_pago_empleado: "mensual" | "quincenal" | "semanal"
       frecuencia_recurrencia:
         | "diaria"
         | "semanal"
@@ -1056,7 +1495,15 @@ export type Database = {
         | "bimestral"
         | "trimestral"
         | "anual"
+      motivo_terminacion:
+        | "desahucio"
+        | "despido_justificado"
+        | "dimision"
+        | "mutuo_acuerdo"
+        | "otro"
       regimen_fiscal: "ordinario" | "rst"
+      tipo_concepto_nomina: "ingreso" | "deduccion"
+      tipo_contrato: "indefinido" | "fijo" | "obra"
       tipo_cuenta:
         | "activo"
         | "pasivo"
@@ -1210,7 +1657,10 @@ export const Constants = {
         "vencida",
       ],
       estado_cuota: ["pendiente", "pagada", "vencida", "parcial"],
+      estado_empleado: ["activo", "suspendido", "terminado"],
       estado_factura: ["pendiente", "pagada", "anulada"],
+      estado_nomina: ["borrador", "cerrada", "pagada"],
+      forma_pago_empleado: ["mensual", "quincenal", "semanal"],
       frecuencia_recurrencia: [
         "diaria",
         "semanal",
@@ -1220,7 +1670,16 @@ export const Constants = {
         "trimestral",
         "anual",
       ],
+      motivo_terminacion: [
+        "desahucio",
+        "despido_justificado",
+        "dimision",
+        "mutuo_acuerdo",
+        "otro",
+      ],
       regimen_fiscal: ["ordinario", "rst"],
+      tipo_concepto_nomina: ["ingreso", "deduccion"],
+      tipo_contrato: ["indefinido", "fijo", "obra"],
       tipo_cuenta: ["activo", "pasivo", "capital", "ingreso", "costo", "gasto"],
       tipo_descuento: ["porcentaje", "monto"],
       tipo_documento: ["rnc_empresa", "rnc_persona", "cedula"],

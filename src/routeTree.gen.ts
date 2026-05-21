@@ -26,10 +26,16 @@ import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
+import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_authenticated/nomina.empleados'
+import { Route as AuthenticatedNominaConfiguracionRouteImport } from './routes/_authenticated/nomina.configuracion'
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
+import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
+import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
+import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -119,6 +125,12 @@ const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
   path: '/asientos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNominaIndexRoute =
+  AuthenticatedNominaIndexRouteImport.update({
+    id: '/nomina/',
+    path: '/nomina/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFacturasIndexRoute =
   AuthenticatedFacturasIndexRouteImport.update({
     id: '/facturas/',
@@ -131,6 +143,18 @@ const AuthenticatedCotizacionesIndexRoute =
     path: '/cotizaciones/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNominaEmpleadosRoute =
+  AuthenticatedNominaEmpleadosRouteImport.update({
+    id: '/nomina/empleados',
+    path: '/nomina/empleados',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaConfiguracionRoute =
+  AuthenticatedNominaConfiguracionRouteImport.update({
+    id: '/nomina/configuracion',
+    path: '/nomina/configuracion',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFacturasNuevaRoute =
   AuthenticatedFacturasNuevaRouteImport.update({
     id: '/facturas/nueva',
@@ -141,6 +165,24 @@ const AuthenticatedCotizacionesNuevaRoute =
   AuthenticatedCotizacionesNuevaRouteImport.update({
     id: '/cotizaciones/nueva',
     path: '/cotizaciones/nueva',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaPeriodosIndexRoute =
+  AuthenticatedNominaPeriodosIndexRouteImport.update({
+    id: '/nomina/periodos/',
+    path: '/nomina/periodos/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaPeriodosNuevaRoute =
+  AuthenticatedNominaPeriodosNuevaRouteImport.update({
+    id: '/nomina/periodos/nueva',
+    path: '/nomina/periodos/nueva',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaPeriodosIdRoute =
+  AuthenticatedNominaPeriodosIdRouteImport.update({
+    id: '/nomina/periodos/$id',
+    path: '/nomina/periodos/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -163,8 +205,14 @@ export interface FileRoutesByFullPath {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
+  '/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
+  '/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
+  '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -185,8 +233,14 @@ export interface FileRoutesByTo {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
+  '/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
+  '/nomina': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
+  '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -209,8 +263,14 @@ export interface FileRoutesById {
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/_authenticated/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
+  '/_authenticated/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
+  '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
+  '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -233,8 +293,14 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/nomina/configuracion'
+    | '/nomina/empleados'
     | '/cotizaciones/'
     | '/facturas/'
+    | '/nomina/'
+    | '/nomina/periodos/$id'
+    | '/nomina/periodos/nueva'
+    | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -255,8 +321,14 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/nomina/configuracion'
+    | '/nomina/empleados'
     | '/cotizaciones'
     | '/facturas'
+    | '/nomina'
+    | '/nomina/periodos/$id'
+    | '/nomina/periodos/nueva'
+    | '/nomina/periodos'
   id:
     | '__root__'
     | '/'
@@ -278,8 +350,14 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
+    | '/_authenticated/nomina/configuracion'
+    | '/_authenticated/nomina/empleados'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
+    | '/_authenticated/nomina/'
+    | '/_authenticated/nomina/periodos/$id'
+    | '/_authenticated/nomina/periodos/nueva'
+    | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -410,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAsientosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nomina/': {
+      id: '/_authenticated/nomina/'
+      path: '/nomina'
+      fullPath: '/nomina/'
+      preLoaderRoute: typeof AuthenticatedNominaIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/facturas/': {
       id: '/_authenticated/facturas/'
       path: '/facturas'
@@ -424,6 +509,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nomina/empleados': {
+      id: '/_authenticated/nomina/empleados'
+      path: '/nomina/empleados'
+      fullPath: '/nomina/empleados'
+      preLoaderRoute: typeof AuthenticatedNominaEmpleadosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/configuracion': {
+      id: '/_authenticated/nomina/configuracion'
+      path: '/nomina/configuracion'
+      fullPath: '/nomina/configuracion'
+      preLoaderRoute: typeof AuthenticatedNominaConfiguracionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/facturas/nueva': {
       id: '/_authenticated/facturas/nueva'
       path: '/facturas/nueva'
@@ -436,6 +535,27 @@ declare module '@tanstack/react-router' {
       path: '/cotizaciones/nueva'
       fullPath: '/cotizaciones/nueva'
       preLoaderRoute: typeof AuthenticatedCotizacionesNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/periodos/': {
+      id: '/_authenticated/nomina/periodos/'
+      path: '/nomina/periodos'
+      fullPath: '/nomina/periodos/'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/periodos/nueva': {
+      id: '/_authenticated/nomina/periodos/nueva'
+      path: '/nomina/periodos/nueva'
+      fullPath: '/nomina/periodos/nueva'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/periodos/$id': {
+      id: '/_authenticated/nomina/periodos/$id'
+      path: '/nomina/periodos/$id'
+      fullPath: '/nomina/periodos/$id'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -457,8 +577,14 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
+  AuthenticatedNominaConfiguracionRoute: typeof AuthenticatedNominaConfiguracionRoute
+  AuthenticatedNominaEmpleadosRoute: typeof AuthenticatedNominaEmpleadosRoute
   AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
+  AuthenticatedNominaIndexRoute: typeof AuthenticatedNominaIndexRoute
+  AuthenticatedNominaPeriodosIdRoute: typeof AuthenticatedNominaPeriodosIdRoute
+  AuthenticatedNominaPeriodosNuevaRoute: typeof AuthenticatedNominaPeriodosNuevaRoute
+  AuthenticatedNominaPeriodosIndexRoute: typeof AuthenticatedNominaPeriodosIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -477,8 +603,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
+  AuthenticatedNominaConfiguracionRoute: AuthenticatedNominaConfiguracionRoute,
+  AuthenticatedNominaEmpleadosRoute: AuthenticatedNominaEmpleadosRoute,
   AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
+  AuthenticatedNominaIndexRoute: AuthenticatedNominaIndexRoute,
+  AuthenticatedNominaPeriodosIdRoute: AuthenticatedNominaPeriodosIdRoute,
+  AuthenticatedNominaPeriodosNuevaRoute: AuthenticatedNominaPeriodosNuevaRoute,
+  AuthenticatedNominaPeriodosIndexRoute: AuthenticatedNominaPeriodosIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -494,13 +626,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
