@@ -29,6 +29,7 @@ import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
+import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_authenticated/nomina.empleados'
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 
@@ -138,6 +139,12 @@ const AuthenticatedCotizacionesIndexRoute =
     path: '/cotizaciones/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNominaEmpleadosRoute =
+  AuthenticatedNominaEmpleadosRouteImport.update({
+    id: '/nomina/empleados',
+    path: '/nomina/empleados',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedFacturasNuevaRoute =
   AuthenticatedFacturasNuevaRouteImport.update({
     id: '/facturas/nueva',
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -193,6 +201,7 @@ export interface FileRoutesByTo {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
@@ -218,6 +227,7 @@ export interface FileRoutesById {
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
+  '/_authenticated/nomina/empleados': typeof AuthenticatedNominaEmpleadosRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/nomina/empleados'
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
+    | '/nomina/empleados'
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
@@ -290,6 +302,7 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
+    | '/_authenticated/nomina/empleados'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
@@ -444,6 +457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nomina/empleados': {
+      id: '/_authenticated/nomina/empleados'
+      path: '/nomina/empleados'
+      fullPath: '/nomina/empleados'
+      preLoaderRoute: typeof AuthenticatedNominaEmpleadosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/facturas/nueva': {
       id: '/_authenticated/facturas/nueva'
       path: '/facturas/nueva'
@@ -477,6 +497,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
+  AuthenticatedNominaEmpleadosRoute: typeof AuthenticatedNominaEmpleadosRoute
   AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
   AuthenticatedNominaIndexRoute: typeof AuthenticatedNominaIndexRoute
@@ -498,6 +519,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
+  AuthenticatedNominaEmpleadosRoute: AuthenticatedNominaEmpleadosRoute,
   AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
   AuthenticatedNominaIndexRoute: AuthenticatedNominaIndexRoute,
