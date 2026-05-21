@@ -33,6 +33,7 @@ import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_auth
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
+import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -164,6 +165,12 @@ const AuthenticatedNominaPeriodosIndexRoute =
     path: '/nomina/periodos/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNominaPeriodosNuevaRoute =
+  AuthenticatedNominaPeriodosNuevaRouteImport.update({
+    id: '/nomina/periodos/nueva',
+    path: '/nomina/periodos/nueva',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -213,6 +221,7 @@ export interface FileRoutesByTo {
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesById {
@@ -240,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRouteTypes {
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
+    | '/nomina/periodos/nueva'
     | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
+    | '/nomina/periodos/nueva'
     | '/nomina/periodos'
   id:
     | '__root__'
@@ -318,6 +330,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
+    | '/_authenticated/nomina/periodos/nueva'
     | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
 }
@@ -498,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nomina/periodos/nueva': {
+      id: '/_authenticated/nomina/periodos/nueva'
+      path: '/nomina/periodos/nueva'
+      fullPath: '/nomina/periodos/nueva'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -521,6 +541,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
   AuthenticatedNominaIndexRoute: typeof AuthenticatedNominaIndexRoute
+  AuthenticatedNominaPeriodosNuevaRoute: typeof AuthenticatedNominaPeriodosNuevaRoute
   AuthenticatedNominaPeriodosIndexRoute: typeof AuthenticatedNominaPeriodosIndexRoute
 }
 
@@ -544,6 +565,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
   AuthenticatedNominaIndexRoute: AuthenticatedNominaIndexRoute,
+  AuthenticatedNominaPeriodosNuevaRoute: AuthenticatedNominaPeriodosNuevaRoute,
   AuthenticatedNominaPeriodosIndexRoute: AuthenticatedNominaPeriodosIndexRoute,
 }
 
