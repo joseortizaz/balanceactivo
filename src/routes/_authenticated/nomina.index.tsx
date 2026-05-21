@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, CalendarDays, Settings, Plus } from "lucide-react";
+import { Users, CalendarDays, Settings, Plus, Banknote, CalendarOff, UserMinus, Gift, FileBarChart } from "lucide-react";
 import { fmtMoney, fmtDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/nomina/")({ component: NominaHome });
@@ -29,6 +29,11 @@ function NominaHome() {
         <Link to="/nomina/empleados"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><Users className="h-6 w-6 text-primary" /><div><div className="font-semibold">Empleados</div><div className="text-sm text-muted-foreground">{empleados ?? 0} activos</div></div></div></Card></Link>
         <Link to="/nomina/periodos"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><CalendarDays className="h-6 w-6 text-primary" /><div><div className="font-semibold">Períodos</div><div className="text-sm text-muted-foreground">Procesar y cerrar nóminas</div></div></div></Card></Link>
         <Link to="/nomina/configuracion"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><Settings className="h-6 w-6 text-primary" /><div><div className="font-semibold">Configuración</div><div className="text-sm text-muted-foreground">Tasas TSS · ISR · Catálogos</div></div></div></Card></Link>
+        <Link to="/nomina/prestamos"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><Banknote className="h-6 w-6 text-primary" /><div><div className="font-semibold">Préstamos</div><div className="text-sm text-muted-foreground">Adelantos descontables</div></div></div></Card></Link>
+        <Link to="/nomina/ausencias"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><CalendarOff className="h-6 w-6 text-primary" /><div><div className="font-semibold">Ausencias</div><div className="text-sm text-muted-foreground">Vacaciones y licencias</div></div></div></Card></Link>
+        <Link to="/nomina/terminaciones"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><UserMinus className="h-6 w-6 text-primary" /><div><div className="font-semibold">Terminaciones</div><div className="text-sm text-muted-foreground">Prestaciones laborales</div></div></div></Card></Link>
+        <Link to="/nomina/regalia"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><Gift className="h-6 w-6 text-primary" /><div><div className="font-semibold">Regalía Pascual</div><div className="text-sm text-muted-foreground">Generar nómina anual</div></div></div></Card></Link>
+        <Link to="/nomina/reportes"><Card className="p-5 hover:bg-secondary transition-colors"><div className="flex items-center gap-3"><FileBarChart className="h-6 w-6 text-primary" /><div><div className="font-semibold">Reportes</div><div className="text-sm text-muted-foreground">IR-3 · TSS · DGT-3</div></div></div></Card></Link>
       </div>
 
       <div className="flex items-center justify-between mb-3">
