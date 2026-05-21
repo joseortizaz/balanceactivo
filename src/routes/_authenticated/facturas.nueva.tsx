@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,13 +12,19 @@ import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 import { fmtMoney, today } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/facturas/nueva")({ component: NuevaFactura });
+export const Route = createFileRoute("/_authenticated/facturas/nueva")({
+  component: NuevaFactura,
+  validateSearch: (s: Record<string, unknown>) => ({ id: (s.id as string) || undefined }),
+});
 
 type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number };
 type Cuota = { fecha: string; monto: number };
 
 function NuevaFactura() {
   const navigate = useNavigate();
+  const { id: editId } = Route.useSearch();
+  const isEdit = !!editId;
+  const [ncfActual, setNcfActual] = useState<string>("");
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
   const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos" as any).select("id, nombre, codigo, precio, tasa_itbis").eq("activo", true).order("nombre")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
@@ -30,6 +36,28 @@ function NuevaFactura() {
   const [lineas, setLineas] = useState<Linea[]>([{ descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const [cuotas, setCuotas] = useState<Cuota[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!editId) return;
+    (async () => {
+      const { data: f } = await supabase.from("facturas").select("*").eq("id", editId).maybeSingle();
+      if (!f) return;
+      if (Number(f.monto_pagado) > 0) { toast.error("Factura con pagos no puede editarse"); navigate({ to: "/facturas" }); return; }
+      const { count } = await supabase.from("cobros").select("id", { count: "exact", head: true }).eq("factura_id", editId);
+      if ((count ?? 0) > 0) { toast.error("Factura con cobros no puede editarse"); navigate({ to: "/facturas" }); return; }
+      setNcfActual(f.ncf);
+      setClienteId(f.cliente_id);
+      setTipoNcf(f.tipo_ncf as any);
+      setCondicion(f.condicion_pago as any);
+      setFecha(f.fecha);
+      setTipoDescuento(f.tipo_descuento as any);
+      setDescuentoValor(Number(f.descuento_valor));
+      const { data: ls } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis").eq("factura_id", editId);
+      if (ls && ls.length) setLineas(ls.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis) })));
+      const { data: cs } = await supabase.from("factura_cuotas").select("fecha_vencimiento, monto, numero_cuota").eq("factura_id", editId).order("numero_cuota");
+      if (cs && cs.length) setCuotas(cs.map((c: any) => ({ fecha: c.fecha_vencimiento, monto: Number(c.monto) })));
+    })();
+  }, [editId, navigate]);
 
   const totales = useMemo(() => {
     const subtotal = lineas.reduce((s, l) => s + l.cantidad * l.precio, 0);
@@ -72,21 +100,28 @@ function NuevaFactura() {
       if (Math.abs(suma - totales.total) > 0.05) return toast.error(`La suma de las cuotas (${suma.toFixed(2)}) no coincide con el total (${totales.total.toFixed(2)})`);
     }
     setLoading(true);
-    const { data, error } = await supabase.rpc("crear_factura", {
-      _cliente_id: clienteId, _tipo_ncf: tipoNcf, _condicion: condicion, _fecha: fecha,
-      _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
-      _lineas: lineas as any,
-      _cuotas: condicion === "credito" && cuotas.length > 0 ? (cuotas as any) : null,
-    });
+    const { error } = isEdit
+      ? await (supabase.rpc as any)("actualizar_factura", {
+          _factura_id: editId, _cliente_id: clienteId, _condicion: condicion, _fecha: fecha,
+          _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
+          _lineas: lineas as any,
+          _cuotas: condicion === "credito" && cuotas.length > 0 ? (cuotas as any) : null,
+        })
+      : await supabase.rpc("crear_factura", {
+          _cliente_id: clienteId, _tipo_ncf: tipoNcf, _condicion: condicion, _fecha: fecha,
+          _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
+          _lineas: lineas as any,
+          _cuotas: condicion === "credito" && cuotas.length > 0 ? (cuotas as any) : null,
+        });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Factura creada con NCF asignado");
+    toast.success(isEdit ? "Factura actualizada" : "Factura creada con NCF asignado");
     navigate({ to: "/facturas" });
   };
 
   return (
     <div>
-      <PageHeader title="Nueva factura" description="El NCF se asigna automáticamente al guardar" />
+      <PageHeader title={isEdit ? `Editar factura ${ncfActual}` : "Nueva factura"} description={isEdit ? "El NCF se conserva. El asiento contable se regenera." : "El NCF se asigna automáticamente al guardar"} />
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="p-5 lg:col-span-2 space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -101,7 +136,7 @@ function NuevaFactura() {
             </div>
             <div>
               <Label>Tipo NCF</Label>
-              <Select value={tipoNcf} onValueChange={(v) => setTipoNcf(v as any)}>
+              <Select value={tipoNcf} onValueChange={(v) => setTipoNcf(v as any)} disabled={isEdit}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="B01">B01 - Crédito Fiscal</SelectItem>

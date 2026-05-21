@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, FileCheck } from "lucide-react";
+import { Plus, FileCheck, Pencil } from "lucide-react";
 import { fmtMoney, fmtDate } from "@/lib/format";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
@@ -62,6 +62,11 @@ function Cotizaciones() {
                 <td className="p-3 text-right font-semibold">{fmtMoney(c.total)}</td>
                 <td className="p-3"><span className={colorEstado(c.estado)}>{c.estado}</span></td>
                 <td className="p-3 text-right space-x-1">
+                  {c.estado === "borrador" && (
+                    <Link to="/cotizaciones/nueva" search={{ id: c.id }}>
+                      <Button size="sm" variant="ghost"><Pencil className="h-3 w-3 mr-1" />Editar</Button>
+                    </Link>
+                  )}
                   {c.estado === "borrador" && <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "enviada" })}>Enviar</Button>}
                   {c.estado === "enviada" && <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "aprobada" })}>Aprobar</Button>}
                   {(c.estado === "aprobada" || c.estado === "enviada") && (

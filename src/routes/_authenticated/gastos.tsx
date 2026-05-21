@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, DollarSign } from "lucide-react";
+import { Plus, DollarSign, Pencil } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { fmtMoney, fmtDate } from "@/lib/format";
 
@@ -43,6 +43,7 @@ function Gastos() {
   const [open, setOpen] = useState(false);
   const [pagoOpen, setPagoOpen] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
 
   const [f, setF] = useState<any>({
     fecha: new Date().toISOString().slice(0, 10),
@@ -63,6 +64,30 @@ function Gastos() {
   });
 
   const [pago, setPago] = useState<any>({ monto: 0, cuenta_pago_id: "", fecha: new Date().toISOString().slice(0, 10), metodo: "Transferencia" });
+
+  const resetForm = () => setF({
+    fecha: new Date().toISOString().slice(0, 10), proveedor_id: "", ncf: "", tipo_ncf_compra: "B01",
+    categoria: "05_operacionales", concepto: "", cuenta_gasto_id: "", condicion_pago: "contado",
+    fecha_vencimiento: "", subtotal: 0, tasa_itbis: 18, itbis_retenido: 0, isr_retenido: 0,
+    cuenta_pago_id: "", notas: "",
+  });
+
+  const abrirEdicion = (g: any) => {
+    setEditId(g.id);
+    setF({
+      fecha: g.fecha, proveedor_id: g.proveedor_id, ncf: g.ncf ?? "",
+      tipo_ncf_compra: g.tipo_ncf_compra, categoria: g.categoria, concepto: g.concepto,
+      cuenta_gasto_id: g.cuenta_gasto_id, condicion_pago: g.condicion_pago,
+      fecha_vencimiento: g.fecha_vencimiento ?? "",
+      subtotal: Number(g.subtotal),
+      tasa_itbis: g.subtotal > 0 ? Number((Number(g.itbis) * 100 / Number(g.subtotal)).toFixed(2)) : 18,
+      itbis_retenido: Number(g.itbis_retenido),
+      isr_retenido: Number(g.isr_retenido),
+      cuenta_pago_id: g.cuenta_pago_id ?? "",
+      notas: g.notas ?? "",
+    });
+    setOpen(true);
+  };
 
   const { data: gastos } = useQuery({
     queryKey: ["gastos"],
@@ -110,6 +135,25 @@ function Gastos() {
     if (Number(f.subtotal) <= 0) return toast.error("Subtotal debe ser > 0");
     if (f.condicion_pago === "contado" && !f.cuenta_pago_id) return toast.error("Seleccione cuenta de pago");
 
+    if (editId) {
+      const { error } = await (supabase as any).rpc("actualizar_gasto", {
+        _gasto_id: editId, _fecha: f.fecha, _proveedor_id: f.proveedor_id,
+        _ncf: f.ncf || "", _tipo_ncf_compra: f.tipo_ncf_compra, _categoria: f.categoria,
+        _concepto: f.concepto, _cuenta_gasto_id: f.cuenta_gasto_id,
+        _condicion_pago: f.condicion_pago, _fecha_vencimiento: f.fecha_vencimiento || null,
+        _subtotal: f.subtotal, _tasa_itbis: f.tasa_itbis,
+        _itbis_retenido: f.itbis_retenido || 0, _isr_retenido: f.isr_retenido || 0,
+        _cuenta_pago_id: f.condicion_pago === "contado" ? f.cuenta_pago_id : null,
+        _notas: f.notas || null,
+      });
+      if (error) return toast.error(error.message);
+      toast.success("Gasto actualizado");
+      setOpen(false); setEditId(null); resetForm();
+      qc.invalidateQueries({ queryKey: ["gastos"] });
+      qc.invalidateQueries({ queryKey: ["asientos"] });
+      return;
+    }
+
     const { data, error } = await (supabase as any)
       .from("gastos")
       .insert({
@@ -141,7 +185,7 @@ function Gastos() {
 
     toast.success("Gasto registrado");
     setOpen(false);
-    setF({ ...f, proveedor_id: "", ncf: "", concepto: "", subtotal: 0, itbis_retenido: 0, isr_retenido: 0, notas: "" });
+    resetForm();
     qc.invalidateQueries({ queryKey: ["gastos"] });
     qc.invalidateQueries({ queryKey: ["asientos"] });
   };
@@ -181,12 +225,12 @@ function Gastos() {
         title="Gastos"
         description="Registro de gastos con asiento contable automático"
         action={
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) { setEditId(null); resetForm(); } }}>
             <DialogTrigger asChild>
               <Button><Plus className="h-4 w-4 mr-2" />Nuevo gasto</Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader><DialogTitle>Registrar gasto</DialogTitle></DialogHeader>
+              <DialogHeader><DialogTitle>{editId ? "Editar gasto" : "Registrar gasto"}</DialogTitle></DialogHeader>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>Fecha</Label><Input type="date" value={f.fecha} onChange={(e) => setF({ ...f, fecha: e.target.value })} /></div>
                 <div><Label>Proveedor</Label>
@@ -260,7 +304,7 @@ function Gastos() {
                   )}
                   <div className="flex justify-between font-bold border-t border-border pt-1"><span>Neto a pagar:</span><span>{fmtMoney(neto)}</span></div>
                 </div>
-                <Button onClick={guardar} className="col-span-2">Guardar gasto</Button>
+                <Button onClick={guardar} className="col-span-2">{editId ? "Actualizar gasto" : "Guardar gasto"}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -301,6 +345,11 @@ function Gastos() {
                   <Badge variant={g.estado === "pagado" ? "default" : g.estado === "anulado" ? "destructive" : "secondary"}>{g.estado}</Badge>
                 </td>
                 <td className="p-3 text-center">
+                  {g.estado === "pendiente" && Number(g.monto_pagado) === 0 && (
+                    <Button size="sm" variant="ghost" className="mr-1" onClick={() => abrirEdicion(g)}>
+                      <Pencil className="h-3 w-3 mr-1" />Editar
+                    </Button>
+                  )}
                   {g.estado === "pendiente" && (
                     <Dialog open={pagoOpen === g.id} onOpenChange={(o) => { setPagoOpen(o ? g.id : null); if (o) setPago({ ...pago, monto: g.total - g.monto_pagado }); }}>
                       <DialogTrigger asChild>

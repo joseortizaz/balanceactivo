@@ -1736,6 +1736,53 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      actualizar_cotizacion: {
+        Args: {
+          _cliente_id: string
+          _cotizacion_id: string
+          _descuento_valor: number
+          _fecha: string
+          _lineas: Json
+          _notas: string
+          _tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+          _validez_dias: number
+        }
+        Returns: string
+      }
+      actualizar_factura: {
+        Args: {
+          _cliente_id: string
+          _condicion: Database["public"]["Enums"]["condicion_pago"]
+          _cuotas?: Json
+          _descuento_valor: number
+          _factura_id: string
+          _fecha: string
+          _lineas: Json
+          _tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+        }
+        Returns: string
+      }
+      actualizar_gasto: {
+        Args: {
+          _categoria: Database["public"]["Enums"]["categoria_gasto_606"]
+          _concepto: string
+          _condicion_pago: Database["public"]["Enums"]["condicion_pago"]
+          _cuenta_gasto_id: string
+          _cuenta_pago_id: string
+          _fecha: string
+          _fecha_vencimiento: string
+          _gasto_id: string
+          _isr_retenido: number
+          _itbis_retenido: number
+          _ncf: string
+          _notas: string
+          _proveedor_id: string
+          _subtotal: number
+          _tasa_itbis: number
+          _tipo_ncf_compra: Database["public"]["Enums"]["tipo_ncf_compra"]
+        }
+        Returns: string
+      }
       aplicar_pago_prestamos_nomina: {
         Args: { _nomina_id: string }
         Returns: undefined

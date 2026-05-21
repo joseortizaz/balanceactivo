@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { fmtMoney, fmtDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/facturas/")({ component: Facturas });
@@ -22,7 +22,7 @@ function Facturas() {
           <thead className="bg-secondary"><tr>
             <th className="text-left p-3">NCF</th><th className="text-left p-3">Fecha</th><th className="text-left p-3">Cliente</th>
             <th className="text-right p-3">Subtotal</th><th className="text-right p-3">ITBIS</th><th className="text-right p-3">Total</th>
-            <th className="text-left p-3">Estado</th>
+            <th className="text-left p-3">Estado</th><th className="text-right p-3"></th>
           </tr></thead>
           <tbody>
             {(data ?? []).map((f: any) => (
@@ -34,9 +34,16 @@ function Facturas() {
                 <td className="p-3 text-right">{fmtMoney(f.itbis)}</td>
                 <td className="p-3 text-right font-semibold">{fmtMoney(f.total)}</td>
                 <td className="p-3"><span className={f.estado === "pagada" ? "text-green-600" : "text-amber-600"}>{f.estado}</span></td>
+                <td className="p-3 text-right">
+                  {Number(f.monto_pagado ?? 0) === 0 && f.estado !== "anulada" && (
+                    <Link to="/facturas/nueva" search={{ id: f.id }}>
+                      <Button size="sm" variant="ghost"><Pencil className="h-3 w-3 mr-1" />Editar</Button>
+                    </Link>
+                  )}
+                </td>
               </tr>
             ))}
-            {(!data || data.length === 0) && <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Sin facturas</td></tr>}
+            {(!data || data.length === 0) && <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">Sin facturas</td></tr>}
           </tbody>
         </table>
       </Card>
