@@ -34,6 +34,7 @@ import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authen
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
+import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -171,6 +172,12 @@ const AuthenticatedNominaPeriodosNuevaRoute =
     path: '/nomina/periodos/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedNominaPeriodosIdRoute =
+  AuthenticatedNominaPeriodosIdRouteImport.update({
+    id: '/nomina/periodos/$id',
+    path: '/nomina/periodos/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -221,6 +229,7 @@ export interface FileRoutesByTo {
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
+  '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -249,6 +258,7 @@ export interface FileRoutesById {
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
+  '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
+    | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
+    | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/nomina/periodos'
   id:
@@ -330,6 +342,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
+    | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
     | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
@@ -518,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNominaPeriodosNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/nomina/periodos/$id': {
+      id: '/_authenticated/nomina/periodos/$id'
+      path: '/nomina/periodos/$id'
+      fullPath: '/nomina/periodos/$id'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -541,6 +561,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
   AuthenticatedNominaIndexRoute: typeof AuthenticatedNominaIndexRoute
+  AuthenticatedNominaPeriodosIdRoute: typeof AuthenticatedNominaPeriodosIdRoute
   AuthenticatedNominaPeriodosNuevaRoute: typeof AuthenticatedNominaPeriodosNuevaRoute
   AuthenticatedNominaPeriodosIndexRoute: typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -565,6 +586,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
   AuthenticatedNominaIndexRoute: AuthenticatedNominaIndexRoute,
+  AuthenticatedNominaPeriodosIdRoute: AuthenticatedNominaPeriodosIdRoute,
   AuthenticatedNominaPeriodosNuevaRoute: AuthenticatedNominaPeriodosNuevaRoute,
   AuthenticatedNominaPeriodosIndexRoute: AuthenticatedNominaPeriodosIndexRoute,
 }
