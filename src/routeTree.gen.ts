@@ -13,11 +13,13 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
 import { Route as AuthenticatedProductosRouteImport } from './routes/_authenticated/productos'
+import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated/planes'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
 import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -30,6 +32,7 @@ import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
+import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin.suscripciones'
 import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
 import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
 import { Route as AuthenticatedNominaRegaliaRouteImport } from './routes/_authenticated/nomina.regalia'
@@ -62,6 +65,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSuscripcionRoute =
+  AuthenticatedSuscripcionRouteImport.update({
+    id: '/suscripcion',
+    path: '/suscripcion',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
   id: '/superadmin',
   path: '/superadmin',
@@ -87,6 +96,11 @@ const AuthenticatedProveedoresRoute =
 const AuthenticatedProductosRoute = AuthenticatedProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPlanesRoute = AuthenticatedPlanesRouteImport.update({
+  id: '/planes',
+  path: '/planes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPerfilEmpresaRoute =
@@ -153,6 +167,12 @@ const AuthenticatedCotizacionesIndexRoute =
     id: '/cotizaciones/',
     path: '/cotizaciones/',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSuperadminSuscripcionesRoute =
+  AuthenticatedSuperadminSuscripcionesRouteImport.update({
+    id: '/suscripciones',
+    path: '/suscripciones',
+    getParentRoute: () => AuthenticatedSuperadminRoute,
   } as any)
 const AuthenticatedNominaTerminacionesRoute =
   AuthenticatedNominaTerminacionesRouteImport.update({
@@ -240,11 +260,13 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
+  '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
-  '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -254,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/nomina/regalia': typeof AuthenticatedNominaRegaliaRoute
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
+  '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -274,11 +297,13 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
+  '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
-  '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -288,6 +313,7 @@ export interface FileRoutesByTo {
   '/nomina/regalia': typeof AuthenticatedNominaRegaliaRoute
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
+  '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
@@ -310,11 +336,13 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/gastos': typeof AuthenticatedGastosRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
+  '/_authenticated/planes': typeof AuthenticatedPlanesRoute
   '/_authenticated/productos': typeof AuthenticatedProductosRoute
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
   '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
-  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
+  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/_authenticated/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -324,6 +352,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/regalia': typeof AuthenticatedNominaRegaliaRoute
   '/_authenticated/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/_authenticated/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
+  '/_authenticated/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -346,11 +375,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/gastos'
     | '/perfil-empresa'
+    | '/planes'
     | '/productos'
     | '/proveedores'
     | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/suscripcion'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -360,6 +391,7 @@ export interface FileRouteTypes {
     | '/nomina/regalia'
     | '/nomina/reportes'
     | '/nomina/terminaciones'
+    | '/superadmin/suscripciones'
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
@@ -380,11 +412,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/gastos'
     | '/perfil-empresa'
+    | '/planes'
     | '/productos'
     | '/proveedores'
     | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/suscripcion'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -394,6 +428,7 @@ export interface FileRouteTypes {
     | '/nomina/regalia'
     | '/nomina/reportes'
     | '/nomina/terminaciones'
+    | '/superadmin/suscripciones'
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
@@ -415,11 +450,13 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/gastos'
     | '/_authenticated/perfil-empresa'
+    | '/_authenticated/planes'
     | '/_authenticated/productos'
     | '/_authenticated/proveedores'
     | '/_authenticated/recurrentes'
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
+    | '/_authenticated/suscripcion'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
     | '/_authenticated/nomina/ausencias'
@@ -429,6 +466,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/regalia'
     | '/_authenticated/nomina/reportes'
     | '/_authenticated/nomina/terminaciones'
+    | '/_authenticated/superadmin/suscripciones'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
@@ -474,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/suscripcion': {
+      id: '/_authenticated/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/suscripcion'
+      preLoaderRoute: typeof AuthenticatedSuscripcionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/superadmin': {
       id: '/_authenticated/superadmin'
       path: '/superadmin'
@@ -507,6 +552,13 @@ declare module '@tanstack/react-router' {
       path: '/productos'
       fullPath: '/productos'
       preLoaderRoute: typeof AuthenticatedProductosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/planes': {
+      id: '/_authenticated/planes'
+      path: '/planes'
+      fullPath: '/planes'
+      preLoaderRoute: typeof AuthenticatedPlanesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/perfil-empresa': {
@@ -592,6 +644,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cotizaciones/'
       preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/superadmin/suscripciones': {
+      id: '/_authenticated/superadmin/suscripciones'
+      path: '/suscripciones'
+      fullPath: '/superadmin/suscripciones'
+      preLoaderRoute: typeof AuthenticatedSuperadminSuscripcionesRouteImport
+      parentRoute: typeof AuthenticatedSuperadminRoute
     }
     '/_authenticated/nomina/terminaciones': {
       id: '/_authenticated/nomina/terminaciones'
@@ -680,6 +739,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedSuperadminRouteChildren {
+  AuthenticatedSuperadminSuscripcionesRoute: typeof AuthenticatedSuperadminSuscripcionesRoute
+}
+
+const AuthenticatedSuperadminRouteChildren: AuthenticatedSuperadminRouteChildren =
+  {
+    AuthenticatedSuperadminSuscripcionesRoute:
+      AuthenticatedSuperadminSuscripcionesRoute,
+  }
+
+const AuthenticatedSuperadminRouteWithChildren =
+  AuthenticatedSuperadminRoute._addFileChildren(
+    AuthenticatedSuperadminRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
   AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
@@ -690,11 +764,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGastosRoute: typeof AuthenticatedGastosRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
+  AuthenticatedPlanesRoute: typeof AuthenticatedPlanesRoute
   AuthenticatedProductosRoute: typeof AuthenticatedProductosRoute
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
   AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
-  AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
+  AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRouteWithChildren
+  AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
   AuthenticatedNominaAusenciasRoute: typeof AuthenticatedNominaAusenciasRoute
@@ -722,11 +798,13 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGastosRoute: AuthenticatedGastosRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
+  AuthenticatedPlanesRoute: AuthenticatedPlanesRoute,
   AuthenticatedProductosRoute: AuthenticatedProductosRoute,
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
   AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
-  AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
+  AuthenticatedSuperadminRoute: AuthenticatedSuperadminRouteWithChildren,
+  AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
   AuthenticatedNominaAusenciasRoute: AuthenticatedNominaAusenciasRoute,

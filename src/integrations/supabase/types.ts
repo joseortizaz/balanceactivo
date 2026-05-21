@@ -1459,6 +1459,75 @@ export type Database = {
           },
         ]
       }
+      suscripciones: {
+        Row: {
+          activado_at: string | null
+          activado_por: string | null
+          created_at: string
+          created_by: string | null
+          estado: Database["public"]["Enums"]["estado_suscripcion"]
+          fecha_inicio: string | null
+          fecha_solicitud: string
+          fecha_termino: string | null
+          id: string
+          incluye_nomina: boolean
+          limite_facturacion_mensual: number
+          metodo_pago: string
+          notas_admin: string | null
+          plan: Database["public"]["Enums"]["plan_codigo"]
+          precio_nomina: number
+          precio_plan: number
+          precio_total: number
+          referencia_pago: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          activado_at?: string | null
+          activado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_suscripcion"]
+          fecha_inicio?: string | null
+          fecha_solicitud?: string
+          fecha_termino?: string | null
+          id?: string
+          incluye_nomina?: boolean
+          limite_facturacion_mensual?: number
+          metodo_pago?: string
+          notas_admin?: string | null
+          plan: Database["public"]["Enums"]["plan_codigo"]
+          precio_nomina?: number
+          precio_plan?: number
+          precio_total?: number
+          referencia_pago?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          activado_at?: string | null
+          activado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_suscripcion"]
+          fecha_inicio?: string | null
+          fecha_solicitud?: string
+          fecha_termino?: string | null
+          id?: string
+          incluye_nomina?: boolean
+          limite_facturacion_mensual?: number
+          metodo_pago?: string
+          notas_admin?: string | null
+          plan?: Database["public"]["Enums"]["plan_codigo"]
+          precio_nomina?: number
+          precio_plan?: number
+          precio_total?: number
+          referencia_pago?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tenants: {
         Row: {
           created_at: string
@@ -1727,12 +1796,27 @@ export type Database = {
         Returns: string
       }
       current_tenant_id: { Args: never; Returns: string }
+      facturacion_mes_actual: { Args: never; Returns: number }
       generar_facturas_recurrentes: { Args: never; Returns: number }
       generar_ir3: { Args: { _anio: number; _mes: number }; Returns: Json }
       generar_regalia_pascual: { Args: { _anio: number }; Returns: string }
       get_cuenta_id: {
         Args: { _codigo: string; _tenant: string }
         Returns: string
+      }
+      get_planes_catalogo: {
+        Args: never
+        Returns: {
+          codigo: Database["public"]["Enums"]["plan_codigo"]
+          descripcion: string
+          limite_facturacion: number
+          max_administradores: number
+          max_agentes_facturacion: number
+          max_contadores: number
+          nombre: string
+          precio: number
+          precio_nomina: number
+        }[]
       }
       has_role: {
         Args: {
@@ -1810,6 +1894,12 @@ export type Database = {
       estado_gasto: "pendiente" | "pagado" | "anulado"
       estado_nomina: "borrador" | "cerrada" | "pagada"
       estado_prestamo: "activo" | "cancelado" | "pagado"
+      estado_suscripcion:
+        | "pendiente"
+        | "activa"
+        | "vencida"
+        | "suspendida"
+        | "cancelada"
       forma_pago_empleado: "mensual" | "quincenal" | "semanal"
       frecuencia_recurrencia:
         | "diaria"
@@ -1825,6 +1915,7 @@ export type Database = {
         | "dimision"
         | "mutuo_acuerdo"
         | "otro"
+      plan_codigo: "emprendedor" | "mipyme" | "corporativo"
       regimen_fiscal: "ordinario" | "rst"
       tipo_ausencia:
         | "vacaciones"
@@ -2006,6 +2097,13 @@ export const Constants = {
       estado_gasto: ["pendiente", "pagado", "anulado"],
       estado_nomina: ["borrador", "cerrada", "pagada"],
       estado_prestamo: ["activo", "cancelado", "pagado"],
+      estado_suscripcion: [
+        "pendiente",
+        "activa",
+        "vencida",
+        "suspendida",
+        "cancelada",
+      ],
       forma_pago_empleado: ["mensual", "quincenal", "semanal"],
       frecuencia_recurrencia: [
         "diaria",
@@ -2023,6 +2121,7 @@ export const Constants = {
         "mutuo_acuerdo",
         "otro",
       ],
+      plan_codigo: ["emprendedor", "mipyme", "corporativo"],
       regimen_fiscal: ["ordinario", "rst"],
       tipo_ausencia: [
         "vacaciones",
