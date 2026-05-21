@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase, TrendingDown } from "lucide-react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase, TrendingDown, CreditCard, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +9,7 @@ type Item = { to: string; label: string; icon: React.ComponentType<{ className?:
 
 const NAV: Item[] = [
   { to: "/superadmin", label: "Super Admin", icon: Crown, roles: ["super_admin"] },
+  { to: "/superadmin/suscripciones", label: "Suscripciones", icon: CreditCard, roles: ["super_admin"] },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/facturas", label: "Facturas", icon: FileText, roles: ["administrador", "agente_facturacion", "contador"] },
   { to: "/cotizaciones", label: "Cotizaciones", icon: FileSpreadsheet, roles: ["administrador", "agente_facturacion", "contador"] },
@@ -25,6 +26,8 @@ const NAV: Item[] = [
   { to: "/configuracion", label: "Configuración Fiscal", icon: Settings, roles: ["administrador"] },
   { to: "/perfil-empresa", label: "Perfil de Empresa", icon: Building2, roles: ["administrador", "contador", "agente_facturacion"] },
   { to: "/auditoria", label: "Auditoría", icon: ShieldCheck, roles: ["administrador"] },
+  { to: "/planes", label: "Planes", icon: Sparkles, roles: ["administrador"] },
+  { to: "/suscripcion", label: "Mi Suscripción", icon: CreditCard, roles: ["administrador"] },
 ];
 
 export function AppShell() {
