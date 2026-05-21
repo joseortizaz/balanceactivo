@@ -113,6 +113,48 @@ export type Database = {
           },
         ]
       }
+      ausencias: {
+        Row: {
+          con_goce: boolean
+          created_at: string
+          created_by: string | null
+          dias: number
+          empleado_id: string
+          fecha_fin: string
+          fecha_inicio: string
+          id: string
+          notas: string | null
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_ausencia"]
+        }
+        Insert: {
+          con_goce?: boolean
+          created_at?: string
+          created_by?: string | null
+          dias: number
+          empleado_id: string
+          fecha_fin: string
+          fecha_inicio: string
+          id?: string
+          notas?: string | null
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_ausencia"]
+        }
+        Update: {
+          con_goce?: boolean
+          created_at?: string
+          created_by?: string | null
+          dias?: number
+          empleado_id?: string
+          fecha_fin?: string
+          fecha_inicio?: string
+          id?: string
+          notas?: string | null
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_ausencia"]
+        }
+        Relationships: []
+      }
       cargos: {
         Row: {
           activo: boolean
@@ -1083,6 +1125,7 @@ export type Database = {
           periodo_fin: string
           periodo_inicio: string
           tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_nomina"]
           total_aportes_patronales: number
           total_deducciones: number
           total_ingresos: number
@@ -1102,6 +1145,7 @@ export type Database = {
           periodo_fin: string
           periodo_inicio: string
           tenant_id: string
+          tipo?: Database["public"]["Enums"]["tipo_nomina"]
           total_aportes_patronales?: number
           total_deducciones?: number
           total_ingresos?: number
@@ -1121,10 +1165,56 @@ export type Database = {
           periodo_fin?: string
           periodo_inicio?: string
           tenant_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_nomina"]
           total_aportes_patronales?: number
           total_deducciones?: number
           total_ingresos?: number
           total_neto?: number
+        }
+        Relationships: []
+      }
+      prestamos_empleado: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          cuota: number
+          descontar_en_nomina: boolean
+          empleado_id: string
+          estado: Database["public"]["Enums"]["estado_prestamo"]
+          fecha_inicio: string
+          id: string
+          monto_original: number
+          notas: string | null
+          saldo: number
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          cuota: number
+          descontar_en_nomina?: boolean
+          empleado_id: string
+          estado?: Database["public"]["Enums"]["estado_prestamo"]
+          fecha_inicio?: string
+          id?: string
+          monto_original: number
+          notas?: string | null
+          saldo: number
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          cuota?: number
+          descontar_en_nomina?: boolean
+          empleado_id?: string
+          estado?: Database["public"]["Enums"]["estado_prestamo"]
+          fecha_inicio?: string
+          id?: string
+          monto_original?: number
+          notas?: string | null
+          saldo?: number
+          tenant_id?: string
         }
         Relationships: []
       }
@@ -1306,6 +1396,72 @@ export type Database = {
         }
         Relationships: []
       }
+      terminaciones: {
+        Row: {
+          anos_servicio: number
+          asiento_id: string | null
+          cesantia_dias: number
+          cesantia_monto: number
+          created_at: string
+          created_by: string | null
+          empleado_id: string
+          fecha_salida: string
+          id: string
+          motivo: Database["public"]["Enums"]["motivo_terminacion"]
+          notas: string | null
+          otros: number
+          preaviso_dias: number
+          preaviso_monto: number
+          regalia_monto: number
+          salario_promedio: number
+          tenant_id: string
+          total: number
+          vacaciones_monto: number
+        }
+        Insert: {
+          anos_servicio: number
+          asiento_id?: string | null
+          cesantia_dias?: number
+          cesantia_monto?: number
+          created_at?: string
+          created_by?: string | null
+          empleado_id: string
+          fecha_salida: string
+          id?: string
+          motivo: Database["public"]["Enums"]["motivo_terminacion"]
+          notas?: string | null
+          otros?: number
+          preaviso_dias?: number
+          preaviso_monto?: number
+          regalia_monto?: number
+          salario_promedio: number
+          tenant_id: string
+          total?: number
+          vacaciones_monto?: number
+        }
+        Update: {
+          anos_servicio?: number
+          asiento_id?: string | null
+          cesantia_dias?: number
+          cesantia_monto?: number
+          created_at?: string
+          created_by?: string | null
+          empleado_id?: string
+          fecha_salida?: string
+          id?: string
+          motivo?: Database["public"]["Enums"]["motivo_terminacion"]
+          notas?: string | null
+          otros?: number
+          preaviso_dias?: number
+          preaviso_monto?: number
+          regalia_monto?: number
+          salario_promedio?: number
+          tenant_id?: string
+          total?: number
+          vacaciones_monto?: number
+        }
+        Relationships: []
+      }
       tss_tasas: {
         Row: {
           activo: boolean
@@ -1394,6 +1550,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      aplicar_pago_prestamos_nomina: {
+        Args: { _nomina_id: string }
+        Returns: undefined
+      }
       calcular_descuento_abs: {
         Args: {
           _subtotal: number
@@ -1405,6 +1565,14 @@ export type Database = {
       calcular_isr_mensual: {
         Args: { _gravable_mensual: number; _tenant: string }
         Returns: number
+      }
+      calcular_prestaciones: {
+        Args: {
+          _empleado_id: string
+          _fecha_salida: string
+          _motivo: Database["public"]["Enums"]["motivo_terminacion"]
+        }
+        Returns: Json
       }
       cerrar_nomina: { Args: { _nomina_id: string }; Returns: string }
       convertir_cotizacion_a_factura: {
@@ -1443,6 +1611,8 @@ export type Database = {
       }
       current_tenant_id: { Args: never; Returns: string }
       generar_facturas_recurrentes: { Args: never; Returns: number }
+      generar_ir3: { Args: { _anio: number; _mes: number }; Returns: Json }
+      generar_regalia_pascual: { Args: { _anio: number }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1463,6 +1633,16 @@ export type Database = {
       }
       registrar_pago_nomina: {
         Args: { _cuenta_codigo: string; _nomina_id: string }
+        Returns: string
+      }
+      registrar_terminacion: {
+        Args: {
+          _empleado_id: string
+          _fecha_salida: string
+          _motivo: Database["public"]["Enums"]["motivo_terminacion"]
+          _notas: string
+          _otros: number
+        }
         Returns: string
       }
       seed_nomina_defaults: { Args: { _tenant_id: string }; Returns: undefined }
@@ -1486,6 +1666,7 @@ export type Database = {
       estado_empleado: "activo" | "suspendido" | "terminado"
       estado_factura: "pendiente" | "pagada" | "anulada"
       estado_nomina: "borrador" | "cerrada" | "pagada"
+      estado_prestamo: "activo" | "cancelado" | "pagado"
       forma_pago_empleado: "mensual" | "quincenal" | "semanal"
       frecuencia_recurrencia:
         | "diaria"
@@ -1502,6 +1683,13 @@ export type Database = {
         | "mutuo_acuerdo"
         | "otro"
       regimen_fiscal: "ordinario" | "rst"
+      tipo_ausencia:
+        | "vacaciones"
+        | "licencia_medica"
+        | "permiso"
+        | "maternidad"
+        | "sin_goce"
+        | "otro"
       tipo_concepto_nomina: "ingreso" | "deduccion"
       tipo_contrato: "indefinido" | "fijo" | "obra"
       tipo_cuenta:
@@ -1514,6 +1702,7 @@ export type Database = {
       tipo_descuento: "porcentaje" | "monto"
       tipo_documento: "rnc_empresa" | "rnc_persona" | "cedula"
       tipo_ncf: "B01" | "B02" | "B04" | "B15"
+      tipo_nomina: "regular" | "regalia_pascual" | "bonificacion"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1660,6 +1849,7 @@ export const Constants = {
       estado_empleado: ["activo", "suspendido", "terminado"],
       estado_factura: ["pendiente", "pagada", "anulada"],
       estado_nomina: ["borrador", "cerrada", "pagada"],
+      estado_prestamo: ["activo", "cancelado", "pagado"],
       forma_pago_empleado: ["mensual", "quincenal", "semanal"],
       frecuencia_recurrencia: [
         "diaria",
@@ -1678,12 +1868,21 @@ export const Constants = {
         "otro",
       ],
       regimen_fiscal: ["ordinario", "rst"],
+      tipo_ausencia: [
+        "vacaciones",
+        "licencia_medica",
+        "permiso",
+        "maternidad",
+        "sin_goce",
+        "otro",
+      ],
       tipo_concepto_nomina: ["ingreso", "deduccion"],
       tipo_contrato: ["indefinido", "fijo", "obra"],
       tipo_cuenta: ["activo", "pasivo", "capital", "ingreso", "costo", "gasto"],
       tipo_descuento: ["porcentaje", "monto"],
       tipo_documento: ["rnc_empresa", "rnc_persona", "cedula"],
       tipo_ncf: ["B01", "B02", "B04", "B15"],
+      tipo_nomina: ["regular", "regalia_pascual", "bonificacion"],
     },
   },
 } as const
