@@ -67,11 +67,21 @@ function Gastos() {
   const { data: gastos } = useQuery({
     queryKey: ["gastos"],
     queryFn: async () =>
-      (await supabase
+      (await (supabase as any)
         .from("gastos")
-        .select("*, proveedores(razon_social, documento), cuentas_contables!gastos_cuenta_gasto_id_fkey(codigo, nombre)")
+        .select("*")
         .order("fecha", { ascending: false })
         .limit(200)).data ?? [],
+  });
+
+  const { data: cuentasAll } = useQuery({
+    queryKey: ["cuentas-all"],
+    queryFn: async () => (await supabase.from("cuentas_contables").select("id, codigo, nombre")).data ?? [],
+  });
+
+  const { data: provAll } = useQuery({
+    queryKey: ["prov-all"],
+    queryFn: async () => (await supabase.from("proveedores").select("id, razon_social, documento")).data ?? [],
   });
 
   const { data: proveedores } = useQuery({
@@ -100,7 +110,7 @@ function Gastos() {
     if (Number(f.subtotal) <= 0) return toast.error("Subtotal debe ser > 0");
     if (f.condicion_pago === "contado" && !f.cuenta_pago_id) return toast.error("Seleccione cuenta de pago");
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("gastos")
       .insert({
         tenant_id: auth.tenantId,
@@ -126,7 +136,7 @@ function Gastos() {
       .single();
     if (error) return toast.error(error.message);
 
-    const { error: e2 } = await supabase.rpc("registrar_gasto", { _gasto_id: data.id });
+    const { error: e2 } = await (supabase as any).rpc("registrar_gasto", { _gasto_id: data.id });
     if (e2) return toast.error("Gasto guardado pero falló asiento: " + e2.message);
 
     toast.success("Gasto registrado");
@@ -139,7 +149,7 @@ function Gastos() {
   const registrarPago = async (gastoId: string) => {
     if (!pago.cuenta_pago_id) return toast.error("Cuenta de pago requerida");
     if (Number(pago.monto) <= 0) return toast.error("Monto inválido");
-    const { error } = await supabase.rpc("registrar_pago_gasto", {
+    const { error } = await (supabase as any).rpc("registrar_pago_gasto", {
       _gasto_id: gastoId,
       _monto: pago.monto,
       _cuenta_pago_id: pago.cuenta_pago_id,
@@ -157,10 +167,11 @@ function Gastos() {
   const filtered = (gastos ?? []).filter((g: any) => {
     if (!search) return true;
     const s = search.toLowerCase();
+    const prov = (provAll ?? []).find((p: any) => p.id === g.proveedor_id);
     return (
       g.concepto?.toLowerCase().includes(s) ||
       g.ncf?.toLowerCase().includes(s) ||
-      g.proveedores?.razon_social?.toLowerCase().includes(s)
+      prov?.razon_social?.toLowerCase().includes(s)
     );
   });
 
@@ -274,13 +285,16 @@ function Gastos() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((g: any) => (
+            {filtered.map((g: any) => {
+              const prov = (provAll ?? []).find((p: any) => p.id === g.proveedor_id);
+              const ctaGasto = (cuentasAll ?? []).find((c: any) => c.id === g.cuenta_gasto_id);
+              return (
               <tr key={g.id} className="border-t border-border">
                 <td className="p-3">{fmtDate(g.fecha)}</td>
-                <td className="p-3">{g.proveedores?.razon_social}</td>
+                <td className="p-3">{prov?.razon_social}</td>
                 <td className="p-3 font-mono text-xs">{g.ncf}</td>
                 <td className="p-3">{g.concepto}</td>
-                <td className="p-3 text-xs">{g.cuentas_contables?.codigo} {g.cuentas_contables?.nombre}</td>
+                <td className="p-3 text-xs">{ctaGasto?.codigo} {ctaGasto?.nombre}</td>
                 <td className="p-3 text-right">{fmtMoney(g.total)}</td>
                 <td className="p-3 text-right">{fmtMoney(g.monto_pagado)}</td>
                 <td className="p-3 text-center">
@@ -316,7 +330,8 @@ function Gastos() {
                   )}
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {filtered.length === 0 && (
               <tr><td colSpan={9} className="p-6 text-center text-muted-foreground">Sin gastos registrados</td></tr>
             )}
