@@ -1,7 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package } from "lucide-react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,7 @@ const NAV: Item[] = [
   { to: "/proveedores", label: "Proveedores", icon: Truck, roles: ["administrador", "contador"] },
   { to: "/cuentas", label: "Catálogo de Cuentas", icon: BookOpen, roles: ["administrador", "contador"] },
   { to: "/asientos", label: "Asientos", icon: ListChecks, roles: ["administrador", "contador"] },
+  { to: "/nomina", label: "Nómina", icon: Briefcase, roles: ["administrador", "contador"] },
   { to: "/reportes", label: "Reportes 606/607", icon: BarChart3 },
   { to: "/configuracion", label: "Configuración Fiscal", icon: Settings, roles: ["administrador"] },
   { to: "/perfil-empresa", label: "Perfil de Empresa", icon: Building2, roles: ["administrador", "contador", "agente_facturacion"] },
