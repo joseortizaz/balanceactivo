@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,17 @@ import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
 import { fmtMoney, today } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/cotizaciones/nueva")({ component: NuevaCot });
+export const Route = createFileRoute("/_authenticated/cotizaciones/nueva")({
+  component: NuevaCot,
+  validateSearch: (s: Record<string, unknown>) => ({ id: (s.id as string) || undefined }),
+});
 
 type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number };
 
 function NuevaCot() {
   const navigate = useNavigate();
+  const { id: editId } = Route.useSearch();
+  const isEdit = !!editId;
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
   const [fecha, setFecha] = useState(today());
@@ -28,6 +33,23 @@ function NuevaCot() {
   const [descuentoValor, setDescuentoValor] = useState(0);
   const [lineas, setLineas] = useState<Linea[]>([{ descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!editId) return;
+    (async () => {
+      const { data: cot } = await supabase.from("cotizaciones").select("*").eq("id", editId).maybeSingle();
+      if (!cot) return;
+      if (cot.estado !== "borrador") { toast.error("Solo se editan cotizaciones en borrador"); navigate({ to: "/cotizaciones" }); return; }
+      setClienteId(cot.cliente_id);
+      setFecha(cot.fecha);
+      setValidez(cot.validez_dias);
+      setNotas(cot.notas ?? "");
+      setTipoDescuento(cot.tipo_descuento as any);
+      setDescuentoValor(Number(cot.descuento_valor));
+      const { data: ls } = await supabase.from("cotizacion_lineas").select("descripcion, cantidad, precio, tasa_itbis").eq("cotizacion_id", editId);
+      if (ls && ls.length) setLineas(ls.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis) })));
+    })();
+  }, [editId, navigate]);
 
   const totales = useMemo(() => {
     const subtotal = lineas.reduce((s, l) => s + l.cantidad * l.precio, 0);
@@ -44,20 +66,25 @@ function NuevaCot() {
     if (!clienteId) return toast.error("Selecciona un cliente");
     if (lineas.some((l) => !l.descripcion || l.cantidad <= 0)) return toast.error("Revisa las líneas");
     setLoading(true);
-    const { error } = await supabase.rpc("crear_cotizacion", {
-      _cliente_id: clienteId, _fecha: fecha, _validez_dias: validez,
-      _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
-      _notas: notas, _lineas: lineas as any,
-    });
+    const { error } = isEdit
+      ? await (supabase.rpc as any)("actualizar_cotizacion", {
+          _cotizacion_id: editId, _cliente_id: clienteId, _fecha: fecha, _validez_dias: validez,
+          _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor, _notas: notas, _lineas: lineas as any,
+        })
+      : await supabase.rpc("crear_cotizacion", {
+          _cliente_id: clienteId, _fecha: fecha, _validez_dias: validez,
+          _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
+          _notas: notas, _lineas: lineas as any,
+        });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Cotización creada");
+    toast.success(isEdit ? "Cotización actualizada" : "Cotización creada");
     navigate({ to: "/cotizaciones" });
   };
 
   return (
     <div>
-      <PageHeader title="Nueva cotización" description="Presupuesto sin afectar inventario ni NCF" />
+      <PageHeader title={isEdit ? "Editar cotización" : "Nueva cotización"} description="Presupuesto sin afectar inventario ni NCF" />
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="p-5 lg:col-span-2 space-y-4">
           <div className="grid grid-cols-2 gap-3">
