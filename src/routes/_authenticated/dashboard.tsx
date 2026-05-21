@@ -7,6 +7,7 @@ import { fmtMoney, fmtDate } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { FileText, Wallet, AlertCircle, Receipt } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import { SubscriptionBanner } from "@/components/SubscriptionBanner";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
 
@@ -33,6 +34,7 @@ function Dashboard() {
 
   return (
     <div>
+      <SubscriptionBanner />
       <PageHeader title="Dashboard" description="Resumen de tu actividad fiscal del mes"
         action={<Link to="/facturas/nueva"><Button><Receipt className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
       {isLoading ? <div className="text-muted-foreground">Cargando…</div> : (
