@@ -13,6 +13,7 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
@@ -63,6 +64,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSuscripcionRoute =
+  AuthenticatedSuscripcionRouteImport.update({
+    id: '/suscripcion',
+    path: '/suscripcion',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
   id: '/superadmin',
   path: '/superadmin',
@@ -252,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -287,6 +295,7 @@ export interface FileRoutesByTo {
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
+  '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -324,6 +333,7 @@ export interface FileRoutesById {
   '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
+  '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/_authenticated/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/suscripcion'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -396,6 +407,7 @@ export interface FileRouteTypes {
     | '/recurrentes'
     | '/reportes'
     | '/superadmin'
+    | '/suscripcion'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -432,6 +444,7 @@ export interface FileRouteTypes {
     | '/_authenticated/recurrentes'
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
+    | '/_authenticated/suscripcion'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
     | '/_authenticated/nomina/ausencias'
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/suscripcion': {
+      id: '/_authenticated/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/suscripcion'
+      preLoaderRoute: typeof AuthenticatedSuscripcionRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/superadmin': {
       id: '/_authenticated/superadmin'
@@ -715,6 +735,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
+  AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
   AuthenticatedNominaAusenciasRoute: typeof AuthenticatedNominaAusenciasRoute
@@ -748,6 +769,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
+  AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
   AuthenticatedNominaAusenciasRoute: AuthenticatedNominaAusenciasRoute,
