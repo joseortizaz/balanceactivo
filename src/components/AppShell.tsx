@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase, TrendingDown, CreditCard, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
 type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; roles?: AppRole[] };
 
@@ -34,6 +35,19 @@ export function AppShell() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useRouterState({ select: (s) => s.location.pathname });
+
+  const { data: pendientesCount = 0 } = useQuery({
+    queryKey: ["sa-subs-pendientes-count"],
+    enabled: auth.roles.includes("super_admin"),
+    refetchInterval: 30000,
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("suscripciones" as any)
+        .select("id", { count: "exact", head: true })
+        .eq("estado", "pendiente");
+      return count ?? 0;
+    },
+  });
 
   if (auth.loading) {
     return <div className="flex h-screen items-center justify-center text-muted-foreground">Cargando…</div>;
@@ -76,7 +90,15 @@ export function AppShell() {
                 )}
               >
                 <Icon className="h-4 w-4" />
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {item.to === "/superadmin/suscripciones" && pendientesCount > 0 && (
+                  <span className={cn(
+                    "ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[11px] font-semibold",
+                    active ? "bg-primary-foreground text-primary" : "bg-destructive text-destructive-foreground"
+                  )}>
+                    {pendientesCount}
+                  </span>
+                )}
               </Link>
             );
           })}

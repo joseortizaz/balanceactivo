@@ -1473,6 +1473,11 @@ export type Database = {
           incluye_nomina: boolean
           limite_facturacion_mensual: number
           metodo_pago: string
+          nomina_activado_at: string | null
+          nomina_activado_por: string | null
+          nomina_estado: Database["public"]["Enums"]["estado_modulo_nomina"]
+          nomina_fecha_inicio: string | null
+          nomina_fecha_termino: string | null
           notas_admin: string | null
           plan: Database["public"]["Enums"]["plan_codigo"]
           precio_nomina: number
@@ -1495,6 +1500,11 @@ export type Database = {
           incluye_nomina?: boolean
           limite_facturacion_mensual?: number
           metodo_pago?: string
+          nomina_activado_at?: string | null
+          nomina_activado_por?: string | null
+          nomina_estado?: Database["public"]["Enums"]["estado_modulo_nomina"]
+          nomina_fecha_inicio?: string | null
+          nomina_fecha_termino?: string | null
           notas_admin?: string | null
           plan: Database["public"]["Enums"]["plan_codigo"]
           precio_nomina?: number
@@ -1517,6 +1527,11 @@ export type Database = {
           incluye_nomina?: boolean
           limite_facturacion_mensual?: number
           metodo_pago?: string
+          nomina_activado_at?: string | null
+          nomina_activado_por?: string | null
+          nomina_estado?: Database["public"]["Enums"]["estado_modulo_nomina"]
+          nomina_fecha_inicio?: string | null
+          nomina_fecha_termino?: string | null
           notas_admin?: string | null
           plan?: Database["public"]["Enums"]["plan_codigo"]
           precio_nomina?: number
@@ -1865,6 +1880,13 @@ export type Database = {
           precio_nomina: number
         }[]
       }
+      get_super_admin_emails: {
+        Args: never
+        Returns: {
+          email: string
+          nombre: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1939,6 +1961,11 @@ export type Database = {
       estado_empleado: "activo" | "suspendido" | "terminado"
       estado_factura: "pendiente" | "pagada" | "anulada"
       estado_gasto: "pendiente" | "pagado" | "anulado"
+      estado_modulo_nomina:
+        | "no_solicitado"
+        | "pendiente"
+        | "activa"
+        | "suspendida"
       estado_nomina: "borrador" | "cerrada" | "pagada"
       estado_prestamo: "activo" | "cancelado" | "pagado"
       estado_suscripcion:
@@ -2142,6 +2169,12 @@ export const Constants = {
       estado_empleado: ["activo", "suspendido", "terminado"],
       estado_factura: ["pendiente", "pagada", "anulada"],
       estado_gasto: ["pendiente", "pagado", "anulado"],
+      estado_modulo_nomina: [
+        "no_solicitado",
+        "pendiente",
+        "activa",
+        "suspendida",
+      ],
       estado_nomina: ["borrador", "cerrada", "pagada"],
       estado_prestamo: ["activo", "cancelado", "pagado"],
       estado_suscripcion: [
