@@ -43,6 +43,7 @@ import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_auth
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 
@@ -234,6 +235,12 @@ const AuthenticatedNominaPeriodosIndexRoute =
     path: '/nomina/periodos/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedNominaPeriodosNuevaRoute =
   AuthenticatedNominaPeriodosNuevaRouteImport.update({
     id: '/nomina/periodos/nueva',
@@ -282,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/nomina/': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -319,6 +327,7 @@ export interface FileRoutesByTo {
   '/nomina': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesById {
@@ -358,6 +367,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRouteTypes {
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/nomina/'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
+    | '/lovable/email/queue/process'
     | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -434,6 +445,7 @@ export interface FileRouteTypes {
     | '/nomina'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
+    | '/lovable/email/queue/process'
     | '/nomina/periodos'
   id:
     | '__root__'
@@ -472,6 +484,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/'
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
+    | '/lovable/email/queue/process'
     | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
 }
@@ -480,6 +493,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -722,6 +736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/nomina/periodos/nueva': {
       id: '/_authenticated/nomina/periodos/nueva'
       path: '/nomina/periodos/nueva'
@@ -831,17 +852,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
