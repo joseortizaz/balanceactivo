@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Textarea } from "@/components/ui/textarea";
 import { fmtMoney, fmtDate, today } from "@/lib/format";
 import { ESTADO_LABEL, getPlan } from "@/lib/planes";
-import { CheckCircle2, Pause, Search, Pencil } from "lucide-react";
+import { CheckCircle2, Pause, Search, Pencil, XCircle, Briefcase, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/superadmin/suscripciones")({ component: SuscripcionesAdmin });
@@ -26,7 +26,7 @@ function SuscripcionesAdmin() {
   const [q, setQ] = useState("");
   const [filtroEstado, setFiltroEstado] = useState<string>("todos");
   const [editing, setEditing] = useState<Susc | null>(null);
-  const [accion, setAccion] = useState<"activar" | "suspender" | "editar" | null>(null);
+  const [accion, setAccion] = useState<"activar" | "suspender" | "editar" | "rechazar" | "activar_nomina" | "suspender_nomina" | null>(null);
 
   const { data: subs } = useQuery({
     queryKey: ["sa-subs"],
@@ -59,6 +59,17 @@ function SuscripcionesAdmin() {
       ...s,
       fecha_inicio: s.fecha_inicio ?? today(),
       fecha_termino: s.fecha_termino ?? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      nomina_fecha_inicio: s.nomina_fecha_inicio ?? today(),
+      nomina_fecha_termino: s.nomina_fecha_termino ?? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+    });
+    setAccion(a);
+  };
+
+  const openAccionExt = (s: Susc, a: "rechazar" | "activar_nomina" | "suspender_nomina") => {
+    setEditing({
+      ...s,
+      nomina_fecha_inicio: s.nomina_fecha_inicio ?? today(),
+      nomina_fecha_termino: s.nomina_fecha_termino ?? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
     });
     setAccion(a);
   };
@@ -74,23 +85,59 @@ function SuscripcionesAdmin() {
         fecha_inicio: editing.fecha_inicio,
         fecha_termino: editing.fecha_termino,
         activado_at: new Date().toISOString(),
-        activado_by: auth.user?.id,
+        activado_por: auth.user?.id,
       };
     } else if (accion === "suspender") {
       payload = { ...payload, estado: "suspendida" };
+    } else if (accion === "rechazar") {
+      payload = { ...payload, estado: "cancelada" };
+    } else if (accion === "activar_nomina") {
+      if (!editing.nomina_fecha_inicio || !editing.nomina_fecha_termino) return toast.error("Indica las fechas del módulo de nómina");
+      payload = {
+        ...payload,
+        nomina_estado: "activa",
+        incluye_nomina: true,
+        nomina_fecha_inicio: editing.nomina_fecha_inicio,
+        nomina_fecha_termino: editing.nomina_fecha_termino,
+        nomina_activado_at: new Date().toISOString(),
+        nomina_activado_por: auth.user?.id,
+      };
+    } else if (accion === "suspender_nomina") {
+      payload = { ...payload, nomina_estado: "suspendida" };
     } else {
-      payload = { ...payload, fecha_inicio: editing.fecha_inicio, fecha_termino: editing.fecha_termino, estado: editing.estado };
+      payload = {
+        ...payload,
+        fecha_inicio: editing.fecha_inicio,
+        fecha_termino: editing.fecha_termino,
+        estado: editing.estado,
+        nomina_estado: editing.nomina_estado,
+        nomina_fecha_inicio: editing.nomina_fecha_inicio,
+        nomina_fecha_termino: editing.nomina_fecha_termino,
+      };
     }
     const { error } = await supabase.from("suscripciones" as any).update(payload).eq("id", editing.id);
     if (error) return toast.error(error.message);
     toast.success("Suscripción actualizada");
     setEditing(null); setAccion(null);
     qc.invalidateQueries({ queryKey: ["sa-subs"] });
+    qc.invalidateQueries({ queryKey: ["sa-subs-pendientes-count"] });
   };
+
+  const pendientes = (subs ?? []).filter((s: Susc) => s.estado === "pendiente").length;
 
   return (
     <div>
       <PageHeader title="Gestión de Suscripciones" description="Administra los planes, pagos y estados de cada empresa." />
+
+      {pendientes > 0 && (
+        <Card className="p-4 mb-4 border-amber-500/40 bg-amber-500/5 flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+          <div className="text-sm">
+            Tienes <strong>{pendientes} solicitud{pendientes === 1 ? "" : "es"} de suscripción pendiente{pendientes === 1 ? "" : "s"}</strong> de revisión.
+            Verifica el pago por transferencia bancaria antes de activar el plan o el módulo de nómina.
+          </div>
+        </Card>
+      )}
 
       <Card className="p-3 mb-4 flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
@@ -113,7 +160,7 @@ function SuscripcionesAdmin() {
             <tr>
               <th className="text-left p-3">Empresa</th>
               <th className="text-left p-3">Plan</th>
-              <th className="text-center p-3">Nómina</th>
+              <th className="text-left p-3">Nómina</th>
               <th className="text-right p-3">Total</th>
               <th className="text-left p-3">Estado</th>
               <th className="text-left p-3">Vigencia</th>
@@ -125,6 +172,12 @@ function SuscripcionesAdmin() {
               const t = tenantById.get(s.tenant_id) as any;
               const est = ESTADO_LABEL[s.estado] ?? { label: s.estado, tone: "outline" as const };
               const plan = getPlan(s.plan);
+              const nEst: string = s.nomina_estado ?? (s.incluye_nomina ? "pendiente" : "no_solicitado");
+              const nominaBadge =
+                nEst === "activa" ? <Badge className="bg-emerald-600 hover:bg-emerald-600">Activa</Badge> :
+                nEst === "pendiente" ? <Badge variant="secondary">Pendiente</Badge> :
+                nEst === "suspendida" ? <Badge variant="destructive">Suspendida</Badge> :
+                <span className="text-muted-foreground text-xs">No solicitado</span>;
               return (
                 <tr key={s.id} className="border-t border-border">
                   <td className="p-3">
@@ -132,28 +185,50 @@ function SuscripcionesAdmin() {
                     <div className="text-xs text-muted-foreground font-mono">{t?.rnc ?? ""}</div>
                   </td>
                   <td className="p-3">{plan.nombre}</td>
-                  <td className="p-3 text-center">{s.incluye_nomina ? <Badge variant="secondary">Sí</Badge> : <span className="text-muted-foreground">—</span>}</td>
+                  <td className="p-3">{nominaBadge}</td>
                   <td className="p-3 text-right font-mono">{fmtMoney(s.precio_total)}</td>
                   <td className="p-3"><Badge variant={est.tone}>{est.label}</Badge></td>
                   <td className="p-3 text-xs">
                     {s.fecha_inicio ? (
                       <>{fmtDate(s.fecha_inicio)} → {s.fecha_termino ? fmtDate(s.fecha_termino) : "—"}</>
                     ) : <span className="text-muted-foreground">Sin activar</span>}
+                    {nEst === "activa" && s.nomina_fecha_inicio && (
+                      <div className="text-emerald-700 mt-0.5">
+                        Nómina: {fmtDate(s.nomina_fecha_inicio)} → {s.nomina_fecha_termino ? fmtDate(s.nomina_fecha_termino) : "—"}
+                      </div>
+                    )}
                   </td>
                   <td className="p-3 text-right whitespace-nowrap">
-                    {s.estado !== "activa" && (
-                      <Button size="sm" variant="default" className="mr-1" onClick={() => openAccion(s, "activar")}>
-                        <CheckCircle2 className="h-3 w-3 mr-1" /> Activar
+                    <div className="flex flex-wrap gap-1 justify-end">
+                      {s.estado !== "activa" && s.estado !== "cancelada" && (
+                        <Button size="sm" variant="default" onClick={() => openAccion(s, "activar")}>
+                          <CheckCircle2 className="h-3 w-3 mr-1" /> Activar plan
+                        </Button>
+                      )}
+                      {s.estado === "activa" && (
+                        <Button size="sm" variant="destructive" onClick={() => openAccion(s, "suspender")}>
+                          <Pause className="h-3 w-3 mr-1" /> Suspender plan
+                        </Button>
+                      )}
+                      {(nEst === "pendiente" || nEst === "suspendida") && s.incluye_nomina && (
+                        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => openAccionExt(s, "activar_nomina")}>
+                          <Briefcase className="h-3 w-3 mr-1" /> Activar nómina
+                        </Button>
+                      )}
+                      {nEst === "activa" && (
+                        <Button size="sm" variant="outline" onClick={() => openAccionExt(s, "suspender_nomina")}>
+                          <Pause className="h-3 w-3 mr-1" /> Pausar nómina
+                        </Button>
+                      )}
+                      {s.estado === "pendiente" && (
+                        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => openAccionExt(s, "rechazar")}>
+                          <XCircle className="h-3 w-3 mr-1" /> Rechazar
+                        </Button>
+                      )}
+                      <Button size="sm" variant="outline" onClick={() => openAccion(s, "editar")} title="Editar">
+                        <Pencil className="h-3 w-3" />
                       </Button>
-                    )}
-                    {s.estado === "activa" && (
-                      <Button size="sm" variant="destructive" className="mr-1" onClick={() => openAccion(s, "suspender")}>
-                        <Pause className="h-3 w-3 mr-1" /> Suspender
-                      </Button>
-                    )}
-                    <Button size="sm" variant="outline" onClick={() => openAccion(s, "editar")}>
-                      <Pencil className="h-3 w-3" />
-                    </Button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -169,8 +244,11 @@ function SuscripcionesAdmin() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {accion === "activar" && "Activar suscripción"}
-              {accion === "suspender" && "Suspender suscripción"}
+              {accion === "activar" && "Activar plan de suscripción"}
+              {accion === "suspender" && "Suspender plan"}
+              {accion === "rechazar" && "Rechazar solicitud"}
+              {accion === "activar_nomina" && "Activar módulo de Nómina"}
+              {accion === "suspender_nomina" && "Pausar módulo de Nómina"}
               {accion === "editar" && "Editar suscripción"}
             </DialogTitle>
           </DialogHeader>
@@ -182,12 +260,24 @@ function SuscripcionesAdmin() {
               {(accion === "activar" || accion === "editar") && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label>Fecha de inicio *</Label>
+                    <Label>Inicio del plan *</Label>
                     <Input type="date" value={editing.fecha_inicio ?? ""} onChange={(e) => setEditing({ ...editing, fecha_inicio: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Fecha de término *</Label>
+                    <Label>Término del plan *</Label>
                     <Input type="date" value={editing.fecha_termino ?? ""} onChange={(e) => setEditing({ ...editing, fecha_termino: e.target.value })} />
+                  </div>
+                </div>
+              )}
+              {(accion === "activar_nomina" || accion === "editar") && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Inicio Nómina *</Label>
+                    <Input type="date" value={editing.nomina_fecha_inicio ?? ""} onChange={(e) => setEditing({ ...editing, nomina_fecha_inicio: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Término Nómina *</Label>
+                    <Input type="date" value={editing.nomina_fecha_termino ?? ""} onChange={(e) => setEditing({ ...editing, nomina_fecha_termino: e.target.value })} />
                   </div>
                 </div>
               )}
@@ -203,7 +293,14 @@ function SuscripcionesAdmin() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => { setEditing(null); setAccion(null); }}>Cancelar</Button>
-            <Button onClick={guardar}>Guardar</Button>
+            <Button onClick={guardar} variant={accion === "rechazar" || accion === "suspender" ? "destructive" : "default"}>
+              {accion === "activar" && "Activar plan"}
+              {accion === "activar_nomina" && "Activar nómina"}
+              {accion === "suspender" && "Suspender"}
+              {accion === "suspender_nomina" && "Pausar nómina"}
+              {accion === "rechazar" && "Rechazar"}
+              {accion === "editar" && "Guardar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
