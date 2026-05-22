@@ -47,6 +47,7 @@ function PlanesPage() {
       tenant_id: auth.tenantId,
       plan: codigo,
       incluye_nomina: incluyeNomina,
+      nomina_estado: incluyeNomina ? "pendiente" : "no_solicitado",
       precio_plan: plan.precio,
       precio_nomina: precioNomina,
       precio_total: plan.precio + precioNomina,
@@ -55,7 +56,7 @@ function PlanesPage() {
     });
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success("Solicitud creada. Realiza la transferencia bancaria.");
+    toast.success("Solicitud enviada. El SuperAdministrador fue notificado y activará tu plan tras confirmar el pago.");
     qc.invalidateQueries({ queryKey: ["suscripcion-actual"] });
     navigate({ to: "/suscripcion" });
   };
