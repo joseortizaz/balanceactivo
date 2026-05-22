@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -9,7 +9,21 @@ import { FileText, Wallet, AlertCircle, Receipt } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { SubscriptionBanner } from "@/components/SubscriptionBanner";
 
-export const Route = createFileRoute("/_authenticated/dashboard")({ component: Dashboard });
+export const Route = createFileRoute("/_authenticated/dashboard")({
+  beforeLoad: async () => {
+    // Si el usuario es super administrador, redirige a su panel.
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id);
+    if ((roles ?? []).some((r: any) => r.role === "super_admin")) {
+      throw redirect({ to: "/superadmin" });
+    }
+  },
+  component: Dashboard,
+});
 
 function Dashboard() {
   const { data, isLoading } = useQuery({
