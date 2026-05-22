@@ -57,7 +57,12 @@ export function AppShell() {
     return null;
   }
 
-  const visible = NAV.filter((i) => !i.roles || i.roles.some((r) => auth.roles.includes(r)));
+  const isSuperAdmin = auth.roles.includes("super_admin");
+  // El super administrador tiene un panel propio y NO debe ver los módulos
+  // operativos de las empresas (facturación, clientes, contabilidad, etc.).
+  const visible = isSuperAdmin
+    ? NAV.filter((i) => i.roles?.includes("super_admin"))
+    : NAV.filter((i) => !i.roles || i.roles.some((r) => auth.roles.includes(r)));
 
   const logout = async () => {
     await supabase.auth.signOut();
