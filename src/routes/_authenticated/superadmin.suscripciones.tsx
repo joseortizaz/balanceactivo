@@ -200,7 +200,17 @@ function SuscripcionesAdmin() {
                   </td>
                   <td className="p-3 text-right whitespace-nowrap">
                     <div className="flex flex-wrap gap-1 justify-end">
-                      {s.estado !== "activa" && s.estado !== "cancelada" && (
+                      {s.estado === "pendiente" && (
+                        <>
+                          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => openAccion(s, "activar")}>
+                            <CheckCircle2 className="h-3 w-3 mr-1" /> Aprobar suscripción
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => openAccionExt(s, "rechazar")}>
+                            <XCircle className="h-3 w-3 mr-1" /> Rechazar
+                          </Button>
+                        </>
+                      )}
+                      {s.estado !== "activa" && s.estado !== "cancelada" && s.estado !== "pendiente" && (
                         <Button size="sm" variant="default" onClick={() => openAccion(s, "activar")}>
                           <CheckCircle2 className="h-3 w-3 mr-1" /> Activar plan
                         </Button>
@@ -211,18 +221,13 @@ function SuscripcionesAdmin() {
                         </Button>
                       )}
                       {(nEst === "pendiente" || nEst === "suspendida") && s.incluye_nomina && (
-                        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => openAccionExt(s, "activar_nomina")}>
-                          <Briefcase className="h-3 w-3 mr-1" /> Activar nómina
+                        <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => openAccionExt(s, "activar_nomina")}>
+                          <Briefcase className="h-3 w-3 mr-1" /> Aprobar nómina
                         </Button>
                       )}
                       {nEst === "activa" && (
                         <Button size="sm" variant="outline" onClick={() => openAccionExt(s, "suspender_nomina")}>
                           <Pause className="h-3 w-3 mr-1" /> Pausar nómina
-                        </Button>
-                      )}
-                      {s.estado === "pendiente" && (
-                        <Button size="sm" variant="ghost" className="text-destructive" onClick={() => openAccionExt(s, "rechazar")}>
-                          <XCircle className="h-3 w-3 mr-1" /> Rechazar
                         </Button>
                       )}
                       <Button size="sm" variant="outline" onClick={() => openAccion(s, "editar")} title="Editar">
