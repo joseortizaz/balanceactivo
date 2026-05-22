@@ -44,6 +44,8 @@ import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authen
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 
@@ -241,6 +243,16 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedNominaPeriodosNuevaRoute =
   AuthenticatedNominaPeriodosNuevaRouteImport.update({
     id: '/nomina/periodos/nueva',
@@ -289,6 +301,8 @@ export interface FileRoutesByFullPath {
   '/nomina/': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -327,6 +341,8 @@ export interface FileRoutesByTo {
   '/nomina': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -367,6 +383,8 @@ export interface FileRoutesById {
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
@@ -407,6 +425,8 @@ export interface FileRouteTypes {
     | '/nomina/'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
@@ -445,6 +465,8 @@ export interface FileRouteTypes {
     | '/nomina'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/nomina/periodos'
   id:
@@ -484,6 +506,8 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/'
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
     | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
@@ -493,6 +517,8 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
@@ -743,6 +769,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/nomina/periodos/nueva': {
       id: '/_authenticated/nomina/periodos/nueva'
       path: '/nomina/periodos/nueva'
@@ -852,6 +892,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
