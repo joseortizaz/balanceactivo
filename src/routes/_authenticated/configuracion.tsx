@@ -27,6 +27,12 @@ function Configuracion() {
     enabled: !!auth.tenantId,
     queryFn: async () => (await supabase.from("ncf_secuencias").select("*").order("tipo")).data ?? [],
   });
+  const { data: bancos } = useQuery({
+    queryKey: ["bancos", auth.tenantId],
+    enabled: !!auth.tenantId,
+    queryFn: async () => (await (supabase as any).from("bancos").select("*").order("nombre")).data ?? [],
+  });
+  const [nuevoBanco, setNuevoBanco] = useState("");
 
   const [form, setForm] = useState<any>({});
   useEffect(() => { if (tenant) setForm(tenant); }, [tenant]);
@@ -53,6 +59,20 @@ function Configuracion() {
     if (error) return toast.error(error.message);
     toast.success("Secuencia NCF actualizada");
     qc.invalidateQueries({ queryKey: ["ncfs"] });
+  };
+
+  const addBanco = async () => {
+    const nombre = nuevoBanco.trim();
+    if (!nombre) return;
+    const { error } = await (supabase as any).from("bancos").insert({ tenant_id: auth.tenantId, nombre });
+    if (error) return toast.error(error.message);
+    setNuevoBanco("");
+    qc.invalidateQueries({ queryKey: ["bancos"] });
+  };
+  const toggleBanco = async (id: string, activo: boolean) => {
+    const { error } = await (supabase as any).from("bancos").update({ activo: !activo }).eq("id", id);
+    if (error) return toast.error(error.message);
+    qc.invalidateQueries({ queryKey: ["bancos"] });
   };
 
   return (
@@ -104,6 +124,24 @@ function Configuracion() {
                 </div>
               </div>
             ))}
+          </div>
+        </Card>
+
+        <Card className="p-5 lg:col-span-2">
+          <h2 className="font-semibold mb-1">Bancos / Entidades financieras</h2>
+          <p className="text-sm text-muted-foreground mb-4">Estas entidades estarán disponibles al registrar cobros y pagos.</p>
+          <div className="flex gap-2 mb-4">
+            <Input placeholder="Nombre del banco" value={nuevoBanco} onChange={(e) => setNuevoBanco(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBanco()} />
+            <Button onClick={addBanco}>Agregar</Button>
+          </div>
+          <div className="space-y-2">
+            {(bancos ?? []).map((b: any) => (
+              <div key={b.id} className="flex items-center justify-between border border-border rounded-md p-2 px-3">
+                <span className={b.activo ? "" : "text-muted-foreground line-through"}>{b.nombre}</span>
+                <Button size="sm" variant="ghost" onClick={() => toggleBanco(b.id, b.activo)}>{b.activo ? "Desactivar" : "Activar"}</Button>
+              </div>
+            ))}
+            {(!bancos || bancos.length === 0) && <div className="text-sm text-muted-foreground">Aún no has registrado bancos.</div>}
           </div>
         </Card>
       </div>
