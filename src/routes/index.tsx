@@ -57,26 +57,26 @@ function Index() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#070a18]/60 border-b border-white/5">
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="Balance Activo" className="h-9 w-auto" />
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm text-white/70">
-            <a href="#features" className="hover:text-white transition">Producto</a>
-            <a href="#pricing" className="hover:text-white transition">Precios</a>
-            <a href="#cta" className="hover:text-white transition">Empresa</a>
+          <nav className="hidden md:flex items-center gap-8 text-sm text-slate-600">
+            <a href="#features" className="hover:text-slate-900 transition">Producto</a>
+            <a href="#pricing" className="hover:text-slate-900 transition">Precios</a>
+            <a href="#cta" className="hover:text-slate-900 transition">Empresa</a>
           </nav>
           <div className="flex items-center gap-2">
             <Link
               to="/login"
-              className="hidden sm:inline-flex h-10 items-center px-4 text-sm text-white/80 hover:text-white transition"
+              className="hidden sm:inline-flex h-10 items-center px-4 text-sm text-slate-700 hover:text-slate-900 transition"
             >
               Iniciar sesión
             </Link>
             <Link
               to="/signup"
-              className="inline-flex h-10 items-center gap-1 px-4 rounded-full text-sm font-medium bg-white text-[#070a18] hover:bg-white/90 transition shadow-[0_0_30px_-5px_rgba(255,255,255,0.5)]"
+              className="inline-flex h-10 items-center gap-1 px-4 rounded-full text-sm font-medium bg-[#070a18] text-white hover:bg-[#0f152e] transition shadow-[0_0_30px_-5px_rgba(7,10,24,0.3)]"
             >
               Crear empresa <ArrowRight className="h-4 w-4" />
             </Link>
