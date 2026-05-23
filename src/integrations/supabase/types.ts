@@ -155,6 +155,30 @@ export type Database = {
         }
         Relationships: []
       }
+      bancos: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          nombre: string
+          tenant_id: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre: string
+          tenant_id: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          nombre?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       cargos: {
         Row: {
           activo: boolean
@@ -235,6 +259,7 @@ export type Database = {
       cobros: {
         Row: {
           asiento_id: string | null
+          banco_id: string | null
           created_at: string
           created_by: string | null
           factura_id: string
@@ -246,6 +271,7 @@ export type Database = {
         }
         Insert: {
           asiento_id?: string | null
+          banco_id?: string | null
           created_at?: string
           created_by?: string | null
           factura_id: string
@@ -257,6 +283,7 @@ export type Database = {
         }
         Update: {
           asiento_id?: string | null
+          banco_id?: string | null
           created_at?: string
           created_by?: string | null
           factura_id?: string
@@ -272,6 +299,13 @@ export type Database = {
             columns: ["asiento_id"]
             isOneToOne: false
             referencedRelation: "asientos_contables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cobros_banco_id_fkey"
+            columns: ["banco_id"]
+            isOneToOne: false
+            referencedRelation: "bancos"
             referencedColumns: ["id"]
           },
           {
@@ -2032,15 +2066,26 @@ export type Database = {
           read_ct: number
         }[]
       }
-      registrar_cobro: {
-        Args: {
-          _factura_id: string
-          _fecha: string
-          _metodo: string
-          _monto: number
-        }
-        Returns: string
-      }
+      registrar_cobro:
+        | {
+            Args: {
+              _factura_id: string
+              _fecha: string
+              _metodo: string
+              _monto: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              _banco_id?: string
+              _factura_id: string
+              _fecha: string
+              _metodo: string
+              _monto: number
+            }
+            Returns: string
+          }
       registrar_gasto: { Args: { _gasto_id: string }; Returns: string }
       registrar_pago_gasto: {
         Args: {
