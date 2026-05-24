@@ -35,7 +35,7 @@ import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin.suscripciones'
+import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin_.suscripciones'
 import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
 import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
 import { Route as AuthenticatedNominaRegaliaRouteImport } from './routes/_authenticated/nomina.regalia'
@@ -193,9 +193,9 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
 } as any)
 const AuthenticatedSuperadminSuscripcionesRoute =
   AuthenticatedSuperadminSuscripcionesRouteImport.update({
-    id: '/suscripciones',
-    path: '/suscripciones',
-    getParentRoute: () => AuthenticatedSuperadminRoute,
+    id: '/superadmin_/suscripciones',
+    path: '/superadmin/suscripciones',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedNominaTerminacionesRoute =
   AuthenticatedNominaTerminacionesRouteImport.update({
@@ -317,7 +317,7 @@ export interface FileRoutesByFullPath {
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
-  '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -362,7 +362,7 @@ export interface FileRoutesByTo {
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
-  '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -409,7 +409,7 @@ export interface FileRoutesById {
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
   '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
-  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
+  '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
@@ -421,7 +421,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/regalia': typeof AuthenticatedNominaRegaliaRoute
   '/_authenticated/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/_authenticated/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
-  '/_authenticated/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/_authenticated/superadmin_/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
@@ -559,7 +559,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/regalia'
     | '/_authenticated/nomina/reportes'
     | '/_authenticated/nomina/terminaciones'
-    | '/_authenticated/superadmin/suscripciones'
+    | '/_authenticated/superadmin_/suscripciones'
     | '/lovable/email/suppression'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
@@ -773,12 +773,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/superadmin/suscripciones': {
-      id: '/_authenticated/superadmin/suscripciones'
-      path: '/suscripciones'
+    '/_authenticated/superadmin_/suscripciones': {
+      id: '/_authenticated/superadmin_/suscripciones'
+      path: '/superadmin/suscripciones'
       fullPath: '/superadmin/suscripciones'
       preLoaderRoute: typeof AuthenticatedSuperadminSuscripcionesRouteImport
-      parentRoute: typeof AuthenticatedSuperadminRoute
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/nomina/terminaciones': {
       id: '/_authenticated/nomina/terminaciones'
@@ -902,21 +902,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthenticatedSuperadminRouteChildren {
-  AuthenticatedSuperadminSuscripcionesRoute: typeof AuthenticatedSuperadminSuscripcionesRoute
-}
-
-const AuthenticatedSuperadminRouteChildren: AuthenticatedSuperadminRouteChildren =
-  {
-    AuthenticatedSuperadminSuscripcionesRoute:
-      AuthenticatedSuperadminSuscripcionesRoute,
-  }
-
-const AuthenticatedSuperadminRouteWithChildren =
-  AuthenticatedSuperadminRoute._addFileChildren(
-    AuthenticatedSuperadminRouteChildren,
-  )
-
 interface AuthenticatedRouteChildren {
   AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
   AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
@@ -932,7 +917,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
   AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
-  AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRouteWithChildren
+  AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
@@ -943,6 +928,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedNominaRegaliaRoute: typeof AuthenticatedNominaRegaliaRoute
   AuthenticatedNominaReportesRoute: typeof AuthenticatedNominaReportesRoute
   AuthenticatedNominaTerminacionesRoute: typeof AuthenticatedNominaTerminacionesRoute
+  AuthenticatedSuperadminSuscripcionesRoute: typeof AuthenticatedSuperadminSuscripcionesRoute
   AuthenticatedCotizacionesIndexRoute: typeof AuthenticatedCotizacionesIndexRoute
   AuthenticatedFacturasIndexRoute: typeof AuthenticatedFacturasIndexRoute
   AuthenticatedNominaIndexRoute: typeof AuthenticatedNominaIndexRoute
@@ -966,7 +952,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
   AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
-  AuthenticatedSuperadminRoute: AuthenticatedSuperadminRouteWithChildren,
+  AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
@@ -977,6 +963,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedNominaRegaliaRoute: AuthenticatedNominaRegaliaRoute,
   AuthenticatedNominaReportesRoute: AuthenticatedNominaReportesRoute,
   AuthenticatedNominaTerminacionesRoute: AuthenticatedNominaTerminacionesRoute,
+  AuthenticatedSuperadminSuscripcionesRoute:
+    AuthenticatedSuperadminSuscripcionesRoute,
   AuthenticatedCotizacionesIndexRoute: AuthenticatedCotizacionesIndexRoute,
   AuthenticatedFacturasIndexRoute: AuthenticatedFacturasIndexRoute,
   AuthenticatedNominaIndexRoute: AuthenticatedNominaIndexRoute,
@@ -1006,13 +994,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

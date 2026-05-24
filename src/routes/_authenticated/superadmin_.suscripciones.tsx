@@ -16,7 +16,7 @@ import { ESTADO_LABEL, getPlan } from "@/lib/planes";
 import { CheckCircle2, Pause, Search, Pencil, XCircle, Briefcase, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/superadmin/suscripciones")({ component: SuscripcionesAdmin });
+export const Route = createFileRoute("/_authenticated/superadmin_/suscripciones")({ component: SuscripcionesAdmin });
 
 type Susc = any;
 
