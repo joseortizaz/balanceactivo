@@ -7,20 +7,30 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { fmtMoney, fmtDate, today } from "@/lib/format";
+import { useAuth } from "@/hooks/use-auth";
+import { generateReciboPdf } from "@/lib/recibo-pdf";
+import { sendTransactionalEmail } from "@/lib/email/send";
+import { Download, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/cobros")({ component: Cobros });
 
 function Cobros() {
   const qc = useQueryClient();
+  const auth = useAuth();
   const [sel, setSel] = useState<any>(null);
   const [monto, setMonto] = useState(0);
   const [metodo, setMetodo] = useState<string>("efectivo");
   const [fecha, setFecha] = useState<string>(today());
   const [bancoId, setBancoId] = useState<string>("");
+  const [nota, setNota] = useState<string>("");
+  const [recibo, setRecibo] = useState<any>(null);
+  const [emailTo, setEmailTo] = useState<string>("");
+  const [sending, setSending] = useState(false);
 
   const { data: pendientes } = useQuery({
     queryKey: ["facturas-pendientes"],
@@ -32,21 +42,44 @@ function Cobros() {
     queryFn: async () => (await (supabase as any).from("bancos").select("id, nombre").eq("activo", true).order("nombre")).data ?? [],
   });
 
+  const { data: tenant } = useQuery({
+    queryKey: ["tenant-info", auth.tenantId],
+    enabled: !!auth.tenantId,
+    queryFn: async () => (await supabase.from("tenants").select("*").eq("id", auth.tenantId!).maybeSingle()).data,
+  });
+
   const requiereBanco = metodo !== "efectivo";
 
   const registrar = async () => {
     if (!sel || monto <= 0) return toast.error("Monto inválido");
     if (!fecha) return toast.error("Selecciona la fecha del cobro");
     if (requiereBanco && !bancoId) return toast.error("Selecciona el banco");
-    const { error } = await (supabase.rpc as any)("registrar_cobro", {
+    const { data: cobroId, error } = await (supabase.rpc as any)("registrar_cobro", {
       _factura_id: sel.id,
       _monto: monto,
       _metodo: metodo,
       _fecha: fecha,
       _banco_id: requiereBanco ? bancoId : null,
+      _nota: nota || null,
     });
     if (error) return toast.error(error.message);
     toast.success("Cobro registrado");
+    const totalFact = Number(sel.total);
+    const pagadoPrev = Number(sel.monto_pagado);
+    const nuevoPagado = pagadoPrev + Number(monto);
+    const bancoNombre = (bancos ?? []).find((b: any) => b.id === bancoId)?.nombre ?? null;
+    setRecibo({
+      id: cobroId,
+      factura: sel,
+      monto: Number(monto),
+      pendiente: Math.max(totalFact - nuevoPagado, 0),
+      totalFact,
+      fecha,
+      metodo,
+      bancoNombre,
+      nota,
+    });
+    setEmailTo(sel.clientes?.email ?? "");
     setSel(null);
     qc.invalidateQueries({ queryKey: ["facturas-pendientes"] });
   };
@@ -57,6 +90,59 @@ function Cobros() {
     setFecha(today());
     setMetodo("efectivo");
     setBancoId("");
+    setNota("");
+  };
+
+  const metodoLabel = (m: string) => ({
+    efectivo: "Efectivo", transferencia: "Transferencia", deposito: "Depósito", cheque: "Cheque",
+  } as any)[m] ?? m;
+
+  const buildPdfData = () => {
+    if (!recibo) return null;
+    const recNum = `REC-${String(recibo.id ?? "").slice(0, 8).toUpperCase()}`;
+    return {
+      companyName: tenant?.razon_social ?? "Empresa",
+      companyRnc: tenant?.rnc ?? null,
+      companyAddress: tenant?.direccion ?? null,
+      companyPhone: tenant?.telefono ?? null,
+      clientName: recibo.factura.clientes?.razon_social ?? "Cliente",
+      invoiceNcf: recibo.factura.ncf,
+      invoiceTotal: fmtMoney(recibo.totalFact),
+      amountPaid: fmtMoney(recibo.monto),
+      amountPending: fmtMoney(recibo.pendiente),
+      paymentDate: fmtDate(recibo.fecha),
+      paymentMethod: metodoLabel(recibo.metodo),
+      bankName: recibo.bancoNombre,
+      note: recibo.nota || null,
+      receiptNumber: recNum,
+    };
+  };
+
+  const descargarPdf = () => {
+    const d = buildPdfData();
+    if (!d) return;
+    const doc = generateReciboPdf(d);
+    doc.save(`${d.receiptNumber}-${d.invoiceNcf}.pdf`);
+  };
+
+  const enviarEmail = async () => {
+    const d = buildPdfData();
+    if (!d) return;
+    if (!emailTo) return toast.error("Indica el correo del cliente");
+    setSending(true);
+    try {
+      await sendTransactionalEmail({
+        templateName: "recibo-cobro",
+        recipientEmail: emailTo,
+        idempotencyKey: `recibo-${recibo.id}`,
+        templateData: d,
+      });
+      toast.success("Recibo enviado por correo");
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo enviar el correo");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -116,8 +202,40 @@ function Cobros() {
                 </Select>
               </div>
             )}
+            <div>
+              <Label>Nota (opcional)</Label>
+              <Textarea value={nota} onChange={(e) => setNota(e.target.value)} placeholder="Observaciones sobre este cobro" rows={3} />
+            </div>
             <Button onClick={registrar} className="w-full">Registrar cobro</Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!recibo} onOpenChange={(o) => !o && setRecibo(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader><DialogTitle>Recibo de pago</DialogTitle></DialogHeader>
+          {recibo && (
+            <div className="space-y-3 text-sm">
+              <div className="rounded-md border p-4 space-y-2 bg-secondary/30">
+                <div className="flex justify-between"><span className="text-muted-foreground">Factura</span><span className="font-mono">{recibo.factura.ncf}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Cliente</span><span>{recibo.factura.clientes?.razon_social}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Fecha</span><span>{fmtDate(recibo.fecha)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Vía</span><span>{metodoLabel(recibo.metodo)}{recibo.bancoNombre ? ` — ${recibo.bancoNombre}` : ""}</span></div>
+                <div className="flex justify-between border-t pt-2"><span className="text-muted-foreground">Total factura</span><span>{fmtMoney(recibo.totalFact)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Monto abonado</span><span className="font-semibold">{fmtMoney(recibo.monto)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Pendiente</span><span>{fmtMoney(recibo.pendiente)}</span></div>
+                {recibo.nota && <div className="border-t pt-2"><div className="text-muted-foreground text-xs">Nota</div><div>{recibo.nota}</div></div>}
+              </div>
+              <div>
+                <Label>Correo del cliente</Label>
+                <Input type="email" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} placeholder="cliente@correo.com" />
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" onClick={descargarPdf}><Download className="h-4 w-4 mr-2" />Descargar PDF</Button>
+                <Button className="flex-1" onClick={enviarEmail} disabled={sending}><Mail className="h-4 w-4 mr-2" />{sending ? "Enviando…" : "Enviar por correo"}</Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

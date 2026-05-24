@@ -267,6 +267,7 @@ export type Database = {
           id: string
           metodo: string | null
           monto: number
+          nota: string | null
           tenant_id: string
         }
         Insert: {
@@ -279,6 +280,7 @@ export type Database = {
           id?: string
           metodo?: string | null
           monto: number
+          nota?: string | null
           tenant_id: string
         }
         Update: {
@@ -291,6 +293,7 @@ export type Database = {
           id?: string
           metodo?: string | null
           monto?: number
+          nota?: string | null
           tenant_id?: string
         }
         Relationships: [
@@ -2083,6 +2086,17 @@ export type Database = {
               _fecha: string
               _metodo: string
               _monto: number
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              _banco_id?: string
+              _factura_id: string
+              _fecha: string
+              _metodo: string
+              _monto: number
+              _nota?: string
             }
             Returns: string
           }

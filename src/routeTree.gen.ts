@@ -9,10 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
@@ -32,6 +34,7 @@ import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin.suscripciones'
 import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
 import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
@@ -43,12 +46,19 @@ import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_auth
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -66,6 +76,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedSuscripcionRoute =
@@ -171,6 +186,11 @@ const AuthenticatedCotizacionesIndexRoute =
     path: '/cotizaciones/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedSuperadminSuscripcionesRoute =
   AuthenticatedSuperadminSuscripcionesRouteImport.update({
     id: '/suscripciones',
@@ -237,6 +257,18 @@ const AuthenticatedNominaPeriodosIndexRoute =
     path: '/nomina/periodos/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -270,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
@@ -286,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -296,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -304,12 +339,15 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
@@ -326,6 +364,7 @@ export interface FileRoutesByTo {
   '/reportes': typeof AuthenticatedReportesRoute
   '/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -336,6 +375,7 @@ export interface FileRoutesByTo {
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
@@ -344,6 +384,8 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRoutesById {
@@ -352,6 +394,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/asientos': typeof AuthenticatedAsientosRoute
   '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
@@ -368,6 +411,7 @@ export interface FileRoutesById {
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRouteWithChildren
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/_authenticated/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
@@ -378,6 +422,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/_authenticated/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/_authenticated/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
@@ -386,6 +431,8 @@ export interface FileRoutesById {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
 }
 export interface FileRouteTypes {
@@ -394,6 +441,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/unsubscribe'
     | '/asientos'
     | '/auditoria'
     | '/clientes'
@@ -410,6 +458,7 @@ export interface FileRouteTypes {
     | '/reportes'
     | '/superadmin'
     | '/suscripcion'
+    | '/email/unsubscribe'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -420,6 +469,7 @@ export interface FileRouteTypes {
     | '/nomina/reportes'
     | '/nomina/terminaciones'
     | '/superadmin/suscripciones'
+    | '/lovable/email/suppression'
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
@@ -428,12 +478,15 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/nomina/periodos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/signup'
+    | '/unsubscribe'
     | '/asientos'
     | '/auditoria'
     | '/clientes'
@@ -450,6 +503,7 @@ export interface FileRouteTypes {
     | '/reportes'
     | '/superadmin'
     | '/suscripcion'
+    | '/email/unsubscribe'
     | '/cotizaciones/nueva'
     | '/facturas/nueva'
     | '/nomina/ausencias'
@@ -460,6 +514,7 @@ export interface FileRouteTypes {
     | '/nomina/reportes'
     | '/nomina/terminaciones'
     | '/superadmin/suscripciones'
+    | '/lovable/email/suppression'
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
@@ -468,6 +523,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/nomina/periodos'
   id:
     | '__root__'
@@ -475,6 +532,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/signup'
+    | '/unsubscribe'
     | '/_authenticated/asientos'
     | '/_authenticated/auditoria'
     | '/_authenticated/clientes'
@@ -491,6 +549,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reportes'
     | '/_authenticated/superadmin'
     | '/_authenticated/suscripcion'
+    | '/email/unsubscribe'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/nueva'
     | '/_authenticated/nomina/ausencias'
@@ -501,6 +560,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/reportes'
     | '/_authenticated/nomina/terminaciones'
     | '/_authenticated/superadmin/suscripciones'
+    | '/lovable/email/suppression'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
@@ -509,6 +569,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/_authenticated/nomina/periodos/'
   fileRoutesById: FileRoutesById
 }
@@ -517,13 +579,25 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -550,6 +624,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/suscripcion': {
@@ -685,6 +766,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/superadmin/suscripciones': {
       id: '/_authenticated/superadmin/suscripciones'
       path: '/suscripciones'
@@ -761,6 +849,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/nomina/periodos/'
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -892,9 +994,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
