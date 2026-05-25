@@ -52,9 +52,8 @@ function NuevaFactura() {
       setFecha(f.fecha);
       setTipoDescuento(f.tipo_descuento as any);
       setDescuentoValor(Number(f.descuento_valor));
-      const { data: ls } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis").eq("factura_id", editId);
-      const { data: lsFull } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis, producto_id").eq("factura_id", editId);
-      if (lsFull && lsFull.length) setLineas(lsFull.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis), producto_id: l.producto_id })));
+      const { data: ls } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis, producto_id").eq("factura_id", editId);
+      if (ls && ls.length) setLineas(ls.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis), producto_id: (l as any).producto_id })));
       const { data: cs } = await supabase.from("factura_cuotas").select("fecha_vencimiento, monto, numero_cuota").eq("factura_id", editId).order("numero_cuota");
       if (cs && cs.length) setCuotas(cs.map((c: any) => ({ fecha: c.fecha_vencimiento, monto: Number(c.monto) })));
     })();
