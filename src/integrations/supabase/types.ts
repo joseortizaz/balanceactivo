@@ -335,6 +335,7 @@ export type Database = {
           id: string
           itbis: number
           precio: number
+          producto_id: string | null
           subtotal: number
           tasa_itbis: number
           tenant_id: string
@@ -347,6 +348,7 @@ export type Database = {
           id?: string
           itbis?: number
           precio?: number
+          producto_id?: string | null
           subtotal?: number
           tasa_itbis?: number
           tenant_id: string
@@ -359,6 +361,7 @@ export type Database = {
           id?: string
           itbis?: number
           precio?: number
+          producto_id?: string | null
           subtotal?: number
           tasa_itbis?: number
           tenant_id?: string
@@ -765,6 +768,7 @@ export type Database = {
           id: string
           itbis: number
           precio: number
+          producto_id: string | null
           subtotal: number
           tasa_itbis: number
           tenant_id: string
@@ -777,6 +781,7 @@ export type Database = {
           id?: string
           itbis?: number
           precio?: number
+          producto_id?: string | null
           subtotal?: number
           tasa_itbis?: number
           tenant_id: string
@@ -789,6 +794,7 @@ export type Database = {
           id?: string
           itbis?: number
           precio?: number
+          producto_id?: string | null
           subtotal?: number
           tasa_itbis?: number
           tenant_id?: string
@@ -1152,6 +1158,51 @@ export type Database = {
           },
         ]
       }
+      movimientos_inventario: {
+        Row: {
+          cantidad: number
+          created_at: string
+          created_by: string | null
+          factura_id: string | null
+          fecha: string
+          id: string
+          motivo: string | null
+          producto_id: string
+          stock_anterior: number
+          stock_nuevo: number
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_movimiento_inventario"]
+        }
+        Insert: {
+          cantidad: number
+          created_at?: string
+          created_by?: string | null
+          factura_id?: string | null
+          fecha?: string
+          id?: string
+          motivo?: string | null
+          producto_id: string
+          stock_anterior: number
+          stock_nuevo: number
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["tipo_movimiento_inventario"]
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          created_by?: string | null
+          factura_id?: string | null
+          fecha?: string
+          id?: string
+          motivo?: string | null
+          producto_id?: string
+          stock_anterior?: number
+          stock_nuevo?: number
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["tipo_movimiento_inventario"]
+        }
+        Relationships: []
+      }
       ncf_secuencias: {
         Row: {
           activo: boolean
@@ -1463,11 +1514,14 @@ export type Database = {
         Row: {
           activo: boolean
           codigo: string | null
+          controla_inventario: boolean
           created_at: string
           descripcion: string | null
           id: string
           nombre: string
           precio: number
+          stock: number
+          stock_minimo: number
           tasa_itbis: number
           tenant_id: string
           unidad: string
@@ -1476,11 +1530,14 @@ export type Database = {
         Insert: {
           activo?: boolean
           codigo?: string | null
+          controla_inventario?: boolean
           created_at?: string
           descripcion?: string | null
           id?: string
           nombre: string
           precio?: number
+          stock?: number
+          stock_minimo?: number
           tasa_itbis?: number
           tenant_id: string
           unidad?: string
@@ -1489,11 +1546,14 @@ export type Database = {
         Update: {
           activo?: boolean
           codigo?: string | null
+          controla_inventario?: boolean
           created_at?: string
           descripcion?: string | null
           id?: string
           nombre?: string
           precio?: number
+          stock?: number
+          stock_minimo?: number
           tasa_itbis?: number
           tenant_id?: string
           unidad?: string
@@ -2101,6 +2161,16 @@ export type Database = {
             Returns: string
           }
       registrar_gasto: { Args: { _gasto_id: string }; Returns: string }
+      registrar_movimiento_inventario: {
+        Args: {
+          _cantidad: number
+          _fecha?: string
+          _motivo: string
+          _producto_id: string
+          _tipo: Database["public"]["Enums"]["tipo_movimiento_inventario"]
+        }
+        Returns: string
+      }
       registrar_pago_gasto: {
         Args: {
           _cuenta_pago_id: string
@@ -2204,6 +2274,12 @@ export type Database = {
         | "gasto"
       tipo_descuento: "porcentaje" | "monto"
       tipo_documento: "rnc_empresa" | "rnc_persona" | "cedula"
+      tipo_movimiento_inventario:
+        | "entrada"
+        | "salida"
+        | "ajuste"
+        | "venta"
+        | "anulacion_venta"
       tipo_ncf: "B01" | "B02" | "B04" | "B15"
       tipo_ncf_compra: "B01" | "B11" | "B14" | "B15"
       tipo_nomina: "regular" | "regalia_pascual" | "bonificacion"
@@ -2411,6 +2487,13 @@ export const Constants = {
       tipo_cuenta: ["activo", "pasivo", "capital", "ingreso", "costo", "gasto"],
       tipo_descuento: ["porcentaje", "monto"],
       tipo_documento: ["rnc_empresa", "rnc_persona", "cedula"],
+      tipo_movimiento_inventario: [
+        "entrada",
+        "salida",
+        "ajuste",
+        "venta",
+        "anulacion_venta",
+      ],
       tipo_ncf: ["B01", "B02", "B04", "B15"],
       tipo_ncf_compra: ["B01", "B11", "B14", "B15"],
       tipo_nomina: ["regular", "regalia_pascual", "bonificacion"],
