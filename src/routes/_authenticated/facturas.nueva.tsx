@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/facturas/nueva")({
   validateSearch: (s: Record<string, unknown>) => ({ id: (s.id as string) || undefined }),
 });
 
-type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number };
+type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number; producto_id?: string | null };
 type Cuota = { fecha: string; monto: number };
 
 function NuevaFactura() {
@@ -26,7 +26,7 @@ function NuevaFactura() {
   const isEdit = !!editId;
   const [ncfActual, setNcfActual] = useState<string>("");
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
-  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos" as any).select("id, nombre, codigo, precio, tasa_itbis").eq("activo", true).order("nombre")).data ?? [] });
+  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos" as any).select("id, nombre, codigo, precio, tasa_itbis, stock, controla_inventario").eq("activo", true).order("nombre")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
   const [tipoNcf, setTipoNcf] = useState<"B01"|"B02"|"B04"|"B15">("B02");
   const [condicion, setCondicion] = useState<"contado"|"credito">("contado");
@@ -53,7 +53,8 @@ function NuevaFactura() {
       setTipoDescuento(f.tipo_descuento as any);
       setDescuentoValor(Number(f.descuento_valor));
       const { data: ls } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis").eq("factura_id", editId);
-      if (ls && ls.length) setLineas(ls.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis) })));
+      const { data: lsFull } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis, producto_id").eq("factura_id", editId);
+      if (lsFull && lsFull.length) setLineas(lsFull.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis), producto_id: l.producto_id })));
       const { data: cs } = await supabase.from("factura_cuotas").select("fecha_vencimiento, monto, numero_cuota").eq("factura_id", editId).order("numero_cuota");
       if (cs && cs.length) setCuotas(cs.map((c: any) => ({ fecha: c.fecha_vencimiento, monto: Number(c.monto) })));
     })();
@@ -71,6 +72,7 @@ function NuevaFactura() {
     const p: any = (productos ?? []).find((x: any) => x.id === productoId);
     if (!p) return;
     setLinea(i, {
+      producto_id: p.id,
       descripcion: p.codigo ? `${p.codigo} — ${p.nombre}` : p.nombre,
       precio: Number(p.precio ?? 0),
       tasa_itbis: Number(p.tasa_itbis ?? 18),
