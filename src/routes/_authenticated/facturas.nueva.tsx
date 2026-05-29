@@ -42,9 +42,11 @@ function NuevaFactura() {
     (async () => {
       const { data: f } = await supabase.from("facturas").select("*").eq("id", editId).maybeSingle();
       if (!f) return;
-      if (Number(f.monto_pagado) > 0) { toast.error("Factura con pagos no puede editarse"); navigate({ to: "/facturas" }); return; }
-      const { count } = await supabase.from("cobros").select("id", { count: "exact", head: true }).eq("factura_id", editId);
-      if ((count ?? 0) > 0) { toast.error("Factura con cobros no puede editarse"); navigate({ to: "/facturas" }); return; }
+      if (f.estado === "anulada" || f.estado === "cerrada") {
+        toast.error(`Factura ${f.estado} no puede editarse`);
+        navigate({ to: "/facturas" });
+        return;
+      }
       setNcfActual(f.ncf);
       setClienteId(f.cliente_id);
       setTipoNcf(f.tipo_ncf as any);
