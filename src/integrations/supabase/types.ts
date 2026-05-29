@@ -870,6 +870,7 @@ export type Database = {
           id: string
           itbis: number
           monto_pagado: number
+          motivo_estado: string | null
           ncf: string
           subtotal: number
           tenant_id: string
@@ -891,6 +892,7 @@ export type Database = {
           id?: string
           itbis?: number
           monto_pagado?: number
+          motivo_estado?: string | null
           ncf: string
           subtotal?: number
           tenant_id: string
@@ -912,6 +914,7 @@ export type Database = {
           id?: string
           itbis?: number
           monto_pagado?: number
+          motivo_estado?: string | null
           ncf?: string
           subtotal?: number
           tenant_id?: string
@@ -2006,6 +2009,10 @@ export type Database = {
         }
         Returns: string
       }
+      anular_factura: {
+        Args: { _factura_id: string; _motivo: string }
+        Returns: undefined
+      }
       aplicar_pago_prestamos_nomina: {
         Args: { _nomina_id: string }
         Returns: undefined
@@ -2029,6 +2036,10 @@ export type Database = {
           _motivo: Database["public"]["Enums"]["motivo_terminacion"]
         }
         Returns: Json
+      }
+      cerrar_factura: {
+        Args: { _factura_id: string; _motivo: string }
+        Returns: undefined
       }
       cerrar_nomina: { Args: { _nomina_id: string }; Returns: string }
       convertir_cotizacion_a_factura: {
@@ -2224,7 +2235,7 @@ export type Database = {
         | "vencida"
       estado_cuota: "pendiente" | "pagada" | "vencida" | "parcial"
       estado_empleado: "activo" | "suspendido" | "terminado"
-      estado_factura: "pendiente" | "pagada" | "anulada"
+      estado_factura: "pendiente" | "pagada" | "anulada" | "cerrada"
       estado_gasto: "pendiente" | "pagado" | "anulado"
       estado_modulo_nomina:
         | "no_solicitado"
@@ -2438,7 +2449,7 @@ export const Constants = {
       ],
       estado_cuota: ["pendiente", "pagada", "vencida", "parcial"],
       estado_empleado: ["activo", "suspendido", "terminado"],
-      estado_factura: ["pendiente", "pagada", "anulada"],
+      estado_factura: ["pendiente", "pagada", "anulada", "cerrada"],
       estado_gasto: ["pendiente", "pagado", "anulado"],
       estado_modulo_nomina: [
         "no_solicitado",
