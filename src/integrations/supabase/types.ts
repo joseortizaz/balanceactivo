@@ -2023,7 +2023,7 @@ export type Database = {
       }
       anular_cobro: {
         Args: { _cobro_id: string; _motivo: string }
-        Returns: string
+        Returns: undefined
       }
       anular_factura: {
         Args: { _factura_id: string; _motivo: string }
@@ -2099,14 +2099,14 @@ export type Database = {
       }
       editar_cobro: {
         Args: {
-          _banco_id?: string
+          _banco_id: string
           _cobro_id: string
           _fecha: string
           _metodo: string
           _monto: number
-          _nota?: string
+          _nota: string
         }
-        Returns: string
+        Returns: undefined
       }
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
