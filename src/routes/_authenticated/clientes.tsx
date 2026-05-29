@@ -148,11 +148,12 @@ function Clientes() {
       </div>
 
       <Card className="p-0 overflow-hidden">
-        <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 px-3 py-2 border-b bg-muted/40 text-xs font-semibold text-muted-foreground">
+        <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,2fr)_auto_auto] gap-3 px-4 py-2 border-b bg-muted/40 text-xs font-semibold text-muted-foreground">
           <div>Razón social</div>
           <div>Documento</div>
           <div>Teléfono</div>
           <div>Email</div>
+          <div className="w-4" />
           <div className="w-8" />
         </div>
         {filtered.length === 0 ? (
@@ -164,14 +165,35 @@ function Clientes() {
               const facs = facsPor.get(c.id) ?? [];
               return (
                 <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
-                  <div className="grid grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 items-center px-3">
-                    <AccordionTrigger className="col-span-4 grid grid-cols-subgrid py-3 hover:no-underline">
-                      <div className="font-medium truncate text-left">{c.razon_social}</div>
-                      <div className="font-mono text-xs text-muted-foreground truncate text-left">{c.documento}</div>
-                      <div className="text-xs text-muted-foreground truncate text-left">{c.telefono ?? ""}</div>
-                      <div className="text-xs text-muted-foreground truncate text-left">{c.email ?? ""}</div>
+                  <div className="relative flex items-center">
+                    <AccordionTrigger className="flex-1 py-3 px-4 hover:no-underline [&>svg]:hidden">
+                      {/* Desktop layout */}
+                      <div className="hidden md:grid w-full grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,2fr)_auto_auto] gap-3 items-center text-left">
+                        <div className="font-medium truncate">{c.razon_social}</div>
+                        <div className="font-mono text-xs text-muted-foreground truncate">{c.documento}</div>
+                        <div className="text-xs text-muted-foreground truncate">{c.telefono ?? ""}</div>
+                        <div className="text-xs text-muted-foreground truncate">{c.email ?? ""}</div>
+                        <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 chevron-icon" />
+                        <div className="w-8" />
+                      </div>
+                      {/* Mobile layout */}
+                      <div className="md:hidden w-full text-left">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="font-medium truncate">{c.razon_social}</div>
+                          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 chevron-icon" />
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground truncate">
+                          {c.documento}{c.telefono ? ` · ${c.telefono}` : ""}{c.email ? ` · ${c.email}` : ""}
+                        </div>
+                      </div>
                     </AccordionTrigger>
-                    <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="mr-2 shrink-0"
+                      onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}
+                      aria-label="Editar cliente"
+                    >
                       <Pencil className="h-4 w-4" />
                     </Button>
                   </div>
