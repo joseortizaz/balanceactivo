@@ -148,56 +148,49 @@ function Clientes() {
       </div>
 
       <Card className="p-0 overflow-hidden">
-        <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,2fr)_auto_auto] gap-3 px-4 py-2 border-b bg-muted/40 text-xs font-semibold text-muted-foreground">
-          <div>Razón social</div>
-          <div>Documento</div>
-          <div>Teléfono</div>
-          <div>Email</div>
-          <div className="w-4" />
-          <div className="w-8" />
-        </div>
         {filtered.length === 0 ? (
           <div className="p-6 text-center text-muted-foreground">Sin clientes</div>
         ) : (
-          <Accordion type="multiple" className="w-full">
-            {filtered.map((c: any) => {
-              const cots = cotsPor.get(c.id) ?? [];
-              const facs = facsPor.get(c.id) ?? [];
-              return (
-                <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
-                  <div className="relative flex items-center">
-                    <AccordionTrigger className="flex-1 py-3 px-4 hover:no-underline [&>svg]:hidden [&[data-state=open]_.chevron-icon]:rotate-180">
-                      {/* Desktop layout */}
-                      <div className="hidden md:grid w-full grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,2fr)_auto_auto] gap-3 items-center text-left">
-                        <div className="font-medium truncate">{c.razon_social}</div>
-                        <div className="font-mono text-xs text-muted-foreground truncate">{c.documento}</div>
-                        <div className="text-xs text-muted-foreground truncate">{c.telefono ?? ""}</div>
-                        <div className="text-xs text-muted-foreground truncate">{c.email ?? ""}</div>
-                        <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 chevron-icon" />
-                        <div className="w-8" />
-                      </div>
-                      {/* Mobile layout */}
-                      <div className="md:hidden w-full text-left">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="font-medium truncate">{c.razon_social}</div>
-                          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 chevron-icon" />
-                        </div>
-                        <div className="mt-1 text-xs text-muted-foreground truncate">
-                          {c.documento}{c.telefono ? ` · ${c.telefono}` : ""}{c.email ? ` · ${c.email}` : ""}
-                        </div>
-                      </div>
-                    </AccordionTrigger>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="mr-2 shrink-0"
-                      onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}
-                      aria-label="Editar cliente"
+          <>
+            {/* Header desktop */}
+            <div
+              className="hidden md:grid items-center gap-3 px-4 py-2 border-b bg-muted/40 text-xs font-semibold text-muted-foreground"
+              style={{ gridTemplateColumns: "minmax(0,2.2fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,2fr) 72px" }}
+            >
+              <div>Razón social</div>
+              <div>Documento</div>
+              <div>Teléfono</div>
+              <div>Email</div>
+              <div className="text-right">Acciones</div>
+            </div>
+            <Accordion type="multiple" className="w-full">
+              {filtered.map((c: any) => {
+                const cots = cotsPor.get(c.id) ?? [];
+                const facs = facsPor.get(c.id) ?? [];
+                return (
+                  <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
+                    <div
+                      className="grid md:grid items-center gap-3 px-4 py-3 hover:bg-muted/30"
+                      style={{ gridTemplateColumns: "minmax(0,2.2fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,2fr) 72px" }}
                     >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <AccordionContent className="px-4 pb-4 bg-muted/30">
+                      <div className="font-medium truncate" title={c.razon_social}>{c.razon_social}</div>
+                      <div className="font-mono text-xs text-muted-foreground truncate" title={c.documento}>{c.documento}</div>
+                      <div className="text-xs text-muted-foreground truncate">{c.telefono ?? "—"}</div>
+                      <div className="text-xs text-muted-foreground truncate" title={c.email ?? ""}>{c.email ?? "—"}</div>
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 shrink-0"
+                          onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}
+                          aria-label="Editar cliente"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <AccordionTrigger className="h-8 w-8 p-0 flex items-center justify-center hover:no-underline [&>svg]:h-4 [&>svg]:w-4" aria-label="Ver detalles" />
+                      </div>
+                    </div>
+                    <AccordionContent className="px-4 pb-4 bg-muted/30">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
                       <div><span className="text-muted-foreground">Tipo documento:</span> {c.tipo_documento}</div>
                       <div><span className="text-muted-foreground">Provincia:</span> {c.provincia ?? "—"}</div>
@@ -254,7 +247,8 @@ function Clientes() {
                 </AccordionItem>
               );
             })}
-          </Accordion>
+            </Accordion>
+          </>
         )}
       </Card>
     </div>
