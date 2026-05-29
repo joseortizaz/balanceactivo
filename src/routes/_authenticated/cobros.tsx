@@ -351,6 +351,63 @@ function Cobros() {
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!editCobro} onOpenChange={(o) => !o && setEditCobro(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editar cobro — {editCobro?.facturas?.ncf}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div><Label>Monto</Label><Input type="number" step="0.01" value={eMonto} onChange={(e) => setEMonto(Number(e.target.value))} /></div>
+            <div><Label>Fecha del cobro</Label><Input type="date" value={eFecha} onChange={(e) => setEFecha(e.target.value)} /></div>
+            <div>
+              <Label>Vía de recepción</Label>
+              <Select value={eMetodo} onValueChange={(v) => { setEMetodo(v); if (v === "efectivo") setEBancoId(""); }}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="efectivo">Efectivo</SelectItem>
+                  <SelectItem value="transferencia">Transferencia</SelectItem>
+                  <SelectItem value="deposito">Depósito</SelectItem>
+                  <SelectItem value="cheque">Cheque</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {eMetodo !== "efectivo" && (
+              <div>
+                <Label>Banco</Label>
+                <Select value={eBancoId} onValueChange={setEBancoId}>
+                  <SelectTrigger><SelectValue placeholder="Selecciona un banco" /></SelectTrigger>
+                  <SelectContent>
+                    {(bancos ?? []).map((b: any) => (<SelectItem key={b.id} value={b.id}>{b.nombre}</SelectItem>))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div>
+              <Label>Nota</Label>
+              <Textarea value={eNota} onChange={(e) => setENota(e.target.value)} rows={3} />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Al guardar se reversará el asiento contable anterior y se generará uno nuevo. Quedará registro en auditoría.
+            </p>
+            <Button onClick={guardarEdicion} className="w-full">Guardar cambios</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!anulCobro} onOpenChange={(o) => { if (!o) { setAnulCobro(null); setAnulMotivo(""); } }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Anular cobro — {anulCobro?.facturas?.ncf}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Esta acción revertirá el asiento contable y restará {fmtMoney(anulCobro?.monto ?? 0)} del monto pagado de la factura.
+            </p>
+            <div>
+              <Label>Motivo de anulación</Label>
+              <Textarea value={anulMotivo} onChange={(e) => setAnulMotivo(e.target.value)} rows={3} placeholder="Explica por qué se anula este cobro" />
+            </div>
+            <Button variant="destructive" onClick={confirmarAnulacion} className="w-full">Confirmar anulación</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
