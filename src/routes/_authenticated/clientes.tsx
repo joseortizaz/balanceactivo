@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Pencil, Search } from "lucide-react";
+import { Plus, Pencil, Search, FileText, Receipt } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { validarRNC, validarCedula } from "@/lib/format";
+import { fmtMoney, fmtDate } from "@/lib/format";
 import { PROVINCIAS_RD } from "@/lib/provincias-rd";
 
 export const Route = createFileRoute("/_authenticated/clientes")({ component: Clientes });
@@ -30,6 +33,31 @@ function Clientes() {
     queryKey: ["clientes"],
     queryFn: async () => (await supabase.from("clientes").select("*").order("razon_social")).data ?? [],
   });
+  const { data: cotizaciones } = useQuery({
+    queryKey: ["clientes-cotizaciones"],
+    queryFn: async () => (await supabase.from("cotizaciones").select("id, numero, fecha, total, estado, cliente_id").order("created_at", { ascending: false })).data ?? [],
+  });
+  const { data: facturas } = useQuery({
+    queryKey: ["clientes-facturas"],
+    queryFn: async () => (await supabase.from("facturas").select("id, ncf, fecha, total, estado, monto_pagado, cliente_id").order("created_at", { ascending: false })).data ?? [],
+  });
+
+  const cotsPor = useMemo(() => {
+    const m = new Map<string, any[]>();
+    for (const c of (cotizaciones ?? []) as any[]) {
+      if (!m.has(c.cliente_id)) m.set(c.cliente_id, []);
+      m.get(c.cliente_id)!.push(c);
+    }
+    return m;
+  }, [cotizaciones]);
+  const facsPor = useMemo(() => {
+    const m = new Map<string, any[]>();
+    for (const f of (facturas ?? []) as any[]) {
+      if (!m.has(f.cliente_id)) m.set(f.cliente_id, []);
+      m.get(f.cliente_id)!.push(f);
+    }
+    return m;
+  }, [facturas]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -120,33 +148,87 @@ function Clientes() {
       </div>
 
       <Card className="p-0 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary"><tr>
-            <th className="text-left p-3">Documento</th>
-            <th className="text-left p-3">Razón social</th>
-            <th className="text-left p-3">Provincia</th>
-            <th className="text-left p-3">Teléfono</th>
-            <th className="text-left p-3">Email</th>
-            <th className="text-right p-3">Acciones</th>
-          </tr></thead>
-          <tbody>
-            {filtered.map((c: any) => (
-              <tr key={c.id} className="border-t border-border">
-                <td className="p-3 font-mono">{c.documento}</td>
-                <td className="p-3">{c.razon_social}</td>
-                <td className="p-3">{c.provincia ?? ""}</td>
-                <td className="p-3">{c.telefono}</td>
-                <td className="p-3">{c.email}</td>
-                <td className="p-3 text-right">
-                  <Button size="sm" variant="ghost" onClick={() => abrirEditar(c)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-            {filtered.length === 0 && <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Sin clientes</td></tr>}
-          </tbody>
-        </table>
+        {filtered.length === 0 ? (
+          <div className="p-6 text-center text-muted-foreground">Sin clientes</div>
+        ) : (
+          <Accordion type="multiple" className="w-full">
+            {filtered.map((c: any) => {
+              const cots = cotsPor.get(c.id) ?? [];
+              const facs = facsPor.get(c.id) ?? [];
+              return (
+                <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
+                  <div className="flex items-center gap-2 px-3">
+                    <AccordionTrigger className="flex-1 py-3 hover:no-underline">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full text-left">
+                        <div className="font-medium">{c.razon_social}</div>
+                        <div className="font-mono text-xs text-muted-foreground">{c.documento}</div>
+                        <div className="text-xs text-muted-foreground">{c.telefono ?? ""}</div>
+                        <div className="text-xs text-muted-foreground truncate">{c.email ?? ""}</div>
+                      </div>
+                    </AccordionTrigger>
+                    <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <AccordionContent className="px-4 pb-4 bg-muted/30">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                      <div><span className="text-muted-foreground">Tipo documento:</span> {c.tipo_documento}</div>
+                      <div><span className="text-muted-foreground">Provincia:</span> {c.provincia ?? "—"}</div>
+                      <div className="md:col-span-2"><span className="text-muted-foreground">Dirección:</span> {c.direccion ?? "—"}</div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 text-sm font-semibold mb-2">
+                          <FileText className="h-4 w-4" />Cotizaciones ({cots.length})
+                        </div>
+                        {cots.length === 0 ? (
+                          <div className="text-xs text-muted-foreground">Sin cotizaciones</div>
+                        ) : (
+                          <ul className="space-y-1">
+                            {cots.map((q: any) => (
+                              <li key={q.id}>
+                                <Link to="/cotizaciones/nueva" search={{ id: q.id }}
+                                  className="flex justify-between items-center text-sm px-2 py-1 rounded hover:bg-background">
+                                  <span className="font-mono">{q.numero}</span>
+                                  <span className="text-muted-foreground text-xs">{fmtDate(q.fecha)}</span>
+                                  <span className="text-xs">{q.estado}</span>
+                                  <span className="font-semibold">{fmtMoney(q.total)}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 text-sm font-semibold mb-2">
+                          <Receipt className="h-4 w-4" />Facturas ({facs.length})
+                        </div>
+                        {facs.length === 0 ? (
+                          <div className="text-xs text-muted-foreground">Sin facturas</div>
+                        ) : (
+                          <ul className="space-y-1">
+                            {facs.map((f: any) => (
+                              <li key={f.id}>
+                                <Link to="/facturas/nueva" search={{ id: f.id }}
+                                  className="flex justify-between items-center text-sm px-2 py-1 rounded hover:bg-background">
+                                  <span className="font-mono">{f.ncf}</span>
+                                  <span className="text-muted-foreground text-xs">{fmtDate(f.fecha)}</span>
+                                  <span className="text-xs">{f.estado}</span>
+                                  <span className="font-semibold">{fmtMoney(f.total)}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        )}
       </Card>
     </div>
   );
