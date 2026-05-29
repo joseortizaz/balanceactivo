@@ -148,6 +148,13 @@ function Clientes() {
       </div>
 
       <Card className="p-0 overflow-hidden">
+        <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 px-3 py-2 border-b bg-muted/40 text-xs font-semibold text-muted-foreground">
+          <div>Razón social</div>
+          <div>Documento</div>
+          <div>Teléfono</div>
+          <div>Email</div>
+          <div className="w-8" />
+        </div>
         {filtered.length === 0 ? (
           <div className="p-6 text-center text-muted-foreground">Sin clientes</div>
         ) : (
@@ -157,14 +164,12 @@ function Clientes() {
               const facs = facsPor.get(c.id) ?? [];
               return (
                 <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
-                  <div className="flex items-center gap-2 px-3">
-                    <AccordionTrigger className="flex-1 py-3 hover:no-underline">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 w-full text-left">
-                        <div className="font-medium">{c.razon_social}</div>
-                        <div className="font-mono text-xs text-muted-foreground">{c.documento}</div>
-                        <div className="text-xs text-muted-foreground">{c.telefono ?? ""}</div>
-                        <div className="text-xs text-muted-foreground truncate">{c.email ?? ""}</div>
-                      </div>
+                  <div className="grid grid-cols-[2fr_1fr_1fr_2fr_auto] gap-3 items-center px-3">
+                    <AccordionTrigger className="col-span-4 grid grid-cols-subgrid py-3 hover:no-underline">
+                      <div className="font-medium truncate text-left">{c.razon_social}</div>
+                      <div className="font-mono text-xs text-muted-foreground truncate text-left">{c.documento}</div>
+                      <div className="text-xs text-muted-foreground truncate text-left">{c.telefono ?? ""}</div>
+                      <div className="text-xs text-muted-foreground truncate text-left">{c.email ?? ""}</div>
                     </AccordionTrigger>
                     <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); abrirEditar(c); }}>
                       <Pencil className="h-4 w-4" />
