@@ -262,39 +262,51 @@ export type Database = {
           banco_id: string | null
           created_at: string
           created_by: string | null
+          estado: Database["public"]["Enums"]["estado_cobro"]
           factura_id: string
           fecha: string
           id: string
           metodo: string | null
           monto: number
+          motivo_estado: string | null
           nota: string | null
           tenant_id: string
+          updated_at: string
+          updated_by: string | null
         }
         Insert: {
           asiento_id?: string | null
           banco_id?: string | null
           created_at?: string
           created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_cobro"]
           factura_id: string
           fecha?: string
           id?: string
           metodo?: string | null
           monto: number
+          motivo_estado?: string | null
           nota?: string | null
           tenant_id: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           asiento_id?: string | null
           banco_id?: string | null
           created_at?: string
           created_by?: string | null
+          estado?: Database["public"]["Enums"]["estado_cobro"]
           factura_id?: string
           fecha?: string
           id?: string
           metodo?: string | null
           monto?: number
+          motivo_estado?: string | null
           nota?: string | null
           tenant_id?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -2009,6 +2021,10 @@ export type Database = {
         }
         Returns: string
       }
+      anular_cobro: {
+        Args: { _cobro_id: string; _motivo: string }
+        Returns: string
+      }
       anular_factura: {
         Args: { _factura_id: string; _motivo: string }
         Returns: undefined
@@ -2080,6 +2096,17 @@ export type Database = {
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
+      }
+      editar_cobro: {
+        Args: {
+          _banco_id?: string
+          _cobro_id: string
+          _fecha: string
+          _metodo: string
+          _monto: number
+          _nota?: string
+        }
+        Returns: string
       }
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
@@ -2226,6 +2253,7 @@ export type Database = {
         | "08_combustibles"
         | "09_otros"
       condicion_pago: "contado" | "credito"
+      estado_cobro: "activo" | "anulado"
       estado_cotizacion:
         | "borrador"
         | "enviada"
@@ -2439,6 +2467,7 @@ export const Constants = {
         "09_otros",
       ],
       condicion_pago: ["contado", "credito"],
+      estado_cobro: ["activo", "anulado"],
       estado_cotizacion: [
         "borrador",
         "enviada",
