@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Plus, Pencil, Search, FileText, Receipt } from "lucide-react";
+import { Plus, Pencil, Search, FileText, Receipt, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { validarRNC, validarCedula } from "@/lib/format";
 import { fmtMoney, fmtDate } from "@/lib/format";
