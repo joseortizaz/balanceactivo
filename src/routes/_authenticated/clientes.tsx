@@ -166,7 +166,7 @@ function Clientes() {
               return (
                 <AccordionItem key={c.id} value={c.id} className="border-b border-border last:border-b-0">
                   <div className="relative flex items-center">
-                    <AccordionTrigger className="flex-1 py-3 px-4 hover:no-underline [&>svg]:hidden">
+                    <AccordionTrigger className="flex-1 py-3 px-4 hover:no-underline [&>svg]:hidden [&[data-state=open]_.chevron-icon]:rotate-180">
                       {/* Desktop layout */}
                       <div className="hidden md:grid w-full grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,2fr)_auto_auto] gap-3 items-center text-left">
                         <div className="font-medium truncate">{c.razon_social}</div>
