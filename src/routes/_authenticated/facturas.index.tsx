@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, FileDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Plus, Pencil, FileDown, Search } from "lucide-react";
 import { fmtMoney, fmtDate } from "@/lib/format";
 import { generateFacturaPdf } from "@/lib/factura-pdf";
 import { toast } from "sonner";
@@ -12,10 +14,34 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_authenticated/facturas/")({ component: Facturas });
 
 function Facturas() {
+  const [search, setSearch] = useState("");
   const { data } = useQuery({
     queryKey: ["facturas"],
     queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento)").order("created_at", { ascending: false })).data ?? [],
   });
+  const { data: lineasAll } = useQuery({
+    queryKey: ["factura-lineas-all"],
+    queryFn: async () => (await supabase.from("factura_lineas").select("factura_id, descripcion")).data ?? [],
+  });
+
+  const lineasPorFactura = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const l of (lineasAll ?? []) as any[]) {
+      m.set(l.factura_id, (m.get(l.factura_id) ?? "") + " " + (l.descripcion ?? ""));
+    }
+    return m;
+  }, [lineasAll]);
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return data ?? [];
+    return (data ?? []).filter((f: any) => {
+      const cliente = (f.clientes?.razon_social ?? "").toLowerCase();
+      const ncf = (f.ncf ?? "").toLowerCase();
+      const productos = (lineasPorFactura.get(f.id) ?? "").toLowerCase();
+      return cliente.includes(q) || ncf.includes(q) || productos.includes(q);
+    });
+  }, [data, lineasPorFactura, search]);
 
   const descargarPdf = async (facturaId: string) => {
     try {
@@ -65,6 +91,11 @@ function Facturas() {
   return (
     <div>
       <PageHeader title="Facturas" action={<Link to="/facturas/nueva"><Button><Plus className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
+      <div className="relative mb-3 max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input placeholder="Buscar por cliente, NCF o producto…"
+          value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
+      </div>
       <Card className="p-0 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-secondary"><tr>
@@ -73,7 +104,7 @@ function Facturas() {
             <th className="text-left p-3">Estado</th><th className="text-right p-3"></th>
           </tr></thead>
           <tbody>
-            {(data ?? []).map((f: any) => (
+            {filtered.map((f: any) => (
               <tr key={f.id} className="border-t border-border">
                 <td className="p-3 font-mono">{f.ncf}</td>
                 <td className="p-3">{fmtDate(f.fecha)}</td>
@@ -94,7 +125,7 @@ function Facturas() {
                 </td>
               </tr>
             ))}
-            {(!data || data.length === 0) && <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">Sin facturas</td></tr>}
+            {filtered.length === 0 && <tr><td colSpan={8} className="p-6 text-center text-muted-foreground">Sin facturas</td></tr>}
           </tbody>
         </table>
       </Card>
