@@ -35,6 +35,7 @@ function NuevaFactura() {
   const [descuentoValor, setDescuentoValor] = useState(0);
   const [lineas, setLineas] = useState<Linea[]>([{ descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const [cuotas, setCuotas] = useState<Cuota[]>([]);
+  const [pagoInicial, setPagoInicial] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -87,7 +88,9 @@ function NuevaFactura() {
   const delCuota = (i: number) => setCuotas(cuotas.filter((_, idx) => idx !== i));
   const distribuirCuotas = (n: number) => {
     if (n < 1) return;
-    const monto = Number((totales.total / n).toFixed(2));
+    const inicial = Math.max(0, Math.min(pagoInicial || 0, totales.total));
+    const restante = Math.max(0, totales.total - inicial);
+    const monto = Number((restante / n).toFixed(2));
     const base = new Date(fecha);
     setCuotas(Array.from({ length: n }, (_, i) => {
       const d = new Date(base); d.setMonth(d.getMonth() + i + 1);
@@ -220,10 +223,28 @@ function NuevaFactura() {
                   <Select onValueChange={(v) => distribuirCuotas(Number(v))}>
                     <SelectTrigger className="w-40"><SelectValue placeholder="Dividir en…" /></SelectTrigger>
                     <SelectContent>
-                      {[2,3,4,6,9,12].map((n) => <SelectItem key={n} value={String(n)}>{n} cuotas</SelectItem>)}
+                      {Array.from({ length: 11 }, (_, i) => i + 2).map((n) => <SelectItem key={n} value={String(n)}>{n} cuotas</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <Button size="sm" variant="outline" onClick={addCuota}><Plus className="h-4 w-4 mr-1" />Cuota</Button>
+                </div>
+              </div>
+              <div className="grid grid-cols-12 gap-2 items-end mb-3">
+                <div className="col-span-4">
+                  <Label className="text-xs">Pago inicial (opcional)</Label>
+                </div>
+                <div className="col-span-5">
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    value={pagoInicial}
+                    onChange={(e) => setPagoInicial(Number(e.target.value))}
+                    placeholder="0.00"
+                  />
+                </div>
+                <div className="col-span-3 text-xs text-muted-foreground pb-2">
+                  Saldo a financiar: {fmtMoney(Math.max(0, totales.total - (pagoInicial || 0)))}
                 </div>
               </div>
               {cuotas.length === 0 && <p className="text-xs text-muted-foreground">Sin plan de cuotas. Si lo dejas vacío, la factura queda como pago único a crédito.</p>}
