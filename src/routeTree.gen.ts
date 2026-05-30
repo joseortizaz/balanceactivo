@@ -44,6 +44,7 @@ import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_auth
 import { Route as AuthenticatedNominaConfiguracionRouteImport } from './routes/_authenticated/nomina.configuracion'
 import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_authenticated/nomina.ausencias'
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
+import { Route as AuthenticatedFacturasIdRouteImport } from './routes/_authenticated/facturas.$id'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
@@ -245,6 +246,11 @@ const AuthenticatedFacturasNuevaRoute =
     path: '/facturas/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedFacturasIdRoute = AuthenticatedFacturasIdRouteImport.update({
+  id: '/facturas/$id',
+  path: '/facturas/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedCotizacionesNuevaRoute =
   AuthenticatedCotizacionesNuevaRouteImport.update({
     id: '/cotizaciones/nueva',
@@ -321,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
+  '/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
   '/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
@@ -366,6 +373,7 @@ export interface FileRoutesByTo {
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
+  '/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
   '/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
@@ -413,6 +421,7 @@ export interface FileRoutesById {
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
+  '/_authenticated/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
   '/_authenticated/nomina/ausencias': typeof AuthenticatedNominaAusenciasRoute
   '/_authenticated/nomina/configuracion': typeof AuthenticatedNominaConfiguracionRoute
@@ -460,6 +469,7 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/email/unsubscribe'
     | '/cotizaciones/nueva'
+    | '/facturas/$id'
     | '/facturas/nueva'
     | '/nomina/ausencias'
     | '/nomina/configuracion'
@@ -505,6 +515,7 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/email/unsubscribe'
     | '/cotizaciones/nueva'
+    | '/facturas/$id'
     | '/facturas/nueva'
     | '/nomina/ausencias'
     | '/nomina/configuracion'
@@ -551,6 +562,7 @@ export interface FileRouteTypes {
     | '/_authenticated/suscripcion'
     | '/email/unsubscribe'
     | '/_authenticated/cotizaciones/nueva'
+    | '/_authenticated/facturas/$id'
     | '/_authenticated/facturas/nueva'
     | '/_authenticated/nomina/ausencias'
     | '/_authenticated/nomina/configuracion'
@@ -836,6 +848,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/facturas/$id': {
+      id: '/_authenticated/facturas/$id'
+      path: '/facturas/$id'
+      fullPath: '/facturas/$id'
+      preLoaderRoute: typeof AuthenticatedFacturasIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/cotizaciones/nueva': {
       id: '/_authenticated/cotizaciones/nueva'
       path: '/cotizaciones/nueva'
@@ -920,6 +939,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
+  AuthenticatedFacturasIdRoute: typeof AuthenticatedFacturasIdRoute
   AuthenticatedFacturasNuevaRoute: typeof AuthenticatedFacturasNuevaRoute
   AuthenticatedNominaAusenciasRoute: typeof AuthenticatedNominaAusenciasRoute
   AuthenticatedNominaConfiguracionRoute: typeof AuthenticatedNominaConfiguracionRoute
@@ -955,6 +975,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
+  AuthenticatedFacturasIdRoute: AuthenticatedFacturasIdRoute,
   AuthenticatedFacturasNuevaRoute: AuthenticatedFacturasNuevaRoute,
   AuthenticatedNominaAusenciasRoute: AuthenticatedNominaAusenciasRoute,
   AuthenticatedNominaConfiguracionRoute: AuthenticatedNominaConfiguracionRoute,
