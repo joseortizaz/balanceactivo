@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Pencil, FileDown, Search, Ban, Lock } from "lucide-react";
+import { Plus, Pencil, FileDown, Search, Ban, Lock, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { fmtMoney, fmtDate } from "@/lib/format";
@@ -145,6 +145,9 @@ function Facturas() {
                   {f.motivo_estado && <div className="text-xs text-muted-foreground italic mt-0.5">{f.motivo_estado}</div>}
                 </td>
                 <td className="p-3 text-right whitespace-nowrap">
+                  <Link to="/facturas/$id" params={{ id: f.id }}>
+                    <Button size="sm" variant="ghost"><Eye className="h-3 w-3 mr-1" />Ver</Button>
+                  </Link>
                   <Button size="sm" variant="ghost" onClick={() => descargarPdf(f.id)}>
                     <FileDown className="h-3 w-3 mr-1" />PDF
                   </Button>
