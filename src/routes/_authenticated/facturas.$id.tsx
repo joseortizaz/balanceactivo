@@ -20,7 +20,15 @@ function VerFactura() {
         supabase.from("factura_lineas").select("descripcion, cantidad, precio, subtotal").eq("factura_id", id),
         supabase.from("tenants").select("razon_social, nombre_comercial, rnc, direccion, telefono, logo_url").limit(1),
       ]);
-      return { f, lineas: lineas ?? [], tenant: (tenantRows ?? [])[0] ?? null };
+      const tenant = (tenantRows ?? [])[0] ?? null;
+      let logoUrl: string | null = null;
+      if (tenant?.logo_url) {
+        const { data: sig } = await supabase.storage
+          .from("tenant-assets")
+          .createSignedUrl(tenant.logo_url, 3600);
+        logoUrl = sig?.signedUrl ?? null;
+      }
+      return { f, lineas: lineas ?? [], tenant, logoUrl };
     },
   });
 
@@ -37,7 +45,7 @@ function VerFactura() {
     companyAddress: t.direccion,
     companyPhone: t.telefono,
     companyEmail: null,
-    companyLogoUrl: t.logo_url,
+    companyLogoUrl: data.logoUrl,
     ncf: f.ncf,
     fechaEmision: fmtDate(f.fecha),
     fechaVencimiento: f.fecha_vencimiento ? fmtDate(f.fecha_vencimiento) : null,
