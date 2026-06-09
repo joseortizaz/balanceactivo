@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { fmtMoney, fmtDate, today } from "@/lib/format";
 import { useAuth } from "@/hooks/use-auth";
 import { generateReciboPdf } from "@/lib/recibo-pdf";
 import { sendTransactionalEmail } from "@/lib/email/send";
-import { Download, Mail, Pencil, Ban, Eye } from "lucide-react";
+import { Download, Mail, Pencil, Ban, Eye, Search, FileDown } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/cobros")({ component: Cobros });
 
@@ -42,6 +43,13 @@ function Cobros() {
   const [anulCobro, setAnulCobro] = useState<any>(null);
   const [anulMotivo, setAnulMotivo] = useState("");
 
+  // Filtros para cobros registrados
+  const [search, setSearch] = useState("");
+  const [fDesde, setFDesde] = useState("");
+  const [fHasta, setFHasta] = useState("");
+  const [fMetodo, setFMetodo] = useState<string>("todos");
+  const [fEstado, setFEstado] = useState<string>("todos");
+
   const { data: pendientes } = useQuery({
     queryKey: ["facturas-pendientes"],
     queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social)").eq("estado", "pendiente").order("fecha")).data ?? [],
@@ -52,7 +60,8 @@ function Cobros() {
     queryFn: async () =>
       (await (supabase as any)
         .from("cobros")
-        .select("*, facturas(ncf, total, estado, clientes(razon_social)), bancos(nombre)")
+        .select("*, facturas(ncf, total, estado, monto_pagado, clientes(razon_social, email)), bancos(nombre)")
+        .order("factura_id", { ascending: true })
         .order("fecha", { ascending: false })
         .limit(100)).data ?? [],
   });
