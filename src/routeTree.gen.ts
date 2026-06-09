@@ -46,6 +46,7 @@ import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_auth
 import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
 import { Route as AuthenticatedFacturasIdRouteImport } from './routes/_authenticated/facturas.$id'
 import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
+import { Route as AuthenticatedCobrosIdRouteImport } from './routes/_authenticated/cobros.$id'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -257,6 +258,11 @@ const AuthenticatedCotizacionesNuevaRoute =
     path: '/cotizaciones/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCobrosIdRoute = AuthenticatedCobrosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedCobrosRoute,
+} as any)
 const AuthenticatedNominaPeriodosIndexRoute =
   AuthenticatedNominaPeriodosIndexRouteImport.update({
     id: '/nomina/periodos/',
@@ -312,7 +318,7 @@ export interface FileRoutesByFullPath {
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
-  '/cobros': typeof AuthenticatedCobrosRoute
+  '/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -326,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/cobros/$id': typeof AuthenticatedCobrosIdRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
@@ -358,7 +365,7 @@ export interface FileRoutesByTo {
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
-  '/cobros': typeof AuthenticatedCobrosRoute
+  '/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -372,6 +379,7 @@ export interface FileRoutesByTo {
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/cobros/$id': typeof AuthenticatedCobrosIdRoute
   '/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
@@ -406,7 +414,7 @@ export interface FileRoutesById {
   '/_authenticated/asientos': typeof AuthenticatedAsientosRoute
   '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
-  '/_authenticated/cobros': typeof AuthenticatedCobrosRoute
+  '/_authenticated/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
   '/_authenticated/cuentas': typeof AuthenticatedCuentasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -420,6 +428,7 @@ export interface FileRoutesById {
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/_authenticated/cobros/$id': typeof AuthenticatedCobrosIdRoute
   '/_authenticated/cotizaciones/nueva': typeof AuthenticatedCotizacionesNuevaRoute
   '/_authenticated/facturas/$id': typeof AuthenticatedFacturasIdRoute
   '/_authenticated/facturas/nueva': typeof AuthenticatedFacturasNuevaRoute
@@ -468,6 +477,7 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/suscripcion'
     | '/email/unsubscribe'
+    | '/cobros/$id'
     | '/cotizaciones/nueva'
     | '/facturas/$id'
     | '/facturas/nueva'
@@ -514,6 +524,7 @@ export interface FileRouteTypes {
     | '/superadmin'
     | '/suscripcion'
     | '/email/unsubscribe'
+    | '/cobros/$id'
     | '/cotizaciones/nueva'
     | '/facturas/$id'
     | '/facturas/nueva'
@@ -561,6 +572,7 @@ export interface FileRouteTypes {
     | '/_authenticated/superadmin'
     | '/_authenticated/suscripcion'
     | '/email/unsubscribe'
+    | '/_authenticated/cobros/$id'
     | '/_authenticated/cotizaciones/nueva'
     | '/_authenticated/facturas/$id'
     | '/_authenticated/facturas/nueva'
@@ -862,6 +874,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCotizacionesNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/cobros/$id': {
+      id: '/_authenticated/cobros/$id'
+      path: '/$id'
+      fullPath: '/cobros/$id'
+      preLoaderRoute: typeof AuthenticatedCobrosIdRouteImport
+      parentRoute: typeof AuthenticatedCobrosRoute
+    }
     '/_authenticated/nomina/periodos/': {
       id: '/_authenticated/nomina/periodos/'
       path: '/nomina/periodos'
@@ -921,11 +940,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedCobrosRouteChildren {
+  AuthenticatedCobrosIdRoute: typeof AuthenticatedCobrosIdRoute
+}
+
+const AuthenticatedCobrosRouteChildren: AuthenticatedCobrosRouteChildren = {
+  AuthenticatedCobrosIdRoute: AuthenticatedCobrosIdRoute,
+}
+
+const AuthenticatedCobrosRouteWithChildren =
+  AuthenticatedCobrosRoute._addFileChildren(AuthenticatedCobrosRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
   AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
-  AuthenticatedCobrosRoute: typeof AuthenticatedCobrosRoute
+  AuthenticatedCobrosRoute: typeof AuthenticatedCobrosRouteWithChildren
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
   AuthenticatedCuentasRoute: typeof AuthenticatedCuentasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -961,7 +991,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAsientosRoute: AuthenticatedAsientosRoute,
   AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
-  AuthenticatedCobrosRoute: AuthenticatedCobrosRoute,
+  AuthenticatedCobrosRoute: AuthenticatedCobrosRouteWithChildren,
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
   AuthenticatedCuentasRoute: AuthenticatedCuentasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
