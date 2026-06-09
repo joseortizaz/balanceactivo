@@ -75,9 +75,9 @@ function VerRecibo() {
     nota: c.nota,
   };
 
-  const descargarPdf = () => {
+  const descargarPdf = async () => {
     try {
-      const doc = generateReciboPdf({
+      const doc = await generateReciboPdf({
         companyName: previewData.companyName,
         companyRnc: previewData.companyRnc,
         companyAddress: previewData.companyAddress,
