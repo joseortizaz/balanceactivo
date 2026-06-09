@@ -324,55 +324,140 @@ function Cobros() {
       </Card>
 
       <h2 className="text-lg font-semibold mt-8 mb-3">Cobros registrados</h2>
-      <Card className="p-0 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary"><tr>
-            <th className="text-left p-3">Fecha</th>
-            <th className="text-left p-3">Factura</th>
-            <th className="text-left p-3">Cliente</th>
-            <th className="text-right p-3">Monto</th>
-            <th className="text-left p-3">Vía</th>
-            <th className="text-left p-3">Estado</th>
-            <th></th>
-          </tr></thead>
-          <tbody>
-            {(cobrosReg ?? []).map((c: any) => {
-              const anulado = c.estado === "anulado";
-              const factAnul = c.facturas?.estado === "anulada";
-              return (
-                <tr key={c.id} className="border-t border-border">
-                  <td className="p-3">{fmtDate(c.fecha)}</td>
-                  <td className="p-3 font-mono">{c.facturas?.ncf}</td>
-                  <td className="p-3">{c.facturas?.clientes?.razon_social}</td>
-                  <td className="p-3 text-right">{fmtMoney(c.monto)}</td>
-                  <td className="p-3">{metodoLabel(c.metodo)}{c.bancos?.nombre ? ` — ${c.bancos.nombre}` : ""}</td>
-                  <td className="p-3">
-                    <span className={anulado ? "text-destructive font-medium" : "text-foreground"}>
-                      {anulado ? "Anulado" : "Activo"}
-                    </span>
-                    {anulado && c.motivo_estado && (
-                      <div className="text-xs text-muted-foreground" title={c.motivo_estado}>{c.motivo_estado}</div>
-                    )}
-                  </td>
-                  <td className="p-3 text-right whitespace-nowrap">
-                    <Link to="/cobros/$id" params={{ id: c.id }}>
-                      <Button size="sm" variant="ghost"><Eye className="h-3.5 w-3.5 mr-1" />Ver</Button>
-                    </Link>
-                    <Button size="sm" variant="outline" disabled={anulado || factAnul} onClick={() => openEdit(c)}>
-                      <Pencil className="h-3.5 w-3.5 mr-1" />Editar
-                    </Button>
-                    <Button size="sm" variant="ghost" className="ml-2 text-destructive" disabled={anulado} onClick={() => setAnulCobro(c)}>
-                      <Ban className="h-3.5 w-3.5 mr-1" />Anular
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-            {(!cobrosReg || cobrosReg.length === 0) && (
-              <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Aún no hay cobros registrados</td></tr>
-            )}
-          </tbody>
-        </table>
+
+      <Card className="p-4 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div className="md:col-span-4 relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              className="pl-9"
+              placeholder="Buscar por cliente, NCF o N° de recibo…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-xs">Desde</Label>
+            <Input type="date" value={fDesde} onChange={(e) => setFDesde(e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-xs">Hasta</Label>
+            <Input type="date" value={fHasta} onChange={(e) => setFHasta(e.target.value)} />
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-xs">Vía</Label>
+            <Select value={fMetodo} onValueChange={setFMetodo}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todas</SelectItem>
+                <SelectItem value="efectivo">Efectivo</SelectItem>
+                <SelectItem value="transferencia">Transferencia</SelectItem>
+                <SelectItem value="deposito">Depósito</SelectItem>
+                <SelectItem value="cheque">Cheque</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="md:col-span-2">
+            <Label className="text-xs">Estado</Label>
+            <Select value={fEstado} onValueChange={setFEstado}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="activo">Activos</SelectItem>
+                <SelectItem value="anulado">Anulados</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-2">
+        {grupos.length === 0 ? (
+          <div className="p-6 text-center text-muted-foreground text-sm">
+            {(!cobrosReg || cobrosReg.length === 0) ? "Aún no hay cobros registrados" : "No hay cobros que coincidan con los filtros"}
+          </div>
+        ) : (
+          <Accordion type="multiple" className="w-full">
+            {grupos.map((g) => (
+              <AccordionItem key={g.facturaId} value={g.facturaId}>
+                <AccordionTrigger className="px-3 hover:no-underline">
+                  <div className="flex flex-1 items-center justify-between gap-3 pr-3 text-sm">
+                    <div className="text-left">
+                      <div className="font-mono font-semibold">{g.ncf}</div>
+                      <div className="text-muted-foreground text-xs">{g.cliente}</div>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs">
+                      <div className="hidden sm:block text-muted-foreground">
+                        {g.cobros.length} {g.cobros.length === 1 ? "abono" : "abonos"}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-muted-foreground">Total factura</div>
+                        <div className="font-medium text-foreground">{fmtMoney(g.total)}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-muted-foreground">Abonado</div>
+                        <div className="font-semibold text-emerald-600">{fmtMoney(g.totalAbonos)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-secondary/50">
+                        <tr>
+                          <th className="text-left p-2">Fecha</th>
+                          <th className="text-left p-2">N° Recibo</th>
+                          <th className="text-right p-2">Monto</th>
+                          <th className="text-left p-2">Vía</th>
+                          <th className="text-left p-2">Estado</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {g.cobros.map((c: any) => {
+                          const anulado = c.estado === "anulado";
+                          const factAnul = c.facturas?.estado === "anulada";
+                          const recNum = `REC-${String(c.id ?? "").slice(0, 8).toUpperCase()}`;
+                          return (
+                            <tr key={c.id} className="border-t border-border">
+                              <td className="p-2">{fmtDate(c.fecha)}</td>
+                              <td className="p-2 font-mono text-xs">{recNum}</td>
+                              <td className="p-2 text-right">{fmtMoney(c.monto)}</td>
+                              <td className="p-2">{metodoLabel(c.metodo)}{c.bancos?.nombre ? ` — ${c.bancos.nombre}` : ""}</td>
+                              <td className="p-2">
+                                <span className={anulado ? "text-destructive font-medium" : "text-foreground"}>
+                                  {anulado ? "Anulado" : "Activo"}
+                                </span>
+                                {anulado && c.motivo_estado && (
+                                  <div className="text-xs text-muted-foreground" title={c.motivo_estado}>{c.motivo_estado}</div>
+                                )}
+                              </td>
+                              <td className="p-2 text-right whitespace-nowrap">
+                                <Link to="/cobros/$id" params={{ id: c.id }}>
+                                  <Button size="sm" variant="ghost"><Eye className="h-3.5 w-3.5 mr-1" />Ver</Button>
+                                </Link>
+                                <Button size="sm" variant="ghost" onClick={() => descargarPdfCobro(c)}>
+                                  <FileDown className="h-3.5 w-3.5 mr-1" />PDF
+                                </Button>
+                                <Button size="sm" variant="outline" disabled={anulado || factAnul} onClick={() => openEdit(c)}>
+                                  <Pencil className="h-3.5 w-3.5 mr-1" />Editar
+                                </Button>
+                                <Button size="sm" variant="ghost" className="ml-1 text-destructive" disabled={anulado} onClick={() => setAnulCobro(c)}>
+                                  <Ban className="h-3.5 w-3.5 mr-1" />Anular
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        )}
       </Card>
 
       <Dialog open={!!sel} onOpenChange={(o) => !o && setSel(null)}>
