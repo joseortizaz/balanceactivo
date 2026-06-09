@@ -205,6 +205,78 @@ function Cobros() {
     doc.save(`${d.receiptNumber}-${d.invoiceNcf}.pdf`);
   };
 
+  const descargarPdfCobro = async (c: any) => {
+    const recNum = `REC-${String(c.id ?? "").slice(0, 8).toUpperCase()}`;
+    const totalFact = Number(c.facturas?.total ?? 0);
+    const pagadoFact = Number(c.facturas?.monto_pagado ?? 0);
+    const pendiente = Math.max(totalFact - pagadoFact, 0);
+    let logoUrl: string | null = null;
+    if (tenant?.logo_url) {
+      const { data: sig } = await supabase.storage
+        .from("tenant-assets")
+        .createSignedUrl(tenant.logo_url, 3600);
+      logoUrl = sig?.signedUrl ?? null;
+    }
+    const doc = await generateReciboPdf({
+      companyName: tenant?.razon_social ?? "Empresa",
+      companyRnc: tenant?.rnc ?? null,
+      companyAddress: tenant?.direccion ?? null,
+      companyPhone: tenant?.telefono ?? null,
+      companyLogoUrl: logoUrl,
+      clientName: c.facturas?.clientes?.razon_social ?? "Cliente",
+      invoiceNcf: c.facturas?.ncf ?? "",
+      invoiceTotal: fmtMoney(totalFact),
+      amountPaid: fmtMoney(c.monto),
+      amountPending: fmtMoney(pendiente),
+      paymentDate: fmtDate(c.fecha),
+      paymentMethod: metodoLabel(c.metodo),
+      bankName: c.bancos?.nombre ?? null,
+      note: c.nota ?? null,
+      receiptNumber: recNum,
+      estado: c.estado === "anulado" ? "ANULADO" : "PAGADO",
+    });
+    doc.save(`${recNum}-${c.facturas?.ncf ?? ""}.pdf`);
+  };
+
+  // Filtrado + agrupación
+  const grupos = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const desde = fDesde ? new Date(fDesde) : null;
+    const hasta = fHasta ? new Date(fHasta) : null;
+    const filtrados = (cobrosReg ?? []).filter((c: any) => {
+      if (fMetodo !== "todos" && c.metodo !== fMetodo) return false;
+      if (fEstado !== "todos" && (c.estado ?? "activo") !== fEstado) return false;
+      if (desde && new Date(c.fecha) < desde) return false;
+      if (hasta && new Date(c.fecha) > hasta) return false;
+      if (q) {
+        const recNum = `REC-${String(c.id ?? "").slice(0, 8).toUpperCase()}`.toLowerCase();
+        const cliente = (c.facturas?.clientes?.razon_social ?? "").toLowerCase();
+        const ncf = (c.facturas?.ncf ?? "").toLowerCase();
+        if (!cliente.includes(q) && !ncf.includes(q) && !recNum.includes(q)) return false;
+      }
+      return true;
+    });
+    const map = new Map<string, any>();
+    for (const c of filtrados) {
+      const key = c.factura_id ?? "sin-factura";
+      if (!map.has(key)) {
+        map.set(key, {
+          facturaId: key,
+          ncf: c.facturas?.ncf ?? "—",
+          cliente: c.facturas?.clientes?.razon_social ?? "—",
+          total: Number(c.facturas?.total ?? 0),
+          estado: c.facturas?.estado,
+          cobros: [] as any[],
+          totalAbonos: 0,
+        });
+      }
+      const g = map.get(key);
+      g.cobros.push(c);
+      if ((c.estado ?? "activo") !== "anulado") g.totalAbonos += Number(c.monto);
+    }
+    return Array.from(map.values());
+  }, [cobrosReg, search, fDesde, fHasta, fMetodo, fEstado]);
+
   const enviarEmail = async () => {
     const d = buildPdfData();
     if (!d) return;
