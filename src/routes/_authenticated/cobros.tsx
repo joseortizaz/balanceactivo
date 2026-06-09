@@ -182,10 +182,17 @@ function Cobros() {
     };
   };
 
-  const descargarPdf = () => {
+  const descargarPdf = async () => {
     const d = buildPdfData();
     if (!d) return;
-    const doc = generateReciboPdf(d);
+    let logoUrl: string | null = null;
+    if (tenant?.logo_url) {
+      const { data: sig } = await supabase.storage
+        .from("tenant-assets")
+        .createSignedUrl(tenant.logo_url, 3600);
+      logoUrl = sig?.signedUrl ?? null;
+    }
+    const doc = await generateReciboPdf({ ...d, companyLogoUrl: logoUrl, estado: "PAGADO" });
     doc.save(`${d.receiptNumber}-${d.invoiceNcf}.pdf`);
   };
 
