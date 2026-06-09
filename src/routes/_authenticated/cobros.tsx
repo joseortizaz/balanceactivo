@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
@@ -15,7 +15,7 @@ import { fmtMoney, fmtDate, today } from "@/lib/format";
 import { useAuth } from "@/hooks/use-auth";
 import { generateReciboPdf } from "@/lib/recibo-pdf";
 import { sendTransactionalEmail } from "@/lib/email/send";
-import { Download, Mail, Pencil, Ban } from "lucide-react";
+import { Download, Mail, Pencil, Ban, Eye } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/cobros")({ component: Cobros });
 
@@ -274,6 +274,9 @@ function Cobros() {
                     )}
                   </td>
                   <td className="p-3 text-right whitespace-nowrap">
+                    <Link to="/cobros/$id" params={{ id: c.id }}>
+                      <Button size="sm" variant="ghost"><Eye className="h-3.5 w-3.5 mr-1" />Ver</Button>
+                    </Link>
                     <Button size="sm" variant="outline" disabled={anulado || factAnul} onClick={() => openEdit(c)}>
                       <Pencil className="h-3.5 w-3.5 mr-1" />Editar
                     </Button>
