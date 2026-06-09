@@ -297,44 +297,33 @@ function Cobros() {
     }
   };
 
+  const q = search.trim().toLowerCase();
+  const pendientesFiltradas = useMemo(() => {
+    return (pendientes ?? []).filter((f: any) => {
+      if (!q) return true;
+      const cliente = (f.clientes?.razon_social ?? "").toLowerCase();
+      const ncf = (f.ncf ?? "").toLowerCase();
+      return cliente.includes(q) || ncf.includes(q);
+    });
+  }, [pendientes, q]);
+
   return (
     <div>
       <PageHeader title="Cobros" description="Registra pagos de facturas pendientes" />
-      <Card className="p-0 overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-secondary"><tr>
-            <th className="text-left p-3">NCF</th><th className="text-left p-3">Cliente</th><th className="text-left p-3">Fecha</th>
-            <th className="text-right p-3">Total</th><th className="text-right p-3">Pagado</th><th className="text-right p-3">Pendiente</th><th></th>
-          </tr></thead>
-          <tbody>
-            {(pendientes ?? []).map((f: any) => (
-              <tr key={f.id} className="border-t border-border">
-                <td className="p-3 font-mono">{f.ncf}</td>
-                <td className="p-3">{f.clientes?.razon_social}</td>
-                <td className="p-3">{fmtDate(f.fecha)}</td>
-                <td className="p-3 text-right">{fmtMoney(f.total)}</td>
-                <td className="p-3 text-right">{fmtMoney(f.monto_pagado)}</td>
-                <td className="p-3 text-right font-semibold">{fmtMoney(Number(f.total) - Number(f.monto_pagado))}</td>
-                <td className="p-3"><Button size="sm" onClick={() => openCobro(f)}>Cobrar</Button></td>
-              </tr>
-            ))}
-            {(!pendientes || pendientes.length === 0) && <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Sin facturas pendientes</td></tr>}
-          </tbody>
-        </table>
-      </Card>
 
-      <h2 className="text-lg font-semibold mt-8 mb-3">Cobros registrados</h2>
-
-      <Card className="p-4 mb-3">
+      <Card className="p-4 mb-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           <div className="md:col-span-4 relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="pl-9"
-              placeholder="Buscar por cliente, NCF o N° de recibo…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <Label className="text-xs">Buscar</Label>
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="pl-9"
+                placeholder="Cliente, NCF o N° de recibo…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
           <div className="md:col-span-2">
             <Label className="text-xs">Desde</Label>
@@ -369,7 +358,40 @@ function Cobros() {
             </Select>
           </div>
         </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          La búsqueda aplica a facturas pendientes y cobros registrados. Los filtros de fecha, vía y estado aplican solo a los cobros registrados.
+        </p>
       </Card>
+
+      <h2 className="text-lg font-semibold mb-3">Facturas pendientes</h2>
+      <Card className="p-0 overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary"><tr>
+            <th className="text-left p-3">NCF</th><th className="text-left p-3">Cliente</th><th className="text-left p-3">Fecha</th>
+            <th className="text-right p-3">Total</th><th className="text-right p-3">Pagado</th><th className="text-right p-3">Pendiente</th><th></th>
+          </tr></thead>
+          <tbody>
+            {pendientesFiltradas.map((f: any) => (
+              <tr key={f.id} className="border-t border-border">
+                <td className="p-3 font-mono">{f.ncf}</td>
+                <td className="p-3">{f.clientes?.razon_social}</td>
+                <td className="p-3">{fmtDate(f.fecha)}</td>
+                <td className="p-3 text-right">{fmtMoney(f.total)}</td>
+                <td className="p-3 text-right">{fmtMoney(f.monto_pagado)}</td>
+                <td className="p-3 text-right font-semibold">{fmtMoney(Number(f.total) - Number(f.monto_pagado))}</td>
+                <td className="p-3"><Button size="sm" onClick={() => openCobro(f)}>Cobrar</Button></td>
+              </tr>
+            ))}
+            {pendientesFiltradas.length === 0 && (
+              <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">
+                {(!pendientes || pendientes.length === 0) ? "Sin facturas pendientes" : "No hay pendientes que coincidan con la búsqueda"}
+              </td></tr>
+            )}
+          </tbody>
+        </table>
+      </Card>
+
+      <h2 className="text-lg font-semibold mt-8 mb-3">Cobros registrados</h2>
 
       <Card className="p-2">
         {grupos.length === 0 ? (
