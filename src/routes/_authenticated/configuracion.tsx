@@ -82,26 +82,26 @@ function Configuracion() {
         <Card className="p-5">
           <h2 className="font-semibold mb-4">Datos de la empresa</h2>
           <div className="space-y-3">
-            <div><Label>RNC</Label><Input value={form.rnc ?? ""} onChange={(e) => setForm({ ...form, rnc: e.target.value })} placeholder="9 u 11 dígitos" /></div>
-            <div><Label>Razón social</Label><Input value={form.razon_social ?? ""} onChange={(e) => setForm({ ...form, razon_social: e.target.value })} /></div>
-            <div><Label>Nombre comercial</Label><Input value={form.nombre_comercial ?? ""} onChange={(e) => setForm({ ...form, nombre_comercial: e.target.value })} /></div>
+            <div><Label htmlFor="cfg-rnc">RNC</Label><Input id="cfg-rnc" value={form.rnc ?? ""} onChange={(e) => setForm({ ...form, rnc: e.target.value })} placeholder="9 u 11 dígitos" /></div>
+            <div><Label htmlFor="cfg-razon-social">Razón social</Label><Input id="cfg-razon-social" value={form.razon_social ?? ""} onChange={(e) => setForm({ ...form, razon_social: e.target.value })} /></div>
+            <div><Label htmlFor="cfg-nombre-comercial">Nombre comercial</Label><Input id="cfg-nombre-comercial" value={form.nombre_comercial ?? ""} onChange={(e) => setForm({ ...form, nombre_comercial: e.target.value })} /></div>
             <div>
-              <Label>Régimen fiscal</Label>
+              <Label htmlFor="cfg-regimen">Régimen fiscal</Label>
               <Select value={form.regimen_fiscal ?? "ordinario"} onValueChange={(v) => setForm({ ...form, regimen_fiscal: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="cfg-regimen"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ordinario">Régimen Ordinario</SelectItem>
                   <SelectItem value="rst">RST (Simplificado)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Dirección</Label><Input value={form.direccion ?? ""} onChange={(e) => setForm({ ...form, direccion: e.target.value })} /></div>
-            <div><Label>Teléfono</Label><Input value={form.telefono ?? ""} onChange={(e) => setForm({ ...form, telefono: e.target.value })} /></div>
+            <div><Label htmlFor="cfg-direccion">Dirección</Label><Input id="cfg-direccion" value={form.direccion ?? ""} onChange={(e) => setForm({ ...form, direccion: e.target.value })} /></div>
+            <div><Label htmlFor="cfg-telefono">Teléfono</Label><Input id="cfg-telefono" value={form.telefono ?? ""} onChange={(e) => setForm({ ...form, telefono: e.target.value })} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><Label>ITBIS principal (%)</Label><Input type="number" step="0.01" value={form.itbis_tasa_principal ?? 18} onChange={(e) => setForm({ ...form, itbis_tasa_principal: Number(e.target.value) })} /></div>
-              <div><Label>ITBIS reducido (%)</Label><Input type="number" step="0.01" value={form.itbis_tasa_reducida ?? 16} onChange={(e) => setForm({ ...form, itbis_tasa_reducida: Number(e.target.value) })} /></div>
-              <div><Label>Retención ISR servicios (%)</Label><Input type="number" step="0.01" value={form.retencion_isr_servicios ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_servicios: Number(e.target.value) })} /></div>
-              <div><Label>Retención ISR alquileres (%)</Label><Input type="number" step="0.01" value={form.retencion_isr_alquileres ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_alquileres: Number(e.target.value) })} /></div>
+              <div><Label htmlFor="cfg-itbis-principal">ITBIS principal (%)</Label><Input id="cfg-itbis-principal" type="number" step="0.01" value={form.itbis_tasa_principal ?? 18} onChange={(e) => setForm({ ...form, itbis_tasa_principal: Number(e.target.value) })} /></div>
+              <div><Label htmlFor="cfg-itbis-reducido">ITBIS reducido (%)</Label><Input id="cfg-itbis-reducido" type="number" step="0.01" value={form.itbis_tasa_reducida ?? 16} onChange={(e) => setForm({ ...form, itbis_tasa_reducida: Number(e.target.value) })} /></div>
+              <div><Label htmlFor="cfg-isr-servicios">Retención ISR servicios (%)</Label><Input id="cfg-isr-servicios" type="number" step="0.01" value={form.retencion_isr_servicios ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_servicios: Number(e.target.value) })} /></div>
+              <div><Label htmlFor="cfg-isr-alquileres">Retención ISR alquileres (%)</Label><Input id="cfg-isr-alquileres" type="number" step="0.01" value={form.retencion_isr_alquileres ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_alquileres: Number(e.target.value) })} /></div>
             </div>
             <Button onClick={save} className="w-full">Guardar cambios</Button>
           </div>
@@ -131,7 +131,8 @@ function Configuracion() {
           <h2 className="font-semibold mb-1">Bancos / Entidades financieras</h2>
           <p className="text-sm text-muted-foreground mb-4">Estas entidades estarán disponibles al registrar cobros y pagos.</p>
           <div className="flex gap-2 mb-4">
-            <Input placeholder="Nombre del banco" value={nuevoBanco} onChange={(e) => setNuevoBanco(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBanco()} />
+            <Label htmlFor="cfg-nuevo-banco" className="sr-only">Nombre del banco</Label>
+            <Input id="cfg-nuevo-banco" placeholder="Nombre del banco" value={nuevoBanco} onChange={(e) => setNuevoBanco(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addBanco()} />
             <Button onClick={addBanco}>Agregar</Button>
           </div>
           <div className="space-y-2">
