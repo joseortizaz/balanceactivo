@@ -112,9 +112,9 @@ function Clientes() {
           <DialogHeader><DialogTitle>{editId ? "Editar cliente" : "Nuevo cliente"}</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
                 <div>
-                  <Label>Tipo de documento</Label>
+                  <Label htmlFor="cliente-tipo-doc">Tipo de documento</Label>
                   <Select value={f.tipo_documento} onValueChange={(v) => setF({ ...f, tipo_documento: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger id="cliente-tipo-doc"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="rnc_empresa">RNC Empresa (9 dígitos)</SelectItem>
                       <SelectItem value="rnc_persona">RNC Persona Física (11)</SelectItem>
@@ -122,28 +122,30 @@ function Clientes() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label>Documento</Label><Input value={f.documento} onChange={(e) => setF({ ...f, documento: e.target.value })} /></div>
-                <div><Label>Razón social</Label><Input value={f.razon_social} onChange={(e) => setF({ ...f, razon_social: e.target.value })} /></div>
-                <div><Label>Dirección</Label><Input value={f.direccion} onChange={(e) => setF({ ...f, direccion: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-documento">Documento</Label><Input id="cliente-documento" value={f.documento} onChange={(e) => setF({ ...f, documento: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-razon-social">Razón social</Label><Input id="cliente-razon-social" value={f.razon_social} onChange={(e) => setF({ ...f, razon_social: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-direccion">Dirección</Label><Input id="cliente-direccion" value={f.direccion} onChange={(e) => setF({ ...f, direccion: e.target.value })} /></div>
                 <div>
-                  <Label>Provincia</Label>
+                  <Label htmlFor="cliente-provincia">Provincia</Label>
                   <Select value={f.provincia || undefined} onValueChange={(v) => setF({ ...f, provincia: v })}>
-                    <SelectTrigger><SelectValue placeholder="Selecciona una provincia" /></SelectTrigger>
+                    <SelectTrigger id="cliente-provincia"><SelectValue placeholder="Selecciona una provincia" /></SelectTrigger>
                     <SelectContent>
                       {PROVINCIAS_RD.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label>Teléfono</Label><Input value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
-                <div><Label>Email</Label><Input type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-telefono">Teléfono</Label><Input id="cliente-telefono" value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-email">Email</Label><Input id="cliente-email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
                 <Button onClick={guardar} className="w-full">{editId ? "Actualizar" : "Guardar"}</Button>
               </div>
             </DialogContent>
           </Dialog>
 
       <div className="relative mb-3 max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Buscar por razón social, documento, email, provincia…"
+        <Label htmlFor="clientes-search" className="sr-only">Buscar clientes</Label>
+        <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input id="clientes-search" type="search" aria-label="Buscar clientes"
+          placeholder="Buscar por razón social, documento, email, provincia…"
           value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
       </div>
 

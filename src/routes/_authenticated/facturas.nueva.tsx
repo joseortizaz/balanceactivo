@@ -132,18 +132,18 @@ function NuevaFactura() {
         <Card className="p-5 lg:col-span-2 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <Label>Cliente</Label>
+              <Label htmlFor="fac-cliente">Cliente</Label>
               <Select value={clienteId} onValueChange={setClienteId}>
-                <SelectTrigger><SelectValue placeholder="Selecciona cliente" /></SelectTrigger>
+                <SelectTrigger id="fac-cliente"><SelectValue placeholder="Selecciona cliente" /></SelectTrigger>
                 <SelectContent>
                   {(clientes ?? []).map((c: any) => <SelectItem key={c.id} value={c.id}>{c.razon_social} — {c.documento}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Tipo NCF</Label>
+              <Label htmlFor="fac-tipo-ncf">Tipo NCF</Label>
               <Select value={tipoNcf} onValueChange={(v) => setTipoNcf(v as any)} disabled={isEdit}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="fac-tipo-ncf"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="B01">B01 - Crédito Fiscal</SelectItem>
                   <SelectItem value="B02">B02 - Consumo</SelectItem>
@@ -152,27 +152,27 @@ function NuevaFactura() {
               </Select>
             </div>
             <div>
-              <Label>Condición</Label>
+              <Label htmlFor="fac-condicion">Condición</Label>
               <Select value={condicion} onValueChange={(v) => setCondicion(v as any)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="fac-condicion"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="contado">Contado</SelectItem>
                   <SelectItem value="credito">Crédito</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Fecha</Label><Input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} /></div>
+            <div><Label htmlFor="fac-fecha">Fecha</Label><Input id="fac-fecha" type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} /></div>
             <div>
-              <Label>Tipo descuento</Label>
+              <Label htmlFor="fac-tipo-desc">Tipo descuento</Label>
               <Select value={tipoDescuento} onValueChange={(v) => setTipoDescuento(v as any)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="fac-tipo-desc"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="monto">Monto fijo (RD$)</SelectItem>
                   <SelectItem value="porcentaje">Porcentaje (%)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div><Label>Valor descuento</Label><Input type="number" step="0.01" value={descuentoValor} onChange={(e) => setDescuentoValor(Number(e.target.value))} /></div>
+            <div><Label htmlFor="fac-desc-valor">Valor descuento</Label><Input id="fac-desc-valor" type="number" step="0.01" value={descuentoValor} onChange={(e) => setDescuentoValor(Number(e.target.value))} /></div>
           </div>
 
           <div>
@@ -209,7 +209,7 @@ function NuevaFactura() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="col-span-1"><Button variant="ghost" size="icon" onClick={() => delLinea(i)}><Trash2 className="h-4 w-4" /></Button></div>
+                  <div className="col-span-1"><Button variant="ghost" size="icon" aria-label="Eliminar línea" onClick={() => delLinea(i)}><Trash2 className="h-4 w-4" /></Button></div>
                 </div>
               ))}
             </div>
@@ -254,7 +254,7 @@ function NuevaFactura() {
                     <div className="col-span-2 text-sm text-muted-foreground pb-2">Cuota {i + 1}</div>
                     <div className="col-span-4"><Input type="date" value={c.fecha} onChange={(e) => setCuota(i, { fecha: e.target.value })} /></div>
                     <div className="col-span-5"><Input type="number" step="0.01" value={c.monto} onChange={(e) => setCuota(i, { monto: Number(e.target.value) })} /></div>
-                    <div className="col-span-1"><Button variant="ghost" size="icon" onClick={() => delCuota(i)}><Trash2 className="h-4 w-4" /></Button></div>
+                    <div className="col-span-1"><Button variant="ghost" size="icon" aria-label="Eliminar cuota" onClick={() => delCuota(i)}><Trash2 className="h-4 w-4" /></Button></div>
                   </div>
                 ))}
               </div>
