@@ -35,6 +35,49 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
     ],
     links: [{ rel: "canonical", href: "https://balanceactivo.net/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Balance Activo",
+          url: "https://balanceactivo.net",
+          logo: "https://balanceactivo.net/favicon.ico",
+          email: "info@balanceactivo.net",
+          areaServed: "DO",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "Balance Activo",
+          applicationCategory: "AccountingApplication",
+          operatingSystem: "Web",
+          url: "https://balanceactivo.net",
+          description:
+            "Plataforma fintech de contabilidad y facturación con NCF, ITBIS, nómina y reportes 606/607 para República Dominicana.",
+          offers: PLANES.map((p) => ({
+            "@type": "Offer",
+            name: p.nombre,
+            price: p.precio,
+            priceCurrency: "DOP",
+            category: "subscription",
+          })),
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Balance Activo",
+          url: "https://balanceactivo.net",
+        }),
+      },
+    ],
   }),
 });
 
@@ -94,6 +137,7 @@ function Index() {
       </header>
 
       {/* Hero */}
+      <main>
       <section className="relative">
         <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs text-white/80">
@@ -106,7 +150,7 @@ function Index() {
               automatizada y en tiempo real
             </span>
           </h1>
-          <p className="mt-6 text-base md:text-lg text-white/65 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base md:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
             Emite facturas con NCF, calcula ITBIS y nómina, y prepara tus reportes 606/607 desde una plataforma fintech diseñada para República Dominicana.
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
@@ -153,7 +197,7 @@ function Index() {
               <div className="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-[#60a5fa] to-[#34d399] bg-clip-text text-transparent">
                 {s.k}
               </div>
-              <div className="text-xs md:text-sm text-white/55 mt-1">{s.v}</div>
+              <div className="text-xs md:text-sm text-white/75 mt-1">{s.v}</div>
             </div>
           ))}
         </div>
@@ -178,7 +222,7 @@ function Index() {
                 <f.icon className="h-5 w-5 text-white" />
               </div>
               <div className="mt-5 text-lg font-semibold">{f.t}</div>
-              <div className="mt-2 text-sm text-white/60 leading-relaxed">{f.d}</div>
+              <div className="mt-2 text-sm text-white/75 leading-relaxed">{f.d}</div>
             </div>
           ))}
         </div>
@@ -191,7 +235,7 @@ function Index() {
           <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight">
             Precios claros, sin sorpresas
           </h2>
-          <p className="mt-4 text-white/60">
+          <p className="mt-4 text-white/75">
             Elige el plan que se ajusta a tu empresa. Todos incluyen NCF, asientos automáticos y reportes DGII.
           </p>
         </div>
@@ -224,14 +268,14 @@ function Index() {
                     <Star className="h-3 w-3 fill-white" /> Más popular
                   </div>
                 )}
-                <div className="text-sm uppercase tracking-wider text-white/50">{plan.nombre}</div>
+                <div className="text-sm uppercase tracking-wider text-white/70">{plan.nombre}</div>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="text-4xl md:text-5xl font-semibold">
                     RD${plan.precio.toLocaleString("es-DO")}
                   </span>
-                  <span className="text-sm text-white/55">/mes</span>
+                  <span className="text-sm text-white/75">/mes</span>
                 </div>
-                <p className="mt-3 text-sm text-white/60">{plan.descripcion}</p>
+                <p className="mt-3 text-sm text-white/80">{plan.descripcion}</p>
 
                 <ul className="mt-6 space-y-3 flex-1">
                   {plan.beneficios.map((b) => (
@@ -250,7 +294,7 @@ function Index() {
                   ))}
                 </ul>
 
-                <div className="mt-4 text-xs text-white/45">
+                <div className="mt-4 text-xs text-white/70">
                   + Módulo de nómina opcional: RD${plan.precioNomina.toLocaleString("es-DO")}/mes
                 </div>
 
@@ -278,7 +322,7 @@ function Index() {
             <h3 className="text-3xl md:text-4xl font-semibold tracking-tight">
               Lleva tu contabilidad al siguiente nivel
             </h3>
-            <p className="mt-4 text-white/65 max-w-xl mx-auto">
+            <p className="mt-4 text-white/80 max-w-xl mx-auto">
               Únete a las empresas dominicanas que ya emiten, registran y reportan con Balance Activo.
             </p>
             <Link
@@ -290,32 +334,33 @@ function Index() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-12 grid gap-10 md:grid-cols-3">
           <div>
             <img src={logo} alt="Balance Activo" className="h-9 w-auto mb-3" />
-            <p className="text-sm text-white/55">
+            <p className="text-sm text-white/75">
               Contabilidad y facturación premium para República Dominicana.
             </p>
           </div>
           <div>
             <div className="font-semibold mb-3 text-sm">Contacto</div>
-            <a href="mailto:info@balanceactivo.net" className="text-sm text-white/55 hover:text-white transition">
+            <a href="mailto:info@balanceactivo.net" className="text-sm text-white/75 hover:text-white transition">
               info@balanceactivo.net
             </a>
           </div>
           <div>
             <div className="font-semibold mb-3 text-sm">Legal</div>
-            <ul className="space-y-1 text-sm text-white/40">
+            <ul className="space-y-1 text-sm text-white/70">
               <li>Políticas de privacidad (próximamente)</li>
               <li>Términos y condiciones (próximamente)</li>
             </ul>
           </div>
         </div>
         <div className="border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-6 py-5 text-xs text-white/40 text-center">
+          <div className="max-w-7xl mx-auto px-6 py-5 text-xs text-white/70 text-center">
             © {new Date().getFullYear()} Balance Activo. Todos los derechos reservados.
           </div>
         </div>
