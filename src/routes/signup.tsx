@@ -7,7 +7,26 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/signup")({ component: SignupPage });
+export const Route = createFileRoute("/signup")({
+  component: SignupPage,
+  head: () => ({
+    meta: [
+      { title: "Crear empresa — Balance Activo" },
+      {
+        name: "description",
+        content:
+          "Crea tu empresa en Balance Activo y comienza a emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 desde el primer día.",
+      },
+      { property: "og:title", content: "Crear empresa — Balance Activo" },
+      {
+        property: "og:description",
+        content: "Registra tu empresa y prueba gratis la contabilidad y facturación de Balance Activo.",
+      },
+      { property: "og:url", content: "https://balanceactivo.net/signup" },
+    ],
+    links: [{ rel: "canonical", href: "https://balanceactivo.net/signup" }],
+  }),
+});
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -47,20 +66,20 @@ function SignupPage() {
         <p className="text-sm text-muted-foreground mb-6">Tú serás el administrador</p>
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <Label>Razón social</Label>
-            <Input required value={razonSocial} onChange={(e) => setRazonSocial(e.target.value)} placeholder="Mi Empresa SRL" />
+            <Label htmlFor="razon-social">Razón social</Label>
+            <Input id="razon-social" required value={razonSocial} onChange={(e) => setRazonSocial(e.target.value)} placeholder="Mi Empresa SRL" />
           </div>
           <div>
-            <Label>Tu nombre</Label>
-            <Input required value={nombre} onChange={(e) => setNombre(e.target.value)} />
+            <Label htmlFor="nombre">Tu nombre</Label>
+            <Input id="nombre" required value={nombre} onChange={(e) => setNombre(e.target.value)} />
           </div>
           <div>
-            <Label>Email</Label>
-            <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div>
-            <Label>Contraseña</Label>
-            <Input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Label htmlFor="password">Contraseña</Label>
+            <Input id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>{loading ? "Creando…" : "Crear empresa"}</Button>
         </form>

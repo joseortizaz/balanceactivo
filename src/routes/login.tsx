@@ -7,7 +7,26 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/login")({ component: LoginPage });
+export const Route = createFileRoute("/login")({
+  component: LoginPage,
+  head: () => ({
+    meta: [
+      { title: "Iniciar sesión — Balance Activo" },
+      {
+        name: "description",
+        content:
+          "Accede a tu cuenta de Balance Activo para gestionar facturación, contabilidad y reportes DGII de tu empresa.",
+      },
+      { property: "og:title", content: "Iniciar sesión — Balance Activo" },
+      {
+        property: "og:description",
+        content: "Accede a tu cuenta de Balance Activo y gestiona la contabilidad de tu empresa.",
+      },
+      { property: "og:url", content: "https://balanceactivo.net/login" },
+    ],
+    links: [{ rel: "canonical", href: "https://balanceactivo.net/login" }],
+  }),
+});
 
 function LoginPage() {
   const navigate = useNavigate();

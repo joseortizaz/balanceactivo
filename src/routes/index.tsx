@@ -25,7 +25,16 @@ export const Route = createFileRoute("/")({
         content:
           "Plataforma fintech para emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 automáticos. Diseñada para PYMEs y contadores en República Dominicana.",
       },
+      { property: "og:title", content: "Balance Activo — Contabilidad y facturación premium para RD" },
+      {
+        property: "og:description",
+        content:
+          "Plataforma fintech para emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 automáticos.",
+      },
+      { property: "og:url", content: "https://balanceactivo.net/" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://balanceactivo.net/" }],
   }),
 });
 
