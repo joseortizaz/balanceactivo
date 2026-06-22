@@ -354,7 +354,11 @@ function Index() {
           <div>
             <div className="font-semibold mb-3 text-sm">Legal</div>
             <ul className="space-y-1 text-sm text-white/70">
-              <li>Políticas de privacidad (próximamente)</li>
+              <li>
+                <Link to="/seguridad" className="hover:text-white transition">
+                  Seguridad y privacidad
+                </Link>
+              </li>
               <li>Términos y condiciones (próximamente)</li>
             </ul>
           </div>
