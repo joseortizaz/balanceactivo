@@ -6,11 +6,13 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Pencil, FileDown, Search, Ban, Lock, Eye } from "lucide-react";
+import { Plus, Pencil, FileDown, Search, Ban, Lock, Eye, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { fmtMoney, fmtDate } from "@/lib/format";
 import { generateFacturaPdf } from "@/lib/factura-pdf";
+import { Label } from "@/components/ui/label";
+import { sendTransactionalEmail } from "@/lib/email/send";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/facturas/")({ component: Facturas });
@@ -23,9 +25,13 @@ function Facturas() {
   const [targetId, setTargetId] = useState<string | null>(null);
   const [motivo, setMotivo] = useState("");
   const [saving, setSaving] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailFactura, setEmailFactura] = useState<any>(null);
+  const [emailTo, setEmailTo] = useState("");
+  const [sending, setSending] = useState(false);
   const { data } = useQuery({
     queryKey: ["facturas"],
-    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento)").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento, email)").order("created_at", { ascending: false })).data ?? [],
   });
   const { data: lineasAll } = useQuery({
     queryKey: ["factura-lineas-all"],
@@ -96,6 +102,63 @@ function Facturas() {
     }
   };
 
+  const abrirEnviarEmail = (f: any) => {
+    setEmailFactura(f);
+    setEmailTo(f.clientes?.email ?? "");
+    setEmailOpen(true);
+  };
+
+  const enviarEmail = async () => {
+    if (!emailFactura) return;
+    if (!emailTo.trim()) return toast.error("Indica un correo de destino");
+    setSending(true);
+    try {
+      const [{ data: f }, { data: lineas }, { data: tenantRows }] = await Promise.all([
+        supabase.from("facturas").select("*, clientes(razon_social, email)").eq("id", emailFactura.id).maybeSingle(),
+        supabase.from("factura_lineas").select("descripcion, cantidad, subtotal").eq("factura_id", emailFactura.id),
+        supabase.from("tenants").select("razon_social, nombre_comercial, rnc, direccion, telefono").limit(1),
+      ]);
+      if (!f) throw new Error("Factura no encontrada");
+      const t: any = (tenantRows ?? [])[0] ?? {};
+      const c: any = (f as any).clientes ?? {};
+      const total = Number(f.total ?? 0);
+      const pagado = Number(f.monto_pagado ?? 0);
+      await sendTransactionalEmail({
+        templateName: "factura",
+        recipientEmail: emailTo.trim(),
+        idempotencyKey: `factura:${f.id}:${emailTo.trim()}`,
+        templateData: {
+          companyName: t.nombre_comercial || t.razon_social || "",
+          companyRnc: t.rnc,
+          companyAddress: t.direccion,
+          companyPhone: t.telefono,
+          clientName: c.razon_social || "—",
+          ncf: f.ncf,
+          fechaEmision: fmtDate(f.fecha),
+          fechaVencimiento: f.fecha_vencimiento ? fmtDate(f.fecha_vencimiento) : null,
+          estado: f.estado,
+          subtotal: fmtMoney(f.subtotal),
+          descuento: Number(f.descuento ?? 0) > 0 ? fmtMoney(f.descuento) : null,
+          itbis: fmtMoney(f.itbis ?? 0),
+          total: fmtMoney(total),
+          montoPagado: pagado > 0 ? fmtMoney(pagado) : null,
+          saldoPendiente: total - pagado > 0 ? fmtMoney(total - pagado) : null,
+          lineas: (lineas ?? []).map((l: any) => ({
+            descripcion: l.descripcion,
+            cantidad: Number(l.cantidad),
+            subtotal: fmtMoney(l.subtotal),
+          })),
+        },
+      });
+      toast.success("Factura enviada por correo");
+      setEmailOpen(false);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error al enviar la factura");
+    } finally {
+      setSending(false);
+    }
+  };
+
   const abrirMotivo = (id: string, acc: "anular" | "cerrar") => {
     setTargetId(id); setAccion(acc); setMotivo(""); setMotivoOpen(true);
   };
@@ -151,6 +214,9 @@ function Facturas() {
                   <Button size="sm" variant="ghost" onClick={() => descargarPdf(f.id)}>
                     <FileDown className="h-3 w-3 mr-1" />PDF
                   </Button>
+                  <Button size="sm" variant="ghost" onClick={() => abrirEnviarEmail(f)}>
+                    <Mail className="h-3 w-3 mr-1" />Email
+                  </Button>
                   {f.estado !== "anulada" && f.estado !== "cerrada" && (
                     <>
                       <Link to="/facturas/nueva" search={{ id: f.id }}>
@@ -192,6 +258,34 @@ function Facturas() {
             <Button onClick={confirmarMotivo} disabled={saving}
               className={accion === "anular" ? "bg-red-600 hover:bg-red-700 text-white" : ""}>
               {saving ? "Procesando…" : accion === "anular" ? "Anular" : "Cerrar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={emailOpen} onOpenChange={setEmailOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar factura por correo {emailFactura?.ncf ? `— ${emailFactura.ncf}` : ""}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Se enviará la factura al cliente {emailFactura?.clientes?.razon_social ?? ""}. Puedes editar el correo si lo necesitas.
+            </p>
+            <div>
+              <Label>Correo del cliente</Label>
+              <Input
+                type="email"
+                value={emailTo}
+                onChange={(e) => setEmailTo(e.target.value)}
+                placeholder="cliente@correo.com"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEmailOpen(false)}>Cancelar</Button>
+            <Button onClick={enviarEmail} disabled={sending}>
+              <Mail className="h-4 w-4 mr-2" />{sending ? "Enviando…" : "Enviar"}
             </Button>
           </DialogFooter>
         </DialogContent>
