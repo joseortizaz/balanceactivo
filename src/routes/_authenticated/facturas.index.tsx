@@ -31,7 +31,7 @@ function Facturas() {
   const [sending, setSending] = useState(false);
   const { data } = useQuery({
     queryKey: ["facturas"],
-    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento)").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social, documento, email)").order("created_at", { ascending: false })).data ?? [],
   });
   const { data: lineasAll } = useQuery({
     queryKey: ["factura-lineas-all"],
