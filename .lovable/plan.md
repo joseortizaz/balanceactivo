@@ -1,85 +1,87 @@
+# API Pública v1 de Balance Activo
 
-# Diagnóstico de los registros DNS en Hostinger
+Construir una API REST versionada (`/api/public/v1/*`) autenticada con API keys por tenant, más webhooks salientes para notificar a Ceapsi.
 
-Hay dos problemas que explican por qué el sitio aparece como "no seguro" y por qué el correo de `notify.balanceactivo.net` sigue sin verificar.
+## 1. Base de datos (migración)
 
-## 1) El dominio raíz no apunta a Lovable (causa del "sitio no seguro")
+**`api_keys`**
+- `id`, `tenant_id`, `name`, `key_prefix` (8 chars visibles, ej. `ba_live_a1b2c3d4`), `key_hash` (SHA-256 del token completo), `last_used_at`, `revoked_at`, `created_by`, `created_at`.
+- RLS: solo admin del tenant puede listar/crear/revocar. Los hashes nunca se devuelven al cliente después de crearse.
 
-Registro actual:
+**`webhook_endpoints`**
+- `id`, `tenant_id`, `url`, `secret` (para firmar payloads con HMAC-SHA256), `events` (array de tipos suscritos), `active`, `created_at`.
+- RLS: admin del tenant.
 
-```text
-A   @   2.57.91.91
-```
+**`webhook_deliveries`** (registro de intentos)
+- `id`, `endpoint_id`, `event_type`, `payload`, `status_code`, `response_body`, `attempt`, `next_retry_at`, `delivered_at`, `created_at`.
 
-`2.57.91.91` es una IP del hosting compartido de Hostinger, no de Lovable. Por eso el navegador llega a un servidor que no tiene el certificado SSL de `balanceactivo.net` y muestra "no seguro".
+**Función `verify_api_key(text)`** (SECURITY DEFINER)
+- Recibe el token en claro, calcula hash, devuelve `tenant_id` si existe y no está revocado, actualiza `last_used_at`.
 
-**Acción:** cambiar ese registro A para que apunte a la IP de Lovable.
+## 2. Autenticación de la API
 
-```text
-Tipo: A
-Nombre: @
-Valor: 185.158.133.1
-TTL: 14400 (o el que permita Hostinger; 300–14400 está bien)
-```
+Middleware en `src/lib/api-auth.server.ts`:
+- Extrae `Authorization: Bearer ba_live_...` del request.
+- Llama a `verify_api_key` con `supabaseAdmin`.
+- Devuelve `{ tenantId, supabase }` — un cliente de servicio limitado al tenant validado (se filtra por `tenant_id` en cada query, no se depende de RLS).
+- Retorna 401 si falta o es inválido.
 
-Y añadir también el `www` apuntando a Lovable. Hoy hay un `CNAME www → balanceactivo.net`, que no es válido para servir el sitio en Lovable. Reemplazarlo por:
+## 3. Endpoints REST — `src/routes/api/public/v1/`
 
-```text
-Tipo: A
-Nombre: www
-Valor: 185.158.133.1
-TTL: 14400
-```
+Todos devuelven JSON, validan con Zod, filtran por `tenant_id`.
 
-(O borrar el CNAME y dejar solo el A para `www`.)
+**Clientes** (`clientes.ts`, `clientes.$id.ts`)
+- `GET /clientes` — lista paginada (`?limit=50&offset=0&search=`).
+- `POST /clientes` — crea (`nombre`, `rnc`, `email`, `telefono`, `direccion`, `tipo`).
+- `GET /clientes/:id` — detalle.
+- `PATCH /clientes/:id` — actualiza campos parciales.
 
-Una vez propague (puede tardar hasta 72 horas, normalmente minutos), Lovable provisionará automáticamente el certificado SSL y el sitio dejará de aparecer como "no seguro".
+**Facturas** (`facturas.ts`, `facturas.$id.ts`)
+- `GET /facturas` — lista (`?cliente_id=&estado=&desde=&hasta=`).
+- `POST /facturas` — crea factura con líneas (`cliente_id`, `fecha`, `tipo_ncf`, `condicion_pago`, `lineas: [{producto_id?, descripcion, cantidad, precio, itbis_rate}]`). Reutiliza la RPC `crear_factura` existente.
+- `GET /facturas/:id` — detalle con líneas.
+- `PATCH /facturas/:id` — actualiza (reutiliza `actualizar_factura`).
 
-## 2) La delegación de `notify` está mal: hay MX donde deben ir NS
+**Cobros** (`cobros.ts`, `cobros.$id.ts`)
+- `GET /cobros?factura_id=` — lista.
+- `POST /cobros` — registra cobro (`factura_id`, `monto`, `fecha`, `medio_pago`, `banco_id`, `nota`). Usa RPC `registrar_cobro`.
+- `PATCH /cobros/:id` — edita monto/nota/fecha (permisos ya definidos en RLS).
 
-Registros actuales relacionados con `notify`:
+**Meta**
+- `GET /me` — devuelve datos del tenant autenticado (para validar la conexión desde Ceapsi).
 
-```text
-MX   notify              10   ns4.lovable.cloud
-MX   ns3.lovable.cloud   10   ns3.lovable.cloud
-```
+## 4. Webhooks salientes
 
-Esto está incorrecto:
-- El segundo registro (`MX ns3.lovable.cloud → ns3.lovable.cloud`) no tiene sentido y debe **eliminarse**.
-- El primero usa tipo MX, pero lo que Lovable necesita son **NS** (delegación de zona), no MX. Con MX, Hostinger sigue siendo autoritativo de `notify` y Lovable no puede gestionar SPF/DKIM/MX por debajo, por eso el dominio sigue en "Pending".
+Cuando ocurren estos eventos, disparar entrega a los `webhook_endpoints` activos suscritos:
 
-**Acción:** borrar los dos MX de arriba y crear en su lugar **dos registros NS** para el subdominio `notify`:
+- `cliente.created`, `cliente.updated`
+- `factura.created`, `factura.updated`, `factura.paid`
+- `cobro.created`
 
-```text
-Tipo: NS    Nombre: notify    Valor: ns3.lovable.cloud    TTL: 14400
-Tipo: NS    Nombre: notify    Valor: ns4.lovable.cloud    TTL: 14400
-```
+**Implementación**:
+- Función `emit_webhook(tenant_id, event_type, payload jsonb)` que inserta en `webhook_deliveries` con estado pendiente.
+- Trigger en `cobros` que llama `emit_webhook('cobro.created', ...)` y otro que detecta `factura.estado='pagada'` para `factura.paid`.
+- Server route `POST /api/public/v1/_deliver` (interno, protegido con `WEBHOOK_DISPATCH_SECRET`) que toma N entregas pendientes, hace `fetch` a la URL del endpoint firmando el cuerpo con `X-BA-Signature: sha256=<hmac>`, guarda respuesta y programa reintento exponencial (máx 5).
+- pg_cron corriendo cada minuto que llama al endpoint `_deliver` con el secreto. Se documenta el statement SQL para que el usuario lo active.
 
-(Hostinger los pide como dos entradas separadas con el mismo Nombre `notify`.)
+## 5. UI — Configuración → API & Webhooks
 
-El TXT `_lovable-email` y el TXT `_dmarc` actuales se pueden dejar; no estorban.
+Nueva pestaña en `configuracion.tsx` (solo admin):
+- **API Keys**: tabla con nombre, prefijo, último uso, botón "Nueva key" (muestra el token completo UNA sola vez con banner de advertencia y botón copiar), botón "Revocar".
+- **Webhooks**: tabla con URL, eventos suscritos, estado, botón "Nuevo endpoint" (genera un `secret` automático), "Ver últimas entregas" (modal con log de `webhook_deliveries`), "Desactivar".
 
-## Resumen de cambios en Hostinger
+## 6. Documentación
 
-Borrar:
-- `A @ 2.57.91.91`
-- `CNAME www → balanceactivo.net`
-- `MX notify 10 ns4.lovable.cloud`
-- `MX ns3.lovable.cloud 10 ns3.lovable.cloud`
+Archivo `API.md` en la raíz del proyecto con:
+- URL base: `https://balanceactivo.lovable.app/api/public/v1`
+- Cómo obtener y usar la API key.
+- Ejemplos `curl` de cada endpoint.
+- Estructura de eventos y verificación de firma HMAC de webhooks.
 
-Crear:
-- `A @ 185.158.133.1`
-- `A www 185.158.133.1`
-- `NS notify ns3.lovable.cloud`
-- `NS notify ns4.lovable.cloud`
+## Detalles técnicos
 
-Mantener:
-- `TXT _lovable-email "lovable_email_verify=…"`
-- `TXT _dmarc "v=DMARC1; …"`
-
-## Después de aplicar los cambios
-
-1. Esperar a la propagación DNS (minutos a 72 h).
-2. Lovable emitirá automáticamente el certificado SSL de `balanceactivo.net` y `www.balanceactivo.net`.
-3. El dominio de correo `notify.balanceactivo.net` pasará de "Pending" a verificado y podrá enviar correos como `notify@balanceactivo.net`.
-4. No hay cambios de código en la app; todo es configuración de DNS.
+- Todos los endpoints en `/api/public/*` (bypassa auth de Lovable; se autentica manualmente).
+- Validación con Zod en cada handler, errores en formato `{ error: { code, message } }`.
+- Rate limiting NO se incluye por defecto (Lovable no tiene primitiva estándar); se documenta la limitación.
+- Los secretos de webhook y el hash de API keys nunca vuelven a exponerse tras creación.
+- CORS: `Access-Control-Allow-Origin: *` con manejador `OPTIONS` en cada ruta (para permitir llamadas desde el navegador de Ceapsi si se necesita).
