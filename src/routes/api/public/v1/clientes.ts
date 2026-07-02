@@ -7,7 +7,7 @@ const createSchema = z.object({
   razon_social: z.string().min(1),
   nombre_comercial: z.string().optional().nullable(),
   documento: z.string().min(1),
-  tipo_documento: z.enum(["rnc", "cedula", "pasaporte"]).default("rnc"),
+  tipo_documento: z.enum(["rnc_empresa", "rnc_persona", "cedula"]).default("rnc_empresa"),
   email: z.string().email().optional().nullable(),
   telefono: z.string().optional().nullable(),
   direccion: z.string().optional().nullable(),
