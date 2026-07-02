@@ -11,7 +11,7 @@ export const Route = createFileRoute("/api/public/v1/me")({
         if (auth instanceof Response) return auth;
         const { data, error } = await supabaseAdmin
           .from("tenants")
-          .select("id,razon_social,nombre_comercial,rnc,email")
+          .select("id,razon_social,nombre_comercial,rnc,telefono,direccion")
           .eq("id", auth.tenantId)
           .maybeSingle();
         if (error) return jsonError(500, "db_error", error.message);
