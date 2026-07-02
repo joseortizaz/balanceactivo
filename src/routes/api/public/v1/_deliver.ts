@@ -61,7 +61,9 @@ export const Route = createFileRoute("/api/public/v1/_deliver")({
               response_body: text,
               attempt,
               delivered_at: ok ? new Date().toISOString() : null,
-              next_retry_at: ok ? d as unknown as string : new Date(Date.now() + backoffSeconds(attempt) * 1000).toISOString(),
+              next_retry_at: ok
+                ? new Date().toISOString()
+                : new Date(Date.now() + backoffSeconds(attempt) * 1000).toISOString(),
               last_error: ok ? null : `HTTP ${resp.status}`,
             }).eq("id", d.id);
             results.push({ id: d.id, status: resp.status, ok });
