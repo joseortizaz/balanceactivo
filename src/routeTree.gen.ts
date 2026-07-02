@@ -33,6 +33,7 @@ import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
 import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedApiIntegracionesRouteImport } from './routes/_authenticated/api-integraciones'
 import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
@@ -189,6 +190,12 @@ const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
   path: '/asientos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedApiIntegracionesRoute =
+  AuthenticatedApiIntegracionesRouteImport.update({
+    id: '/api-integraciones',
+    path: '/api-integraciones',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedNominaIndexRoute =
   AuthenticatedNominaIndexRouteImport.update({
     id: '/nomina/',
@@ -371,6 +378,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
@@ -427,6 +435,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/asientos': typeof AuthenticatedAsientosRoute
   '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/clientes': typeof AuthenticatedClientesRoute
@@ -485,6 +494,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/_authenticated/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/_authenticated/asientos': typeof AuthenticatedAsientosRoute
   '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/clientes': typeof AuthenticatedClientesRoute
@@ -543,6 +553,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/unsubscribe'
+    | '/api-integraciones'
     | '/asientos'
     | '/auditoria'
     | '/clientes'
@@ -599,6 +610,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/unsubscribe'
+    | '/api-integraciones'
     | '/asientos'
     | '/auditoria'
     | '/clientes'
@@ -656,6 +668,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/unsubscribe'
+    | '/_authenticated/api-integraciones'
     | '/_authenticated/asientos'
     | '/_authenticated/auditoria'
     | '/_authenticated/clientes'
@@ -898,6 +911,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAsientosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/api-integraciones': {
+      id: '/_authenticated/api-integraciones'
+      path: '/api-integraciones'
+      fullPath: '/api-integraciones'
+      preLoaderRoute: typeof AuthenticatedApiIntegracionesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/nomina/': {
       id: '/_authenticated/nomina/'
       path: '/nomina'
@@ -1130,6 +1150,7 @@ const AuthenticatedCobrosRouteWithChildren =
   AuthenticatedCobrosRoute._addFileChildren(AuthenticatedCobrosRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedApiIntegracionesRoute: typeof AuthenticatedApiIntegracionesRoute
   AuthenticatedAsientosRoute: typeof AuthenticatedAsientosRoute
   AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
   AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
@@ -1166,6 +1187,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedApiIntegracionesRoute: AuthenticatedApiIntegracionesRoute,
   AuthenticatedAsientosRoute: AuthenticatedAsientosRoute,
   AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
   AuthenticatedClientesRoute: AuthenticatedClientesRoute,
