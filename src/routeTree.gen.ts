@@ -56,6 +56,7 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
+import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
 import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
@@ -317,6 +318,11 @@ const ApiPublicV1MeRoute = ApiPublicV1MeRouteImport.update({
   path: '/api/public/v1/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1FacturasRoute = ApiPublicV1FacturasRouteImport.update({
+  id: '/api/public/v1/facturas',
+  path: '/api/public/v1/facturas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
   id: '/api/public/v1/clientes',
   path: '/api/public/v1/clientes',
@@ -383,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -435,6 +442,7 @@ export interface FileRoutesByTo {
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -489,6 +497,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -543,6 +552,7 @@ export interface FileRouteTypes {
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -595,6 +605,7 @@ export interface FileRouteTypes {
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -648,6 +659,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -669,6 +681,7 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicV1ClientesRoute: typeof ApiPublicV1ClientesRouteWithChildren
+  ApiPublicV1FacturasRoute: typeof ApiPublicV1FacturasRoute
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1008,6 +1021,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1MeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/facturas': {
+      id: '/api/public/v1/facturas'
+      path: '/api/public/v1/facturas'
+      fullPath: '/api/public/v1/facturas'
+      preLoaderRoute: typeof ApiPublicV1FacturasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/clientes': {
       id: '/api/public/v1/clientes'
       path: '/api/public/v1/clientes'
@@ -1149,6 +1169,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicV1ClientesRoute: ApiPublicV1ClientesRouteWithChildren,
+  ApiPublicV1FacturasRoute: ApiPublicV1FacturasRoute,
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
