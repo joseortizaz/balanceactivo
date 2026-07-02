@@ -57,9 +57,11 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
+import { Route as ApiPublicV1CobrosRouteImport } from './routes/api/public/v1/cobros'
 import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
+import { Route as ApiPublicV1FacturasIdRouteImport } from './routes/api/public/v1/facturas.$id'
 import { Route as ApiPublicV1ClientesIdRouteImport } from './routes/api/public/v1/clientes.$id'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -323,6 +325,11 @@ const ApiPublicV1FacturasRoute = ApiPublicV1FacturasRouteImport.update({
   path: '/api/public/v1/facturas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1CobrosRoute = ApiPublicV1CobrosRouteImport.update({
+  id: '/api/public/v1/cobros',
+  path: '/api/public/v1/cobros',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
   id: '/api/public/v1/clientes',
   path: '/api/public/v1/clientes',
@@ -340,6 +347,11 @@ const AuthenticatedNominaPeriodosIdRoute =
     path: '/nomina/periodos/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicV1FacturasIdRoute = ApiPublicV1FacturasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicV1FacturasRoute,
+} as any)
 const ApiPublicV1ClientesIdRoute = ApiPublicV1ClientesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -389,7 +401,8 @@ export interface FileRoutesByFullPath {
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
-  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
+  '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -398,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
   '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
+  '/api/public/v1/facturas/$id': typeof ApiPublicV1FacturasIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -442,7 +456,8 @@ export interface FileRoutesByTo {
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
-  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
+  '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -451,6 +466,7 @@ export interface FileRoutesByTo {
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
   '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
+  '/api/public/v1/facturas/$id': typeof ApiPublicV1FacturasIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -497,7 +513,8 @@ export interface FileRoutesById {
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
-  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRoute
+  '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -506,6 +523,7 @@ export interface FileRoutesById {
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
   '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
+  '/api/public/v1/facturas/$id': typeof ApiPublicV1FacturasIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -552,6 +570,7 @@ export interface FileRouteTypes {
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -561,6 +580,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/send'
     | '/nomina/periodos/'
     | '/api/public/v1/clientes/$id'
+    | '/api/public/v1/facturas/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -605,6 +625,7 @@ export interface FileRouteTypes {
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -614,6 +635,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/send'
     | '/nomina/periodos'
     | '/api/public/v1/clientes/$id'
+    | '/api/public/v1/facturas/$id'
   id:
     | '__root__'
     | '/'
@@ -659,6 +681,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
     | '/api/public/v1/clientes'
+    | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -668,6 +691,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/send'
     | '/_authenticated/nomina/periodos/'
     | '/api/public/v1/clientes/$id'
+    | '/api/public/v1/facturas/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -681,7 +705,8 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicV1ClientesRoute: typeof ApiPublicV1ClientesRouteWithChildren
-  ApiPublicV1FacturasRoute: typeof ApiPublicV1FacturasRoute
+  ApiPublicV1CobrosRoute: typeof ApiPublicV1CobrosRoute
+  ApiPublicV1FacturasRoute: typeof ApiPublicV1FacturasRouteWithChildren
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1028,6 +1053,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1FacturasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/cobros': {
+      id: '/api/public/v1/cobros'
+      path: '/api/public/v1/cobros'
+      fullPath: '/api/public/v1/cobros'
+      preLoaderRoute: typeof ApiPublicV1CobrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/clientes': {
       id: '/api/public/v1/clientes'
       path: '/api/public/v1/clientes'
@@ -1048,6 +1080,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/nomina/periodos/$id'
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIdRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/v1/facturas/$id': {
+      id: '/api/public/v1/facturas/$id'
+      path: '/$id'
+      fullPath: '/api/public/v1/facturas/$id'
+      preLoaderRoute: typeof ApiPublicV1FacturasIdRouteImport
+      parentRoute: typeof ApiPublicV1FacturasRoute
     }
     '/api/public/v1/clientes/$id': {
       id: '/api/public/v1/clientes/$id'
@@ -1158,6 +1197,17 @@ const ApiPublicV1ClientesRouteChildren: ApiPublicV1ClientesRouteChildren = {
 const ApiPublicV1ClientesRouteWithChildren =
   ApiPublicV1ClientesRoute._addFileChildren(ApiPublicV1ClientesRouteChildren)
 
+interface ApiPublicV1FacturasRouteChildren {
+  ApiPublicV1FacturasIdRoute: typeof ApiPublicV1FacturasIdRoute
+}
+
+const ApiPublicV1FacturasRouteChildren: ApiPublicV1FacturasRouteChildren = {
+  ApiPublicV1FacturasIdRoute: ApiPublicV1FacturasIdRoute,
+}
+
+const ApiPublicV1FacturasRouteWithChildren =
+  ApiPublicV1FacturasRoute._addFileChildren(ApiPublicV1FacturasRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -1169,7 +1219,8 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicV1ClientesRoute: ApiPublicV1ClientesRouteWithChildren,
-  ApiPublicV1FacturasRoute: ApiPublicV1FacturasRoute,
+  ApiPublicV1CobrosRoute: ApiPublicV1CobrosRoute,
+  ApiPublicV1FacturasRoute: ApiPublicV1FacturasRouteWithChildren,
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
