@@ -2230,6 +2230,20 @@ export type Database = {
         }
         Returns: string
       }
+      crear_factura_api: {
+        Args: {
+          _cliente_id: string
+          _condicion: Database["public"]["Enums"]["condicion_pago"]
+          _cuotas?: Json
+          _descuento_valor: number
+          _fecha: string
+          _lineas: Json
+          _tenant: string
+          _tipo_descuento: Database["public"]["Enums"]["tipo_descuento"]
+          _tipo_ncf: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Returns: string
+      }
       current_tenant_id: { Args: never; Returns: string }
       delete_email: {
         Args: { message_id: number; queue_name: string }
@@ -2340,6 +2354,18 @@ export type Database = {
             }
             Returns: string
           }
+      registrar_cobro_api: {
+        Args: {
+          _banco_id?: string
+          _factura_id: string
+          _fecha: string
+          _metodo: string
+          _monto: number
+          _nota?: string
+          _tenant: string
+        }
+        Returns: string
+      }
       registrar_gasto: { Args: { _gasto_id: string }; Returns: string }
       registrar_movimiento_inventario: {
         Args: {

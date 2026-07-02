@@ -59,6 +59,7 @@ import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
+import { Route as ApiPublicV1ClientesIdRouteImport } from './routes/api/public/v1/clientes.$id'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -333,6 +334,11 @@ const AuthenticatedNominaPeriodosIdRoute =
     path: '/nomina/periodos/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const ApiPublicV1ClientesIdRoute = ApiPublicV1ClientesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicV1ClientesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -376,7 +382,7 @@ export interface FileRoutesByFullPath {
   '/nomina/': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRoute
+  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -384,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
+  '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -427,7 +434,7 @@ export interface FileRoutesByTo {
   '/nomina': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRoute
+  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -435,6 +442,7 @@ export interface FileRoutesByTo {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/nomina/periodos': typeof AuthenticatedNominaPeriodosIndexRoute
+  '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -480,7 +488,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRoute
+  '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -488,6 +496,7 @@ export interface FileRoutesById {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/nomina/periodos/': typeof AuthenticatedNominaPeriodosIndexRoute
+  '/api/public/v1/clientes/$id': typeof ApiPublicV1ClientesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -541,6 +550,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/nomina/periodos/'
+    | '/api/public/v1/clientes/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -592,6 +602,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/nomina/periodos'
+    | '/api/public/v1/clientes/$id'
   id:
     | '__root__'
     | '/'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/_authenticated/nomina/periodos/'
+    | '/api/public/v1/clientes/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -656,7 +668,7 @@ export interface RootRouteChildren {
   UnsubscribeRoute: typeof UnsubscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
-  ApiPublicV1ClientesRoute: typeof ApiPublicV1ClientesRoute
+  ApiPublicV1ClientesRoute: typeof ApiPublicV1ClientesRouteWithChildren
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1017,6 +1029,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/v1/clientes/$id': {
+      id: '/api/public/v1/clientes/$id'
+      path: '/$id'
+      fullPath: '/api/public/v1/clientes/$id'
+      preLoaderRoute: typeof ApiPublicV1ClientesIdRouteImport
+      parentRoute: typeof ApiPublicV1ClientesRoute
+    }
   }
 }
 
@@ -1108,6 +1127,17 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface ApiPublicV1ClientesRouteChildren {
+  ApiPublicV1ClientesIdRoute: typeof ApiPublicV1ClientesIdRoute
+}
+
+const ApiPublicV1ClientesRouteChildren: ApiPublicV1ClientesRouteChildren = {
+  ApiPublicV1ClientesIdRoute: ApiPublicV1ClientesIdRoute,
+}
+
+const ApiPublicV1ClientesRouteWithChildren =
+  ApiPublicV1ClientesRoute._addFileChildren(ApiPublicV1ClientesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -1118,7 +1148,7 @@ const rootRouteChildren: RootRouteChildren = {
   UnsubscribeRoute: UnsubscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
-  ApiPublicV1ClientesRoute: ApiPublicV1ClientesRoute,
+  ApiPublicV1ClientesRoute: ApiPublicV1ClientesRouteWithChildren,
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
