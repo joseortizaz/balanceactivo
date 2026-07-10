@@ -120,3 +120,32 @@ export const removeMember = createServerFn({ method: "POST" })
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId).eq("tenant_id", tenantId);
     return { ok: true };
   });
+
+export const resendInvitation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ userId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: roles } = await supabase
+      .from("user_roles").select("role").eq("user_id", userId);
+    if (!(roles ?? []).some((r) => r.role === "administrador")) {
+      throw new Error("Solo administradores pueden reenviar invitaciones");
+    }
+    const { data: profile } = await supabase
+      .from("profiles").select("tenant_id").eq("id", userId).maybeSingle();
+    const tenantId = profile?.tenant_id;
+    if (!tenantId) throw new Error("Tenant no encontrado");
+
+    const { data: target } = await supabaseAdmin.from("profiles")
+      .select("tenant_id, email").eq("id", data.userId).maybeSingle();
+    if (!target || target.tenant_id !== tenantId) throw new Error("Miembro de otro tenant");
+    if (!target.email) throw new Error("El miembro no tiene un correo registrado");
+
+    const { error } = await supabaseAdmin.auth.admin.generateLink({
+      type: "recovery", email: target.email,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
