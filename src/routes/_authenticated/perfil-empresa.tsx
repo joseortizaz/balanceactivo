@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Upload, KeyRound, Building2, Users, UserPlus } from "lucide-react";
-import { inviteMember, updateMemberRole, removeMember } from "@/lib/team.functions";
+import { Trash2, Upload, KeyRound, Building2, Users, UserPlus, Send } from "lucide-react";
+import { inviteMember, updateMemberRole, removeMember, resendInvitation } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/perfil-empresa")({ component: PerfilEmpresa });
 
@@ -202,6 +202,7 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
   const inviteFn = useServerFn(inviteMember);
   const updateFn = useServerFn(updateMemberRole);
   const removeFn = useServerFn(removeMember);
+  const resendFn = useServerFn(resendInvitation);
 
   const [email, setEmail] = useState("");
   const [nombre, setNombre] = useState("");
@@ -243,6 +244,12 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
   const drop = useMutation({
     mutationFn: (userId: string) => removeFn({ data: { userId } }),
     onSuccess: () => { toast.success("Acceso revocado"); qc.invalidateQueries({ queryKey: ["equipo"] }); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resend = useMutation({
+    mutationFn: (userId: string) => resendFn({ data: { userId } }),
+    onSuccess: () => toast.success("Invitación reenviada. Revisa el correo del miembro."),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -299,9 +306,20 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
                       <span className="text-sm text-muted-foreground capitalize">{primary.replace("_", " ")}</span>
                     )}
                     {canEdit && !isSelf && (
-                      <Button size="sm" variant="ghost" onClick={() => { if (confirm("¿Revocar acceso?")) drop.mutate(m.id); }}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          title="Reenviar invitación"
+                          disabled={resend.isPending}
+                          onClick={() => resend.mutate(m.id)}
+                        >
+                          <Send className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => { if (confirm("¿Revocar acceso?")) drop.mutate(m.id); }}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
