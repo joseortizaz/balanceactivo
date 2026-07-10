@@ -23,7 +23,7 @@ const NAV: Item[] = [
   { to: "/cuentas", label: "Catálogo de Cuentas", icon: BookOpen, roles: ["administrador", "contador"] },
   { to: "/asientos", label: "Asientos", icon: ListChecks, roles: ["administrador", "contador"] },
   { to: "/nomina", label: "Nómina", icon: Briefcase, roles: ["administrador", "contador"] },
-  { to: "/reportes", label: "Reportes 606/607", icon: BarChart3 },
+  { to: "/reportes", label: "Reportes DGII", icon: BarChart3 },
   { to: "/configuracion", label: "Configuración Fiscal", icon: Settings, roles: ["administrador"] },
   { to: "/api-integraciones", label: "API & Webhooks", icon: Plug, roles: ["administrador"] },
   { to: "/perfil-empresa", label: "Perfil de Empresa", icon: Building2, roles: ["administrador", "contador", "agente_facturacion"] },
