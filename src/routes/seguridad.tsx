@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Shield, Lock, Database, Mail, FileText, UserCheck } from "lucide-react";
+import { Shield, Lock, Database, Mail, FileText, UserCheck, Building2 } from "lucide-react";
 import logo from "@/assets/logo-balance-activo.png";
 
 export const Route = createFileRoute("/seguridad")({
@@ -81,6 +81,29 @@ function Seguridad() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
+          <Section icon={Building2} title="Responsable del tratamiento">
+            <p>
+              Balance Activo es una marca comercial propiedad de{" "}
+              <strong>Narnia Tech Solution, SRL</strong>, RNC{" "}
+              <strong>1-33-74485-6</strong>, sociedad constituida en la
+              República Dominicana. Narnia Tech es la responsable de la
+              plataforma y del tratamiento de los datos que en ella se
+              gestionan.
+            </p>
+            <p>
+              Más información sobre el grupo en{" "}
+              <a
+                href="https://narniats.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-white/40 hover:decoration-white"
+              >
+                narniats.com
+              </a>
+              .
+            </p>
+          </Section>
+
           <Section icon={UserCheck} title="Acceso y autenticación">
             <p>
               El acceso a la aplicación requiere iniciar sesión con correo y
@@ -162,12 +185,17 @@ function Seguridad() {
           actualizarse a medida que evolucione el producto. No constituye un
           acuerdo de procesamiento de datos (DPA) ni una certificación de
           cumplimiento.
+          {" "}Consulta también nuestros{" "}
+          <Link to="/terminos" className="underline decoration-white/40 hover:decoration-white">
+            términos y condiciones
+          </Link>
+          .
         </p>
       </main>
 
       <footer className="border-t border-white/5">
         <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-white/70 text-center">
-          © {new Date().getFullYear()} Balance Activo.
+          © {new Date().getFullYear()} Balance Activo — Narnia Tech Solution, SRL.
         </div>
       </footer>
     </div>
