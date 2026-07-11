@@ -359,13 +359,17 @@ function Index() {
                   Seguridad y privacidad
                 </Link>
               </li>
-              <li>Términos y condiciones (próximamente)</li>
+              <li>
+                <Link to="/terminos" className="hover:text-white transition">
+                  Términos y condiciones
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
         <div className="border-t border-white/5">
           <div className="max-w-7xl mx-auto px-6 py-5 text-xs text-white/70 text-center">
-            © {new Date().getFullYear()} Balance Activo. Todos los derechos reservados.
+            © {new Date().getFullYear()} Balance Activo — Narnia Tech Solution, SRL. Todos los derechos reservados.
           </div>
         </div>
       </footer>
