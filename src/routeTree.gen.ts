@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SeguridadRouteImport } from './routes/seguridad'
@@ -69,6 +70,11 @@ import { Route as ApiPublicV1ClientesIdRouteImport } from './routes/api/public/v
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -377,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/asientos': typeof AuthenticatedAsientosRoute
@@ -434,6 +441,7 @@ export interface FileRoutesByTo {
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/asientos': typeof AuthenticatedAsientosRoute
@@ -493,6 +501,7 @@ export interface FileRoutesById {
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terminos': typeof TerminosRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/api-integraciones': typeof AuthenticatedApiIntegracionesRoute
   '/_authenticated/asientos': typeof AuthenticatedAsientosRoute
@@ -552,6 +561,7 @@ export interface FileRouteTypes {
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
+    | '/terminos'
     | '/unsubscribe'
     | '/api-integraciones'
     | '/asientos'
@@ -609,6 +619,7 @@ export interface FileRouteTypes {
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
+    | '/terminos'
     | '/unsubscribe'
     | '/api-integraciones'
     | '/asientos'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
+    | '/terminos'
     | '/unsubscribe'
     | '/_authenticated/api-integraciones'
     | '/_authenticated/asientos'
@@ -726,6 +738,7 @@ export interface RootRouteChildren {
   SeguridadRoute: typeof SeguridadRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TerminosRoute: typeof TerminosRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -748,6 +761,13 @@ declare module '@tanstack/react-router' {
       path: '/unsubscribe'
       fullPath: '/unsubscribe'
       preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -1257,6 +1277,7 @@ const rootRouteChildren: RootRouteChildren = {
   SeguridadRoute: SeguridadRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TerminosRoute: TerminosRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
