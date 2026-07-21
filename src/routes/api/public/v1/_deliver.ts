@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createHmac } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const MAX_ATTEMPTS = 5;
@@ -9,13 +9,27 @@ function backoffSeconds(attempt: number): number {
   return Math.min(60 * 60, Math.pow(2, attempt) * 30);
 }
 
+/**
+ * Constant-time comparison so this stays safe even though it's a simple
+ * shared-secret check (avoids leaking the secret via response-time side channel).
+ */
+function safeEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
+
 export const Route = createFileRoute("/api/public/v1/_deliver")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apikey = request.headers.get("apikey") ?? "";
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
-        if (!expected || apikey !== expected) {
+        // IMPORTANT: this must be a dedicated, server-only secret. It must NOT be
+        // the Supabase publishable/anon key — that key ships in the client bundle
+        // and is not a secret, so using it here let anyone trigger this endpoint.
+        const provided = request.headers.get("x-dispatch-secret") ?? "";
+        const expected = process.env.WEBHOOK_DISPATCH_SECRET ?? "";
+        if (!expected || !provided || !safeEqual(provided, expected)) {
           return new Response("Unauthorized", { status: 401 });
         }
 

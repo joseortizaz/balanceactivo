@@ -2405,6 +2405,10 @@ export type Database = {
       seed_nomina_defaults: { Args: { _tenant_id: string }; Returns: undefined }
       seed_tenant_defaults: { Args: { _tenant_id: string }; Returns: undefined }
       verify_api_key: { Args: { _token: string }; Returns: string }
+      check_api_rate_limit: {
+        Args: { _tenant_id: string; _max_requests: number; _window_seconds: number }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
