@@ -24,7 +24,7 @@ function SuperAdmin() {
   const { data: subs } = useQuery({
     queryKey: ["sa-subs"],
     enabled: auth.roles.includes("super_admin"),
-    queryFn: async () => (await supabase.from("suscripciones" as any).select("*").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("suscripciones").select("*").order("created_at", { ascending: false })).data ?? [],
   });
   const { data: profiles } = useQuery({
     queryKey: ["sa-profiles"],
@@ -73,7 +73,7 @@ function SuperAdmin() {
           activado_at: new Date().toISOString(),
           activado_por: auth.user?.id,
         };
-    const { error } = await supabase.from("suscripciones" as any).update(payload).eq("id", sub.id);
+    const { error } = await supabase.from("suscripciones").update(payload).eq("id", sub.id);
     if (error) return toast.error(error.message);
     toast.success(activa ? "Suscripción suspendida" : "Suscripción activada");
     qc.invalidateQueries({ queryKey: ["sa-subs"] });
@@ -93,7 +93,7 @@ function SuperAdmin() {
           nomina_activado_at: new Date().toISOString(),
           nomina_activado_por: auth.user?.id,
         };
-    const { error } = await supabase.from("suscripciones" as any).update(payload).eq("id", sub.id);
+    const { error } = await supabase.from("suscripciones").update(payload).eq("id", sub.id);
     if (error) return toast.error(error.message);
     toast.success(activa ? "Nómina pausada" : "Nómina activada");
     qc.invalidateQueries({ queryKey: ["sa-subs"] });

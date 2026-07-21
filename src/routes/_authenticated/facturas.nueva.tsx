@@ -26,7 +26,7 @@ function NuevaFactura() {
   const isEdit = !!editId;
   const [ncfActual, setNcfActual] = useState<string>("");
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
-  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos" as any).select("id, nombre, codigo, precio, tasa_itbis, stock, controla_inventario").eq("activo", true).order("nombre")).data ?? [] });
+  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos").select("id, nombre, codigo, precio, tasa_itbis, stock, controla_inventario").eq("activo", true).order("nombre")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
   const [tipoNcf, setTipoNcf] = useState<"B01"|"B02"|"B04"|"B15">("B02");
   const [condicion, setCondicion] = useState<"contado"|"credito">("contado");
