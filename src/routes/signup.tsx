@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { Turnstile } from "@/components/Turnstile";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({
@@ -35,28 +36,33 @@ function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
+  const captchaRequired = Boolean(import.meta.env.VITE_TURNSTILE_SITE_KEY);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email, password,
       options: {
         emailRedirectTo: window.location.origin,
         data: { razon_social: razonSocial, nombre },
+        ...(captchaToken ? { captchaToken } : {}),
       },
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Empresa creada. Iniciando sesión…");
-    // auto-confirm está activado: intentar login
-    const { error: e2 } = await supabase.auth.signInWithPassword({ email, password });
-    if (e2) {
-      toast.info("Revisa tu correo para confirmar la cuenta");
-      navigate({ to: "/login" });
+    // Si auto-confirm está activado, signUp ya devuelve una sesión activa —
+    // no hace falta un segundo signInWithPassword (que además requeriría un
+    // token de captcha nuevo, ya que el de arriba se consume en esta misma
+    // llamada).
+    if (data.session) {
+      toast.success("Empresa creada. Bienvenido.");
+      navigate({ to: "/dashboard" });
       return;
     }
-    navigate({ to: "/dashboard" });
+    toast.info("Revisa tu correo para confirmar la cuenta");
+    navigate({ to: "/login" });
   };
 
   return (
@@ -81,7 +87,10 @@ function SignupPage() {
             <Label htmlFor="password">Contraseña</Label>
             <Input id="password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>{loading ? "Creando…" : "Crear empresa"}</Button>
+          <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken(undefined)} />
+          <Button type="submit" className="w-full" disabled={loading || (captchaRequired && !captchaToken)}>
+            {loading ? "Creando…" : "Crear empresa"}
+          </Button>
         </form>
         <p className="text-sm text-center mt-4 text-muted-foreground">
           ¿Ya tienes cuenta? <Link to="/login" className="text-primary font-medium">Inicia sesión</Link>

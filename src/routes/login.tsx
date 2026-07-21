@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { Turnstile } from "@/components/Turnstile";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
@@ -33,11 +34,17 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
+  const captchaRequired = Boolean(import.meta.env.VITE_TURNSTILE_SITE_KEY);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: captchaToken ? { captchaToken } : undefined,
+    });
     setLoading(false);
     if (error) return toast.error(error.message);
     toast.success("Bienvenido");
@@ -62,7 +69,10 @@ function LoginPage() {
             <Label htmlFor="password">Contraseña</Label>
             <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>{loading ? "Entrando…" : "Entrar"}</Button>
+          <Turnstile onVerify={setCaptchaToken} onExpire={() => setCaptchaToken(undefined)} />
+          <Button type="submit" className="w-full" disabled={loading || (captchaRequired && !captchaToken)}>
+            {loading ? "Entrando…" : "Entrar"}
+          </Button>
         </form>
         <p className="text-sm text-center mt-4 text-muted-foreground">
           ¿Nueva empresa? <Link to="/signup" className="text-primary font-medium">Crear cuenta</Link>
