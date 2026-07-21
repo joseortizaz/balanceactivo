@@ -35,6 +35,11 @@ export function corsOptions(): Response {
   });
 }
 
+// Límite por defecto de la API pública: 120 requests por minuto por tenant.
+// Generoso para uso normal, suficiente para frenar abuso/loops accidentales.
+const RATE_LIMIT_MAX_REQUESTS = 120;
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+
 export async function authenticate(request: Request): Promise<ApiContext | Response> {
   const header = request.headers.get("authorization") ?? "";
   const match = header.match(/^Bearer\s+(.+)$/i);
@@ -43,7 +48,20 @@ export async function authenticate(request: Request): Promise<ApiContext | Respo
   const { data, error } = await supabaseAdmin.rpc("verify_api_key", { _token: token });
   if (error) return jsonError(500, "auth_error", error.message);
   if (!data) return jsonError(401, "invalid_token", "API key inválida o revocada");
-  return { tenantId: data as string };
+  const tenantId = data as string;
+
+  const { data: allowed, error: rlError } = await supabaseAdmin.rpc("check_api_rate_limit", {
+    _tenant_id: tenantId,
+    _max_requests: RATE_LIMIT_MAX_REQUESTS,
+    _window_seconds: RATE_LIMIT_WINDOW_SECONDS,
+  });
+  // Si el chequeo de rate limit falla por error de infraestructura, no bloqueamos
+  // la request (fail-open) para no tumbar la API por un problema no relacionado.
+  if (!rlError && allowed === false) {
+    return jsonError(429, "rate_limited", "Demasiadas solicitudes. Intenta de nuevo en unos segundos.");
+  }
+
+  return { tenantId };
 }
 
 /** Generate a new token pair (token to give to user, hash to store). */
