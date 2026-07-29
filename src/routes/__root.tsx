@@ -78,6 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Balance Activo — Contabilidad y Facturación RD" },
       { name: "description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
       { name: "author", content: "Balance Activo" },
+      { name: "google-site-verification", content: "ONhyyHSA23oFrx9PET-bdTGwAhQyvaHMWEJkvte3baY" },
       { property: "og:title", content: "Balance Activo — Contabilidad y Facturación RD" },
       { property: "og:description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
       { property: "og:type", content: "website" },
