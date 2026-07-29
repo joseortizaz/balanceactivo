@@ -50,7 +50,10 @@ export async function authenticate(request: Request): Promise<ApiContext | Respo
   if (!data) return jsonError(401, "invalid_token", "API key inválida o revocada");
   const tenantId = data as string;
 
-  const { data: allowed, error: rlError } = await supabaseAdmin.rpc("check_api_rate_limit", {
+  const { data: allowed, error: rlError } = await (supabaseAdmin.rpc as unknown as (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: boolean | null; error: { message: string } | null }>)("check_api_rate_limit", {
     _tenant_id: tenantId,
     _max_requests: RATE_LIMIT_MAX_REQUESTS,
     _window_seconds: RATE_LIMIT_WINDOW_SECONDS,
