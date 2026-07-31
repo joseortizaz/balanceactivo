@@ -66,9 +66,9 @@ function Cobros() {
       (await (supabase as any)
         .from("cobros")
         .select("*, facturas(ncf, total, estado, monto_pagado, clientes(razon_social, email)), bancos(nombre)")
-        .order("factura_id", { ascending: true })
         .order("fecha", { ascending: false })
-        .limit(100)).data ?? [],
+        .order("created_at", { ascending: false })
+        .limit(1000)).data ?? [],
   });
 
   const { data: bancos } = useQuery({
