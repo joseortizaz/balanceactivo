@@ -52,7 +52,12 @@ function Cobros() {
 
   const { data: pendientes } = useQuery({
     queryKey: ["facturas-pendientes"],
-    queryFn: async () => (await supabase.from("facturas").select("*, clientes(razon_social)").eq("estado", "pendiente").order("fecha")).data ?? [],
+    queryFn: async () =>
+      (await supabase
+        .from("facturas")
+        .select("*, clientes(razon_social, email)")
+        .eq("estado", "pendiente")
+        .order("fecha")).data ?? [],
   });
 
   const { data: cobrosReg } = useQuery({
@@ -108,7 +113,16 @@ function Cobros() {
       bancoNombre,
       nota,
     });
-    setEmailTo(sel.clientes?.email ?? "");
+    let correo: string = sel.clientes?.email ?? "";
+    if (!correo && sel.cliente_id) {
+      const { data: cli } = await supabase
+        .from("clientes")
+        .select("email")
+        .eq("id", sel.cliente_id)
+        .maybeSingle();
+      correo = cli?.email ?? "";
+    }
+    setEmailTo(correo);
     setSel(null);
     qc.invalidateQueries({ queryKey: ["facturas-pendientes"] });
     qc.invalidateQueries({ queryKey: ["cobros-registrados"] });
