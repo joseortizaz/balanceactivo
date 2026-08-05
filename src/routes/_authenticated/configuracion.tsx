@@ -122,6 +122,17 @@ function Configuracion() {
                   <div><Label className="text-xs">Actual</Label><Input type="number" defaultValue={n.secuencia_actual} onBlur={(e) => saveNcf(n.id, { secuencia_actual: Number(e.target.value) })} /></div>
                   <div><Label className="text-xs">Hasta</Label><Input type="number" defaultValue={n.secuencia_hasta} onBlur={(e) => saveNcf(n.id, { secuencia_hasta: Number(e.target.value) })} /></div>
                 </div>
+                <div className="mt-2">
+                  <Label className="text-xs">Fecha de vencimiento</Label>
+                  <Input
+                    type="date"
+                    defaultValue={n.fecha_vencimiento ?? ""}
+                    onBlur={(e) => saveNcf(n.id, { fecha_vencimiento: e.target.value || null })}
+                  />
+                  {n.fecha_vencimiento && new Date(n.fecha_vencimiento) < new Date(new Date().toDateString()) && (
+                    <div className="text-xs text-destructive mt-1">Secuencia vencida</div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
