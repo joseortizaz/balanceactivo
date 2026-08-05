@@ -177,7 +177,7 @@ function Facturas() {
 
   return (
     <div>
-      <PageHeader title="Facturas" action={<Link to="/facturas/nueva"><Button><Plus className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
+      <PageHeader title="Facturas" action={<Link to="/facturas/nueva" search={{}}><Button><Plus className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
       <div className="relative mb-3 max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input placeholder="Buscar por cliente, NCF o producto…"
