@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Upload, KeyRound, Building2, Users, UserPlus, Send } from "lucide-react";
+import { Trash2, Upload, KeyRound, Building2, Users, UserPlus } from "lucide-react";
 import { addMember, updateMemberRole, removeMember, resetMemberPassword } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/perfil-empresa")({ component: PerfilEmpresa });
@@ -197,6 +197,12 @@ function AssetSlot({ label, url, canEdit, onPick, onRemove }: { label: string; u
 }
 
 function EquipoTab({ canEdit }: { canEdit: boolean }) {
+  const generarPasswordProvisional = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    const bytes = new Uint32Array(10);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => chars[b % chars.length]).join("") + "#1";
+  };
   const auth = useAuth();
   const qc = useQueryClient();
   const addFn = useServerFn(addMember);
