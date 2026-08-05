@@ -50,6 +50,19 @@ export function AppShell() {
     },
   });
 
+  const { data: empresa } = useQuery({
+    queryKey: ["empresa-actual", auth.tenantId],
+    enabled: !!auth.tenantId && !auth.roles.includes("super_admin"),
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("tenants")
+        .select("razon_social, nombre_comercial, logo_url")
+        .eq("id", auth.tenantId!)
+        .maybeSingle();
+      return data;
+    },
+  });
+
   if (auth.loading) {
     return <div className="flex h-screen items-center justify-center text-muted-foreground">Cargando…</div>;
   }
