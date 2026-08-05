@@ -99,6 +99,27 @@ export function AppShell() {
             </div>
           </Link>
         </div>
+        {empresa && (
+          <div className="px-4 py-3 border-b border-border flex items-center gap-3 bg-secondary/40">
+            {empresa.logo_url ? (
+              <img
+                src={empresa.logo_url}
+                alt={`Logo de ${empresa.nombre_comercial || empresa.razon_social}`}
+                className="h-9 w-9 rounded-md object-contain bg-background border border-border"
+              />
+            ) : (
+              <div className="h-9 w-9 rounded-md bg-muted text-muted-foreground flex items-center justify-center text-sm font-semibold">
+                {(empresa.nombre_comercial || empresa.razon_social || "?").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="min-w-0">
+              <div className="text-xs text-muted-foreground">Empresa</div>
+              <div className="text-sm font-medium text-foreground truncate">
+                {empresa.nombre_comercial || empresa.razon_social}
+              </div>
+            </div>
+          </div>
+        )}
         <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
           {visible.map((item) => {
             const Icon = item.icon;
