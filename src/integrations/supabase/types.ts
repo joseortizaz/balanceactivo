@@ -1266,6 +1266,7 @@ export type Database = {
         Row: {
           activo: boolean
           created_at: string
+          fecha_vencimiento: string | null
           id: string
           prefijo: string
           secuencia_actual: number
@@ -1276,6 +1277,7 @@ export type Database = {
         Insert: {
           activo?: boolean
           created_at?: string
+          fecha_vencimiento?: string | null
           id?: string
           prefijo: string
           secuencia_actual?: number
@@ -1286,6 +1288,7 @@ export type Database = {
         Update: {
           activo?: boolean
           created_at?: string
+          fecha_vencimiento?: string | null
           id?: string
           prefijo?: string
           secuencia_actual?: number

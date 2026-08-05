@@ -1,0 +1,1 @@
+ALTER TABLE public.ncf_secuencias ADD COLUMN IF NOT EXISTS fecha_vencimiento date;
