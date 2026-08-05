@@ -63,6 +63,20 @@ export function AppShell() {
     },
   });
 
+  const { data: logoSrc } = useQuery({
+    queryKey: ["empresa-logo", empresa?.logo_url],
+    enabled: !!empresa?.logo_url,
+    staleTime: 1000 * 60 * 30,
+    queryFn: async () => {
+      const path = empresa!.logo_url as string;
+      if (/^https?:\/\//.test(path)) return path;
+      const { data } = await supabase.storage
+        .from("tenant-assets")
+        .createSignedUrl(path, 60 * 60);
+      return data?.signedUrl ?? null;
+    },
+  });
+
   if (auth.loading) {
     return <div className="flex h-screen items-center justify-center text-muted-foreground">Cargando…</div>;
   }
@@ -101,9 +115,9 @@ export function AppShell() {
         </div>
         {empresa && (
           <div className="px-4 py-3 border-b border-border flex items-center gap-3 bg-secondary/40">
-            {empresa.logo_url ? (
+            {logoSrc ? (
               <img
-                src={empresa.logo_url}
+                src={logoSrc}
                 alt={`Logo de ${empresa.nombre_comercial || empresa.razon_social}`}
                 className="h-9 w-9 rounded-md object-contain bg-background border border-border"
               />
