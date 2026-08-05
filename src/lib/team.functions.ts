@@ -134,7 +134,8 @@ export const removeMember = createServerFn({ method: "POST" })
     const { data: otherProfiles } = await supabaseAdmin
       .from("profiles").select("id").eq("id", data.userId).limit(1);
     if (!otherProfiles || otherProfiles.length === 0) {
-      await supabaseAdmin.auth.admin.deleteUser(data.userId);
+      // Puede fallar si el usuario tiene registros históricos asociados; no es crítico
+      try { await supabaseAdmin.auth.admin.deleteUser(data.userId); } catch { /* noop */ }
     }
     return { ok: true };
   });
