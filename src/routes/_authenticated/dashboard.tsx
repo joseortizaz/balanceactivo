@@ -50,7 +50,7 @@ function Dashboard() {
     <div>
       <SubscriptionBanner />
       <PageHeader title="Dashboard" description="Resumen de tu actividad fiscal del mes"
-        action={<Link to="/facturas/nueva"><Button><Receipt className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
+        action={<Link to="/facturas/nueva" search={{ id: undefined }}><Button><Receipt className="h-4 w-4 mr-2" />Nueva factura</Button></Link>} />
       {isLoading ? <div className="text-muted-foreground">Cargando…</div> : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">

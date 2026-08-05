@@ -116,7 +116,27 @@ export const removeMember = createServerFn({ method: "POST" })
       .select("tenant_id").eq("id", data.userId).maybeSingle();
     if (target?.tenant_id !== tenantId) throw new Error("Miembro de otro tenant");
 
+    // No permitir eliminar super administradores
+    const { data: targetRoles } = await supabaseAdmin
+      .from("user_roles").select("role").eq("user_id", data.userId);
+    if ((targetRoles ?? []).some((r) => r.role === "super_admin")) {
+      throw new Error("No se puede eliminar a un super administrador");
+    }
+
+    // Quitar roles del tenant
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.userId).eq("tenant_id", tenantId);
+    // Quitar el perfil (es lo que lista la gestión de equipo)
+    const { error: profErr } = await supabaseAdmin
+      .from("profiles").delete().eq("id", data.userId).eq("tenant_id", tenantId);
+    if (profErr) throw new Error(profErr.message);
+
+    // Eliminar la cuenta de acceso si ya no pertenece a ningún tenant
+    const { data: otherProfiles } = await supabaseAdmin
+      .from("profiles").select("id").eq("id", data.userId).limit(1);
+    if (!otherProfiles || otherProfiles.length === 0) {
+      // Puede fallar si el usuario tiene registros históricos asociados; no es crítico
+      try { await supabaseAdmin.auth.admin.deleteUser(data.userId); } catch { /* noop */ }
+    }
     return { ok: true };
   });
 

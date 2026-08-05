@@ -46,7 +46,7 @@ function Cotizaciones() {
   return (
     <div>
       <PageHeader title="Cotizaciones" description="Presupuestos enviados a clientes antes de facturar"
-        action={<Link to="/cotizaciones/nueva"><Button><Plus className="h-4 w-4 mr-2" />Nueva cotización</Button></Link>} />
+        action={<Link to="/cotizaciones/nueva" search={{ id: undefined }}><Button><Plus className="h-4 w-4 mr-2" />Nueva cotización</Button></Link>} />
       <Card className="p-0 overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-secondary"><tr>
