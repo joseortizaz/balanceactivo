@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Upload, KeyRound, Building2, Users, UserPlus, Send } from "lucide-react";
-import { inviteMember, updateMemberRole, removeMember, resendInvitation } from "@/lib/team.functions";
+import { Trash2, Upload, KeyRound, Building2, Users, UserPlus } from "lucide-react";
+import { addMember, updateMemberRole, removeMember, resetMemberPassword } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/perfil-empresa")({ component: PerfilEmpresa });
 
@@ -197,16 +197,24 @@ function AssetSlot({ label, url, canEdit, onPick, onRemove }: { label: string; u
 }
 
 function EquipoTab({ canEdit }: { canEdit: boolean }) {
+  const generarPasswordProvisional = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    const bytes = new Uint32Array(10);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => chars[b % chars.length]).join("") + "#1";
+  };
   const auth = useAuth();
   const qc = useQueryClient();
-  const inviteFn = useServerFn(inviteMember);
+  const addFn = useServerFn(addMember);
   const updateFn = useServerFn(updateMemberRole);
   const removeFn = useServerFn(removeMember);
-  const resendFn = useServerFn(resendInvitation);
+  const resetFn = useServerFn(resetMemberPassword);
 
   const [email, setEmail] = useState("");
   const [nombre, setNombre] = useState("");
   const [role, setRole] = useState<Role>("agente_facturacion");
+  const [password, setPassword] = useState(() => generarPasswordProvisional());
+  const [credenciales, setCredenciales] = useState<{ email: string; password: string } | null>(null);
 
   const { data: miembros, isLoading } = useQuery({
     queryKey: ["equipo", auth.tenantId],
@@ -225,11 +233,13 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
     },
   });
 
-  const invite = useMutation({
-    mutationFn: () => inviteFn({ data: { email, nombre, role } }),
+  const add = useMutation({
+    mutationFn: () => addFn({ data: { email, nombre, role, password } }),
     onSuccess: () => {
-      toast.success("Invitación enviada. El miembro recibirá un correo para establecer su contraseña.");
+      toast.success("Miembro creado. Comparte la contraseña provisional.");
+      setCredenciales({ email, password });
       setEmail(""); setNombre(""); setRole("agente_facturacion");
+      setPassword(generarPasswordProvisional());
       qc.invalidateQueries({ queryKey: ["equipo"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -247,9 +257,13 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const resend = useMutation({
-    mutationFn: (userId: string) => resendFn({ data: { userId } }),
-    onSuccess: () => toast.success("Invitación reenviada. Revisa el correo del miembro."),
+  const reset = useMutation({
+    mutationFn: (v: { userId: string; email: string; password: string }) =>
+      resetFn({ data: { userId: v.userId, password: v.password } }),
+    onSuccess: (_d, v) => {
+      setCredenciales({ email: v.email, password: v.password });
+      toast.success("Contraseña provisional restablecida");
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -257,8 +271,8 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
     <div className="grid gap-4 mt-4 lg:grid-cols-3">
       {canEdit && (
         <Card className="p-5 lg:col-span-1">
-          <h3 className="font-semibold mb-4 flex items-center gap-2"><UserPlus className="h-4 w-4" />Invitar miembro</h3>
-          <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (!email || !nombre) { toast.error("Completa los campos"); return; } invite.mutate(); }}>
+          <h3 className="font-semibold mb-4 flex items-center gap-2"><UserPlus className="h-4 w-4" />Agregar miembro</h3>
+          <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (!email || !nombre) { toast.error("Completa los campos"); return; } if (password.length < 8) { toast.error("La contraseña debe tener al menos 8 caracteres"); return; } add.mutate(); }}>
             <div><Label>Nombre</Label><Input value={nombre} onChange={(e) => setNombre(e.target.value)} className="mt-1" required /></div>
             <div><Label>Correo</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" required /></div>
             <div>
@@ -272,10 +286,43 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full" disabled={invite.isPending}>
-              {invite.isPending ? "Enviando…" : "Enviar invitación"}
+            <div>
+              <Label>Contraseña provisional</Label>
+              <div className="flex gap-2 mt-1">
+                <Input value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <Button type="button" variant="outline" onClick={() => setPassword(generarPasswordProvisional())}>
+                  Generar
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                El miembro deberá cambiarla en su primer acceso.
+              </p>
+            </div>
+            <Button type="submit" className="w-full" disabled={add.isPending}>
+              {add.isPending ? "Creando…" : "Crear usuario"}
             </Button>
           </form>
+          {credenciales && (
+            <div className="mt-4 rounded-md border border-border bg-muted/40 p-3 text-sm">
+              <div className="font-medium mb-1">Credenciales provisionales</div>
+              <div className="text-muted-foreground break-all">Usuario: {credenciales.email}</div>
+              <div className="text-muted-foreground break-all">Contraseña: {credenciales.password}</div>
+              <div className="flex gap-2 mt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`Usuario: ${credenciales.email}\nContraseña: ${credenciales.password}`);
+                    toast.success("Copiado");
+                  }}
+                >
+                  Copiar
+                </Button>
+                <Button type="button" size="sm" variant="ghost" onClick={() => setCredenciales(null)}>Ocultar</Button>
+              </div>
+            </div>
+          )}
         </Card>
       )}
 
@@ -310,11 +357,14 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
                         <Button
                           size="sm"
                           variant="ghost"
-                          title="Reenviar invitación"
-                          disabled={resend.isPending}
-                          onClick={() => resend.mutate(m.id)}
+                          title="Restablecer contraseña provisional"
+                          disabled={reset.isPending}
+                          onClick={() => {
+                            if (!confirm("¿Generar una nueva contraseña provisional para este miembro?")) return;
+                            reset.mutate({ userId: m.id, email: m.email ?? "", password: generarPasswordProvisional() });
+                          }}
                         >
-                          <Send className="h-4 w-4" />
+                          <KeyRound className="h-4 w-4" />
                         </Button>
                         <Button size="sm" variant="ghost" onClick={() => { if (confirm("¿Revocar acceso?")) drop.mutate(m.id); }}>
                           <Trash2 className="h-4 w-4" />

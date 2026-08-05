@@ -57,6 +57,10 @@ export function AppShell() {
     if (typeof window !== "undefined") navigate({ to: "/login" });
     return null;
   }
+  if (auth.debeCambiarPassword) {
+    if (typeof window !== "undefined") navigate({ to: "/cambiar-password" });
+    return null;
+  }
 
   const isSuperAdmin = auth.roles.includes("super_admin");
   // El super administrador tiene un panel propio y NO debe ver los módulos

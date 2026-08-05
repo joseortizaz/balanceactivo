@@ -1623,6 +1623,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          debe_cambiar_password: boolean
           email: string | null
           id: string
           nombre: string
@@ -1630,6 +1631,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          debe_cambiar_password?: boolean
           email?: string | null
           id: string
           nombre: string
@@ -1637,6 +1639,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          debe_cambiar_password?: boolean
           email?: string | null
           id?: string
           nombre?: string

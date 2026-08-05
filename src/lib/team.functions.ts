@@ -5,13 +5,14 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const ROLES = ["administrador", "contador", "agente_facturacion"] as const;
 
-export const inviteMember = createServerFn({ method: "POST" })
+export const addMember = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z.object({
       email: z.string().trim().email().max(255),
       nombre: z.string().trim().min(1).max(120),
       role: z.enum(ROLES),
+      password: z.string().min(8).max(72),
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
@@ -26,14 +27,14 @@ export const inviteMember = createServerFn({ method: "POST" })
     const { data: roles } = await supabase
       .from("user_roles").select("role").eq("user_id", userId);
     const isAdmin = (roles ?? []).some((r) => r.role === "administrador");
-    if (!isAdmin) throw new Error("Solo administradores pueden invitar miembros");
+    if (!isAdmin) throw new Error("Solo administradores pueden agregar miembros");
 
     // Crear o reutilizar usuario
     let newUserId: string | null = null;
     const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       email_confirm: true,
-      password: crypto.randomUUID().replace(/-/g, "") + "Aa1!",
+      password: data.password,
       user_metadata: { nombre: data.nombre, invited_to_tenant: tenantId },
     });
     if (createErr) {
@@ -42,6 +43,8 @@ export const inviteMember = createServerFn({ method: "POST" })
       const existing = list?.users.find((u) => u.email?.toLowerCase() === data.email.toLowerCase());
       if (!existing) throw new Error(createErr.message);
       newUserId = existing.id;
+      // Asignar la contraseña provisional al usuario existente
+      await supabaseAdmin.auth.admin.updateUserById(newUserId, { password: data.password });
     } else {
       newUserId = created.user!.id;
     }
@@ -49,17 +52,13 @@ export const inviteMember = createServerFn({ method: "POST" })
     // Forzar perfil al tenant correcto (handle_new_user pudo crear uno separado)
     await supabaseAdmin.from("profiles").upsert({
       id: newUserId, tenant_id: tenantId, nombre: data.nombre, email: data.email,
+      debe_cambiar_password: true,
     }, { onConflict: "id" });
 
     // Asignar rol dentro del tenant del administrador
     await supabaseAdmin.from("user_roles").upsert({
       user_id: newUserId, tenant_id: tenantId, role: data.role,
     }, { onConflict: "user_id,role" });
-
-    // Enviar enlace de recuperación para que defina contraseña
-    await supabaseAdmin.auth.admin.generateLink({
-      type: "recovery", email: data.email,
-    });
 
     return { ok: true, userId: newUserId };
   });
@@ -121,17 +120,17 @@ export const removeMember = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-export const resendInvitation = createServerFn({ method: "POST" })
+export const resetMemberPassword = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
-    z.object({ userId: z.string().uuid() }).parse(input),
+    z.object({ userId: z.string().uuid(), password: z.string().min(8).max(72) }).parse(input),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const { data: roles } = await supabase
       .from("user_roles").select("role").eq("user_id", userId);
     if (!(roles ?? []).some((r) => r.role === "administrador")) {
-      throw new Error("Solo administradores pueden reenviar invitaciones");
+      throw new Error("Solo administradores pueden restablecer contraseñas");
     }
     const { data: profile } = await supabase
       .from("profiles").select("tenant_id").eq("id", userId).maybeSingle();
@@ -141,11 +140,12 @@ export const resendInvitation = createServerFn({ method: "POST" })
     const { data: target } = await supabaseAdmin.from("profiles")
       .select("tenant_id, email").eq("id", data.userId).maybeSingle();
     if (!target || target.tenant_id !== tenantId) throw new Error("Miembro de otro tenant");
-    if (!target.email) throw new Error("El miembro no tiene un correo registrado");
 
-    const { error } = await supabaseAdmin.auth.admin.generateLink({
-      type: "recovery", email: target.email,
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: data.password,
     });
     if (error) throw new Error(error.message);
+    await supabaseAdmin.from("profiles")
+      .update({ debe_cambiar_password: true }).eq("id", data.userId);
     return { ok: true };
   });
