@@ -2410,6 +2410,13 @@ export type Database = {
       }
       seed_nomina_defaults: { Args: { _tenant_id: string }; Returns: undefined }
       seed_tenant_defaults: { Args: { _tenant_id: string }; Returns: undefined }
+      siguiente_ncf_libre: {
+        Args: {
+          _tenant: string
+          _tipo: Database["public"]["Enums"]["tipo_ncf"]
+        }
+        Returns: string
+      }
       verify_api_key: { Args: { _token: string }; Returns: string }
     }
     Enums: {
