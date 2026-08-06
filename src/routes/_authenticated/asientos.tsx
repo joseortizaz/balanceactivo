@@ -20,7 +20,12 @@ function Asientos() {
           <Card key={a.id} className="p-4">
             <div className="flex justify-between mb-2">
               <div>
-                <div className="font-semibold">{a.concepto}</div>
+                <div className="font-semibold">
+                  {a.concepto}
+                  {a.origen === "anulacion_factura" && (
+                    <span className="ml-2 text-xs rounded px-1.5 py-0.5 bg-destructive/10 text-destructive align-middle">Reversión</span>
+                  )}
+                </div>
                 <div className="text-xs text-muted-foreground">{fmtDate(a.fecha)} · {a.origen}</div>
               </div>
               <div className="text-right text-sm"><div>Débito: {fmtMoney(a.total_debito)}</div><div>Crédito: {fmtMoney(a.total_credito)}</div></div>
