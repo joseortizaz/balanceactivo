@@ -35,6 +35,14 @@ const NCF_TIPOS = [
   { v: "B11", l: "B11 - Comprobante Único de Ingresos" },
   { v: "B14", l: "B14 - Regímenes Especiales" },
   { v: "B15", l: "B15 - Gubernamental" },
+  { v: "E31", l: "E31 - Factura de Crédito Fiscal Electrónica" },
+  { v: "E32", l: "E32 - Factura de Consumo Electrónica" },
+  { v: "E34", l: "E34 - Nota de Crédito Electrónica" },
+  { v: "E41", l: "E41 - Compras Electrónico" },
+  { v: "E43", l: "E43 - Gastos Menores Electrónico" },
+  { v: "E44", l: "E44 - Regímenes Especiales Electrónico" },
+  { v: "E45", l: "E45 - Gubernamental Electrónico" },
+  { v: "E47", l: "E47 - Pagos al Exterior Electrónico" },
 ];
 
 function Gastos() {
