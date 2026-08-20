@@ -2503,7 +2503,19 @@ export type Database = {
         | "venta"
         | "anulacion_venta"
       tipo_ncf: "B01" | "B02" | "B04" | "B15"
-      tipo_ncf_compra: "B01" | "B11" | "B14" | "B15"
+      tipo_ncf_compra:
+        | "B01"
+        | "B11"
+        | "B14"
+        | "B15"
+        | "E31"
+        | "E32"
+        | "E34"
+        | "E41"
+        | "E43"
+        | "E44"
+        | "E45"
+        | "E47"
       tipo_nomina: "regular" | "regalia_pascual" | "bonificacion"
     }
     CompositeTypes: {
@@ -2718,7 +2730,20 @@ export const Constants = {
         "anulacion_venta",
       ],
       tipo_ncf: ["B01", "B02", "B04", "B15"],
-      tipo_ncf_compra: ["B01", "B11", "B14", "B15"],
+      tipo_ncf_compra: [
+        "B01",
+        "B11",
+        "B14",
+        "B15",
+        "E31",
+        "E32",
+        "E34",
+        "E41",
+        "E43",
+        "E44",
+        "E45",
+        "E47",
+      ],
       tipo_nomina: ["regular", "regalia_pascual", "bonificacion"],
     },
   },
