@@ -70,3 +70,24 @@ export const categoriaA606: Record<string, string> = {
   "08_combustibles": "10",
   "09_otros": "09",
 };
+/** Exporta filas a un archivo Excel (.xlsx) descargable. */
+export async function downloadXlsx(
+  fileName: string,
+  sheetName: string,
+  encabezados: string[],
+  filas: (string | number)[][],
+) {
+  const XLSX = await import("xlsx");
+  const ws = XLSX.utils.aoa_to_sheet([encabezados, ...filas]);
+  ws["!cols"] = encabezados.map((h, i) => ({
+    wch: Math.max(h.length + 2, ...filas.map((f) => String(f[i] ?? "").length + 2)),
+  }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, sheetName.slice(0, 31));
+  XLSX.writeFile(wb, fileName);
+}
+
+/** Nombre estándar Excel: DGII_606_{RNC}_{PERIODO}.xlsx */
+export function nombreArchivoXlsx(reporte: string, rnc: string, periodoDgii: string) {
+  return `DGII_${reporte}_${docDgii(rnc) || "SIN_RNC"}_${periodoDgii}.xlsx`;
+}
