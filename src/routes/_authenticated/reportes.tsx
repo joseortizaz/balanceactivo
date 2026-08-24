@@ -112,12 +112,28 @@ function Reporte606({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("606", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("606", rnc, periodoDgii), "606 Compras",
+    ["RNC/Cédula", "Tipo ID", "Tipo bien/servicio", "NCF", "Fecha", "Subtotal", "ITBIS", "ITBIS retenido", "ISR retenido", "Total", "Proveedor"],
+    gastos.map((g: any) => [
+      docDgii(g.proveedores?.documento),
+      tipoIdDgii(g.proveedores?.tipo_documento),
+      categoriaA606[g.categoria] ?? "09",
+      g.ncf ?? "",
+      g.fecha,
+      Number(g.subtotal), Number(g.itbis), Number(g.itbis_retenido), Number(g.isr_retenido), Number(g.total),
+      g.proveedores?.razon_social ?? "",
+    ]),
+  );
+
   return (
     <TabaBlock
       titulo="606 · Compras de Bienes y Servicios"
       resumen={`${gastos.length} comprobantes · Subtotal ${fmtMoney(totales.monto)} · ITBIS ${fmtMoney(totales.itbis)} · Retenido ITBIS ${fmtMoney(totales.itbisRet)} · Retenido ISR ${fmtMoney(totales.isrRet)}`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={gastos.length === 0}
+
       encabezados={["RNC/Céd.", "Tipo", "Cat.", "NCF", "Fecha", "Subtotal", "ITBIS", "ITBIS ret.", "ISR ret.", "Total"]}
       filas={gastos.map((g: any) => [
         g.proveedores?.documento ?? "—",
