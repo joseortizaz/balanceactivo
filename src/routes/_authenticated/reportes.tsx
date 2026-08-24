@@ -251,12 +251,20 @@ function Reporte608({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("608", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("608", rnc, periodoDgii), "608 Anulados",
+    ["NCF", "Fecha", "Motivo"],
+    facts.map((f: any) => [f.ncf, f.fecha, f.motivo_estado ?? ""]),
+  );
+
   return (
     <TabaBlock
       titulo="608 · Comprobantes anulados"
       resumen={`${facts.length} comprobantes anulados en el período`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={facts.length === 0}
+
       encabezados={["NCF", "Fecha", "Motivo"]}
       filas={facts.map((f: any) => [f.ncf, f.fecha, f.motivo_estado ?? "—"])}
     />
