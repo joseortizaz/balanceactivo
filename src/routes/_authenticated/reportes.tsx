@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMemo, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, FileSpreadsheet } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,9 @@ import { fmtMoney } from "@/lib/format";
 import { useAuth } from "@/hooks/use-auth";
 import {
   tipoIdDgii, fechaDgii, montoDgii, docDgii, rangoMes, downloadText,
-  nombreArchivo, linea, categoriaA606,
+  nombreArchivo, nombreArchivoXlsx, downloadXlsx, linea, categoriaA606,
 } from "@/lib/dgii";
+
 
 export const Route = createFileRoute("/_authenticated/reportes")({ component: Reportes });
 
@@ -27,7 +28,7 @@ function Reportes() {
     <div>
       <PageHeader
         title="Reportes DGII"
-        description="Formatos 606, 607, 608, IT-1 e IR-17 con exportación TXT para Oficina Virtual"
+        description="Formatos 606, 607, 608, IT-1 e IR-17 con exportación en TXT (Oficina Virtual) o Excel"
       />
       <Card className="p-4 mb-4 flex items-end gap-3">
         <div><Label>Período</Label><Input type="month" value={mes} onChange={(e) => setMes(e.target.value)} /></div>
@@ -111,12 +112,28 @@ function Reporte606({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("606", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("606", rnc, periodoDgii), "606 Compras",
+    ["RNC/Cédula", "Tipo ID", "Tipo bien/servicio", "NCF", "Fecha", "Subtotal", "ITBIS", "ITBIS retenido", "ISR retenido", "Total", "Proveedor"],
+    gastos.map((g: any) => [
+      docDgii(g.proveedores?.documento),
+      tipoIdDgii(g.proveedores?.tipo_documento),
+      categoriaA606[g.categoria] ?? "09",
+      g.ncf ?? "",
+      g.fecha,
+      Number(g.subtotal), Number(g.itbis), Number(g.itbis_retenido), Number(g.isr_retenido), Number(g.total),
+      g.proveedores?.razon_social ?? "",
+    ]),
+  );
+
   return (
     <TabaBlock
       titulo="606 · Compras de Bienes y Servicios"
       resumen={`${gastos.length} comprobantes · Subtotal ${fmtMoney(totales.monto)} · ITBIS ${fmtMoney(totales.itbis)} · Retenido ITBIS ${fmtMoney(totales.itbisRet)} · Retenido ISR ${fmtMoney(totales.isrRet)}`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={gastos.length === 0}
+
       encabezados={["RNC/Céd.", "Tipo", "Cat.", "NCF", "Fecha", "Subtotal", "ITBIS", "ITBIS ret.", "ISR ret.", "Total"]}
       filas={gastos.map((g: any) => [
         g.proveedores?.documento ?? "—",
@@ -176,12 +193,28 @@ function Reporte607({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("607", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("607", rnc, periodoDgii), "607 Ventas",
+    ["NCF", "RNC/Cédula", "Tipo ID", "Cliente", "Fecha", "Condición", "Subtotal", "ITBIS", "Total"],
+    facts.map((f: any) => [
+      f.ncf,
+      docDgii(f.clientes?.documento),
+      f.clientes?.documento ? tipoIdDgii(f.clientes?.tipo_documento) : "",
+      f.clientes?.razon_social ?? "",
+      f.fecha,
+      f.condicion_pago ?? "",
+      Number(f.subtotal), Number(f.itbis), Number(f.total),
+    ]),
+  );
+
   return (
     <TabaBlock
       titulo="607 · Ventas de Bienes y Servicios"
       resumen={`${facts.length} comprobantes · Subtotal ${fmtMoney(totales.subtotal)} · ITBIS ${fmtMoney(totales.itbis)} · Total ${fmtMoney(totales.total)}`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={facts.length === 0}
+
       encabezados={["NCF", "RNC/Céd.", "Cliente", "Fecha", "Subtotal", "ITBIS", "Total"]}
       filas={facts.map((f: any) => [
         f.ncf,
@@ -218,12 +251,20 @@ function Reporte608({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("608", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("608", rnc, periodoDgii), "608 Anulados",
+    ["NCF", "Fecha", "Motivo"],
+    facts.map((f: any) => [f.ncf, f.fecha, f.motivo_estado ?? ""]),
+  );
+
   return (
     <TabaBlock
       titulo="608 · Comprobantes anulados"
       resumen={`${facts.length} comprobantes anulados en el período`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={facts.length === 0}
+
       encabezados={["NCF", "Fecha", "Motivo"]}
       filas={facts.map((f: any) => [f.ncf, f.fecha, f.motivo_estado ?? "—"])}
     />
@@ -256,12 +297,31 @@ function ReporteIT1({ inicio, fin }: { inicio: string; fin: string }) {
 
   const saldo = v.debito - c.credito - c.retenido;
 
+  const exportarXlsx = () => downloadXlsx(
+    `DGII_IT1_${inicio}_${fin}.xlsx`, "IT-1",
+    ["Concepto", "Monto"],
+    [
+      ["Total ventas gravadas", v.base],
+      ["ITBIS facturado (débito fiscal)", v.debito],
+      ["Total compras gravadas", c.base],
+      ["ITBIS pagado en compras (crédito fiscal)", c.credito],
+      ["ITBIS retenido a terceros", c.retenido],
+      [saldo >= 0 ? "ITBIS a pagar" : "Saldo a favor", Math.abs(saldo)],
+    ],
+  );
+
   return (
     <Card className="p-5 mt-4">
-      <h3 className="font-semibold mb-4">IT-1 · Declaración Jurada del ITBIS</h3>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <h3 className="font-semibold">IT-1 · Declaración Jurada del ITBIS</h3>
+        <Button size="sm" variant="outline" onClick={exportarXlsx}>
+          <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+        </Button>
+      </div>
       <p className="text-sm text-muted-foreground mb-4">
         Resumen mensual con los montos que se declaran en el formulario IT-1. Verifica con tu contador antes de presentar.
       </p>
+
       <div className="grid gap-2 max-w-xl">
         <RowIT label="Total ventas gravadas" value={v.base} />
         <RowIT label="ITBIS facturado (débito fiscal)" value={v.debito} strong />
@@ -322,12 +382,24 @@ function ReporteIR17({ inicio, fin }: { inicio: string; fin: string }) {
   const filas = Array.from(porEmpleado.values());
   const totalIsr = filas.reduce((s, f) => s + f.isr, 0);
 
+  const exportarXlsx = () => downloadXlsx(
+    `DGII_IR17_${inicio}_${fin}.xlsx`, "IR-17",
+    ["Cédula", "Empleado", "Ingresos", "AFP", "SFS", "ISR retenido"],
+    filas.map((f) => [f.cedula, f.nombre, f.ingresos, f.afp, f.sfs, f.isr]),
+  );
+
   return (
     <Card className="p-5 mt-4">
-      <h3 className="font-semibold mb-2">IR-17 · Retenciones de asalariados</h3>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+        <h3 className="font-semibold">IR-17 · Retenciones de asalariados</h3>
+        <Button size="sm" variant="outline" onClick={exportarXlsx} disabled={filas.length === 0}>
+          <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+        </Button>
+      </div>
       <p className="text-sm text-muted-foreground mb-4">
         Retenciones de ISR aplicadas en nóminas cerradas/pagadas del período. Total retenido: <b>{fmtMoney(totalIsr)}</b>
       </p>
+
       {filas.length === 0 ? (
         <div className="text-sm text-muted-foreground">Sin nóminas en el período.</div>
       ) : (
@@ -360,9 +432,9 @@ function ReporteIR17({ inicio, fin }: { inicio: string; fin: string }) {
 
 // -------------------- Layout auxiliar --------------------
 function TabaBlock({
-  titulo, resumen, onExport, disabled, encabezados, filas,
+  titulo, resumen, onExport, onExportXlsx, disabled, encabezados, filas,
 }: {
-  titulo: string; resumen: string; onExport: () => void; disabled?: boolean;
+  titulo: string; resumen: string; onExport: () => void; onExportXlsx?: () => void; disabled?: boolean;
   encabezados: string[]; filas: (string | number)[][];
 }) {
   return (
@@ -372,10 +444,18 @@ function TabaBlock({
           <div className="font-semibold">{titulo}</div>
           <div className="text-xs text-muted-foreground">{resumen}</div>
         </div>
-        <Button size="sm" onClick={onExport} disabled={disabled}>
-          <Download className="h-4 w-4 mr-2" />Exportar TXT DGII
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" onClick={onExport} disabled={disabled}>
+            <Download className="h-4 w-4 mr-2" />Exportar TXT DGII
+          </Button>
+          {onExportXlsx && (
+            <Button size="sm" variant="outline" onClick={onExportXlsx} disabled={disabled}>
+              <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+            </Button>
+          )}
+        </div>
       </div>
+
       {filas.length === 0 ? (
         <div className="p-4 text-sm text-muted-foreground">Sin datos en el período.</div>
       ) : (
