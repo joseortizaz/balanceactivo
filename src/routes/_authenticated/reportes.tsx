@@ -28,7 +28,7 @@ function Reportes() {
     <div>
       <PageHeader
         title="Reportes DGII"
-        description="Formatos 606, 607, 608, IT-1 e IR-17 con exportación TXT para Oficina Virtual"
+        description="Formatos 606, 607, 608, IT-1 e IR-17 con exportación en TXT (Oficina Virtual) o Excel"
       />
       <Card className="p-4 mb-4 flex items-end gap-3">
         <div><Label>Período</Label><Input type="month" value={mes} onChange={(e) => setMes(e.target.value)} /></div>
