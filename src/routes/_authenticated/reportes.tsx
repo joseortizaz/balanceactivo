@@ -361,9 +361,9 @@ function ReporteIR17({ inicio, fin }: { inicio: string; fin: string }) {
 
 // -------------------- Layout auxiliar --------------------
 function TabaBlock({
-  titulo, resumen, onExport, disabled, encabezados, filas,
+  titulo, resumen, onExport, onExportXlsx, disabled, encabezados, filas,
 }: {
-  titulo: string; resumen: string; onExport: () => void; disabled?: boolean;
+  titulo: string; resumen: string; onExport: () => void; onExportXlsx?: () => void; disabled?: boolean;
   encabezados: string[]; filas: (string | number)[][];
 }) {
   return (
@@ -373,10 +373,18 @@ function TabaBlock({
           <div className="font-semibold">{titulo}</div>
           <div className="text-xs text-muted-foreground">{resumen}</div>
         </div>
-        <Button size="sm" onClick={onExport} disabled={disabled}>
-          <Download className="h-4 w-4 mr-2" />Exportar TXT DGII
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" onClick={onExport} disabled={disabled}>
+            <Download className="h-4 w-4 mr-2" />Exportar TXT DGII
+          </Button>
+          {onExportXlsx && (
+            <Button size="sm" variant="outline" onClick={onExportXlsx} disabled={disabled}>
+              <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+            </Button>
+          )}
+        </div>
       </div>
+
       {filas.length === 0 ? (
         <div className="p-4 text-sm text-muted-foreground">Sin datos en el período.</div>
       ) : (
