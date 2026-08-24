@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
 import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
+import { Route as AuthenticatedReportesInternosRouteImport } from './routes/_authenticated/reportes-internos'
 import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
 import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
 import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
@@ -128,6 +129,12 @@ const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
   path: '/superadmin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedReportesInternosRoute =
+  AuthenticatedReportesInternosRouteImport.update({
+    id: '/reportes-internos',
+    path: '/reportes-internos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
   id: '/reportes',
   path: '/reportes',
@@ -407,6 +414,7 @@ export interface FileRoutesByFullPath {
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
+  '/reportes-internos': typeof AuthenticatedReportesInternosRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -466,6 +474,7 @@ export interface FileRoutesByTo {
   '/proveedores': typeof AuthenticatedProveedoresRoute
   '/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/reportes': typeof AuthenticatedReportesRoute
+  '/reportes-internos': typeof AuthenticatedReportesInternosRoute
   '/superadmin': typeof AuthenticatedSuperadminRoute
   '/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -527,6 +536,7 @@ export interface FileRoutesById {
   '/_authenticated/proveedores': typeof AuthenticatedProveedoresRoute
   '/_authenticated/recurrentes': typeof AuthenticatedRecurrentesRoute
   '/_authenticated/reportes': typeof AuthenticatedReportesRoute
+  '/_authenticated/reportes-internos': typeof AuthenticatedReportesInternosRoute
   '/_authenticated/superadmin': typeof AuthenticatedSuperadminRoute
   '/_authenticated/suscripcion': typeof AuthenticatedSuscripcionRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -588,6 +598,7 @@ export interface FileRouteTypes {
     | '/proveedores'
     | '/recurrentes'
     | '/reportes'
+    | '/reportes-internos'
     | '/superadmin'
     | '/suscripcion'
     | '/email/unsubscribe'
@@ -647,6 +658,7 @@ export interface FileRouteTypes {
     | '/proveedores'
     | '/recurrentes'
     | '/reportes'
+    | '/reportes-internos'
     | '/superadmin'
     | '/suscripcion'
     | '/email/unsubscribe'
@@ -707,6 +719,7 @@ export interface FileRouteTypes {
     | '/_authenticated/proveedores'
     | '/_authenticated/recurrentes'
     | '/_authenticated/reportes'
+    | '/_authenticated/reportes-internos'
     | '/_authenticated/superadmin'
     | '/_authenticated/suscripcion'
     | '/email/unsubscribe'
@@ -851,6 +864,13 @@ declare module '@tanstack/react-router' {
       path: '/superadmin'
       fullPath: '/superadmin'
       preLoaderRoute: typeof AuthenticatedSuperadminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/reportes-internos': {
+      id: '/_authenticated/reportes-internos'
+      path: '/reportes-internos'
+      fullPath: '/reportes-internos'
+      preLoaderRoute: typeof AuthenticatedReportesInternosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/reportes': {
@@ -1205,6 +1225,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedProveedoresRoute: typeof AuthenticatedProveedoresRoute
   AuthenticatedRecurrentesRoute: typeof AuthenticatedRecurrentesRoute
   AuthenticatedReportesRoute: typeof AuthenticatedReportesRoute
+  AuthenticatedReportesInternosRoute: typeof AuthenticatedReportesInternosRoute
   AuthenticatedSuperadminRoute: typeof AuthenticatedSuperadminRoute
   AuthenticatedSuscripcionRoute: typeof AuthenticatedSuscripcionRoute
   AuthenticatedCotizacionesNuevaRoute: typeof AuthenticatedCotizacionesNuevaRoute
@@ -1242,6 +1263,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProveedoresRoute: AuthenticatedProveedoresRoute,
   AuthenticatedRecurrentesRoute: AuthenticatedRecurrentesRoute,
   AuthenticatedReportesRoute: AuthenticatedReportesRoute,
+  AuthenticatedReportesInternosRoute: AuthenticatedReportesInternosRoute,
   AuthenticatedSuperadminRoute: AuthenticatedSuperadminRoute,
   AuthenticatedSuscripcionRoute: AuthenticatedSuscripcionRoute,
   AuthenticatedCotizacionesNuevaRoute: AuthenticatedCotizacionesNuevaRoute,
