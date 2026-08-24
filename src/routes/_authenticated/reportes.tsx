@@ -193,12 +193,28 @@ function Reporte607({ inicio, fin, periodoDgii }: Props) {
     downloadText(nombreArchivo("607", rnc, periodoDgii), [header, ...lineas].join("\r\n") + "\r\n");
   };
 
+  const exportarXlsx = () => downloadXlsx(
+    nombreArchivoXlsx("607", rnc, periodoDgii), "607 Ventas",
+    ["NCF", "RNC/Cédula", "Tipo ID", "Cliente", "Fecha", "Condición", "Subtotal", "ITBIS", "Total"],
+    facts.map((f: any) => [
+      f.ncf,
+      docDgii(f.clientes?.documento),
+      f.clientes?.documento ? tipoIdDgii(f.clientes?.tipo_documento) : "",
+      f.clientes?.razon_social ?? "",
+      f.fecha,
+      f.condicion_pago ?? "",
+      Number(f.subtotal), Number(f.itbis), Number(f.total),
+    ]),
+  );
+
   return (
     <TabaBlock
       titulo="607 · Ventas de Bienes y Servicios"
       resumen={`${facts.length} comprobantes · Subtotal ${fmtMoney(totales.subtotal)} · ITBIS ${fmtMoney(totales.itbis)} · Total ${fmtMoney(totales.total)}`}
       onExport={exportarTxt}
+      onExportXlsx={exportarXlsx}
       disabled={facts.length === 0}
+
       encabezados={["NCF", "RNC/Céd.", "Cliente", "Fecha", "Subtotal", "ITBIS", "Total"]}
       filas={facts.map((f: any) => [
         f.ncf,
