@@ -64,7 +64,8 @@ function Gastos() {
     condicion_pago: "contado",
     fecha_vencimiento: "",
     subtotal: 0,
-    tasa_itbis: 18,
+    itbis: 0,
+    total: 0,
     itbis_retenido: 0,
     isr_retenido: 0,
     cuenta_pago_id: "",
@@ -76,7 +77,7 @@ function Gastos() {
   const resetForm = () => setF({
     fecha: new Date().toISOString().slice(0, 10), proveedor_id: "", ncf: "", tipo_ncf_compra: "B01",
     categoria: "05_operacionales", concepto: "", cuenta_gasto_id: "", condicion_pago: "contado",
-    fecha_vencimiento: "", subtotal: 0, tasa_itbis: 18, itbis_retenido: 0, isr_retenido: 0,
+    fecha_vencimiento: "", subtotal: 0, itbis: 0, total: 0, itbis_retenido: 0, isr_retenido: 0,
     cuenta_pago_id: "", notas: "",
   });
 
@@ -88,7 +89,8 @@ function Gastos() {
       cuenta_gasto_id: g.cuenta_gasto_id, condicion_pago: g.condicion_pago,
       fecha_vencimiento: g.fecha_vencimiento ?? "",
       subtotal: Number(g.subtotal),
-      tasa_itbis: g.subtotal > 0 ? Number((Number(g.itbis) * 100 / Number(g.subtotal)).toFixed(2)) : 18,
+      itbis: Number(g.itbis),
+      total: Number(g.total),
       itbis_retenido: Number(g.itbis_retenido),
       isr_retenido: Number(g.isr_retenido),
       cuenta_pago_id: g.cuenta_pago_id ?? "",
@@ -132,15 +134,21 @@ function Gastos() {
     queryFn: async () => (await supabase.from("cuentas_contables").select("id, codigo, nombre").eq("es_movimiento", true).like("codigo", "1.1.01%").order("codigo")).data ?? [],
   });
 
-  const itbis = useMemo(() => Number(((f.subtotal || 0) * (f.tasa_itbis || 0)) / 100), [f.subtotal, f.tasa_itbis]);
-  const total = useMemo(() => Number(f.subtotal || 0) + itbis, [f.subtotal, itbis]);
+  const itbis = Number(f.itbis || 0);
+  const total = useMemo(() => Number(f.total || 0) || Number(f.subtotal || 0) + itbis, [f.total, f.subtotal, itbis]);
+  const subtotal = useMemo(() => Number((total - itbis).toFixed(2)), [total, itbis]);
   const neto = useMemo(() => total - Number(f.itbis_retenido || 0) - Number(f.isr_retenido || 0), [total, f.itbis_retenido, f.isr_retenido]);
+
+  const setSubtotal = (v: number) => setF((p: any) => ({ ...p, subtotal: v, total: Number((v + Number(p.itbis || 0)).toFixed(2)) }));
+  const setItbis = (v: number) => setF((p: any) => ({ ...p, itbis: v, total: Number((Number(p.subtotal || 0) + v).toFixed(2)) }));
+  const setTotal = (v: number) => setF((p: any) => ({ ...p, total: v, subtotal: Number((v - Number(p.itbis || 0)).toFixed(2)) }));
 
   const guardar = async () => {
     if (!f.proveedor_id) return toast.error("Seleccione un proveedor");
     if (!f.cuenta_gasto_id) return toast.error("Seleccione cuenta de gasto");
     if (!f.concepto) return toast.error("Concepto requerido");
-    if (Number(f.subtotal) <= 0) return toast.error("Subtotal debe ser > 0");
+    if (total <= 0) return toast.error("El total debe ser > 0");
+    if (subtotal < 0) return toast.error("El ITBIS no puede ser mayor que el total");
     if (f.condicion_pago === "contado" && !f.cuenta_pago_id) return toast.error("Seleccione cuenta de pago");
 
     if (editId) {
@@ -149,7 +157,7 @@ function Gastos() {
         _ncf: f.ncf || "", _tipo_ncf_compra: f.tipo_ncf_compra, _categoria: f.categoria,
         _concepto: f.concepto, _cuenta_gasto_id: f.cuenta_gasto_id,
         _condicion_pago: f.condicion_pago, _fecha_vencimiento: f.fecha_vencimiento || null,
-        _subtotal: f.subtotal, _tasa_itbis: f.tasa_itbis,
+        _subtotal: subtotal, _itbis: itbis, _total: total,
         _itbis_retenido: f.itbis_retenido || 0, _isr_retenido: f.isr_retenido || 0,
         _cuenta_pago_id: f.condicion_pago === "contado" ? f.cuenta_pago_id : null,
         _notas: f.notas || null,
@@ -175,7 +183,7 @@ function Gastos() {
         cuenta_gasto_id: f.cuenta_gasto_id,
         condicion_pago: f.condicion_pago,
         fecha_vencimiento: f.fecha_vencimiento || null,
-        subtotal: f.subtotal,
+        subtotal,
         itbis,
         itbis_retenido: f.itbis_retenido || 0,
         isr_retenido: f.isr_retenido || 0,
@@ -275,8 +283,10 @@ function Gastos() {
                   </Select>
                 </div>
                 <div className="col-span-2"><Label>Concepto</Label><Input value={f.concepto} onChange={(e) => setF({ ...f, concepto: e.target.value })} /></div>
-                <div><Label>Subtotal</Label><Input type="number" step="0.01" value={f.subtotal} onChange={(e) => setF({ ...f, subtotal: parseFloat(e.target.value) || 0 })} /></div>
-                <div><Label>Tasa ITBIS (%)</Label><Input type="number" step="0.01" value={f.tasa_itbis} onChange={(e) => setF({ ...f, tasa_itbis: parseFloat(e.target.value) || 0 })} /></div>
+                <div><Label>Subtotal</Label><Input type="number" step="0.01" value={f.subtotal} onChange={(e) => setSubtotal(parseFloat(e.target.value) || 0)} /></div>
+                <div><Label>ITBIS (monto)</Label><Input type="number" step="0.01" value={f.itbis} onChange={(e) => setItbis(parseFloat(e.target.value) || 0)} /></div>
+                <div><Label>Total factura</Label><Input type="number" step="0.01" value={f.total} onChange={(e) => setTotal(parseFloat(e.target.value) || 0)} /></div>
+                <div />
                 <div><Label>ITBIS Retenido</Label><Input type="number" step="0.01" value={f.itbis_retenido} onChange={(e) => setF({ ...f, itbis_retenido: parseFloat(e.target.value) || 0 })} /></div>
                 <div><Label>ISR Retenido</Label><Input type="number" step="0.01" value={f.isr_retenido} onChange={(e) => setF({ ...f, isr_retenido: parseFloat(e.target.value) || 0 })} /></div>
                 <div><Label>Condición de pago</Label>
@@ -304,7 +314,7 @@ function Gastos() {
                 )}
                 <div className="col-span-2"><Label>Notas</Label><Textarea value={f.notas} onChange={(e) => setF({ ...f, notas: e.target.value })} /></div>
                 <div className="col-span-2 bg-secondary p-3 rounded-md space-y-1 text-sm">
-                  <div className="flex justify-between"><span>Subtotal:</span><span>{fmtMoney(f.subtotal)}</span></div>
+                  <div className="flex justify-between"><span>Subtotal:</span><span>{fmtMoney(subtotal)}</span></div>
                   <div className="flex justify-between"><span>ITBIS:</span><span>{fmtMoney(itbis)}</span></div>
                   <div className="flex justify-between font-semibold"><span>Total:</span><span>{fmtMoney(total)}</span></div>
                   {(f.itbis_retenido > 0 || f.isr_retenido > 0) && (
@@ -353,7 +363,7 @@ function Gastos() {
                   <Badge variant={g.estado === "pagado" ? "default" : g.estado === "anulado" ? "destructive" : "secondary"}>{g.estado}</Badge>
                 </td>
                 <td className="p-3 text-center">
-                  {g.estado === "pendiente" && Number(g.monto_pagado) === 0 && (
+                  {g.estado !== "anulado" && (
                     <Button size="sm" variant="ghost" className="mr-1" onClick={() => abrirEdicion(g)}>
                       <Pencil className="h-3 w-3 mr-1" />Editar
                     </Button>
