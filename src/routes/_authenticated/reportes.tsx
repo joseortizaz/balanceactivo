@@ -297,12 +297,31 @@ function ReporteIT1({ inicio, fin }: { inicio: string; fin: string }) {
 
   const saldo = v.debito - c.credito - c.retenido;
 
+  const exportarXlsx = () => downloadXlsx(
+    `DGII_IT1_${inicio}_${fin}.xlsx`, "IT-1",
+    ["Concepto", "Monto"],
+    [
+      ["Total ventas gravadas", v.base],
+      ["ITBIS facturado (débito fiscal)", v.debito],
+      ["Total compras gravadas", c.base],
+      ["ITBIS pagado en compras (crédito fiscal)", c.credito],
+      ["ITBIS retenido a terceros", c.retenido],
+      [saldo >= 0 ? "ITBIS a pagar" : "Saldo a favor", Math.abs(saldo)],
+    ],
+  );
+
   return (
     <Card className="p-5 mt-4">
-      <h3 className="font-semibold mb-4">IT-1 · Declaración Jurada del ITBIS</h3>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <h3 className="font-semibold">IT-1 · Declaración Jurada del ITBIS</h3>
+        <Button size="sm" variant="outline" onClick={exportarXlsx}>
+          <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+        </Button>
+      </div>
       <p className="text-sm text-muted-foreground mb-4">
         Resumen mensual con los montos que se declaran en el formulario IT-1. Verifica con tu contador antes de presentar.
       </p>
+
       <div className="grid gap-2 max-w-xl">
         <RowIT label="Total ventas gravadas" value={v.base} />
         <RowIT label="ITBIS facturado (débito fiscal)" value={v.debito} strong />
