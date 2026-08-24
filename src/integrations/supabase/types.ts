@@ -2155,13 +2155,14 @@ export type Database = {
           _fecha_vencimiento: string
           _gasto_id: string
           _isr_retenido: number
+          _itbis: number
           _itbis_retenido: number
           _ncf: string
           _notas: string
           _proveedor_id: string
           _subtotal: number
-          _tasa_itbis: number
           _tipo_ncf_compra: Database["public"]["Enums"]["tipo_ncf_compra"]
+          _total: number
         }
         Returns: string
       }
