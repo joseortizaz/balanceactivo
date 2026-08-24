@@ -13,8 +13,9 @@ import { fmtMoney } from "@/lib/format";
 import { useAuth } from "@/hooks/use-auth";
 import {
   tipoIdDgii, fechaDgii, montoDgii, docDgii, rangoMes, downloadText,
-  nombreArchivo, linea, categoriaA606,
+  nombreArchivo, nombreArchivoXlsx, downloadXlsx, linea, categoriaA606,
 } from "@/lib/dgii";
+
 
 export const Route = createFileRoute("/_authenticated/reportes")({ component: Reportes });
 
