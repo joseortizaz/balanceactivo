@@ -382,12 +382,24 @@ function ReporteIR17({ inicio, fin }: { inicio: string; fin: string }) {
   const filas = Array.from(porEmpleado.values());
   const totalIsr = filas.reduce((s, f) => s + f.isr, 0);
 
+  const exportarXlsx = () => downloadXlsx(
+    `DGII_IR17_${inicio}_${fin}.xlsx`, "IR-17",
+    ["Cédula", "Empleado", "Ingresos", "AFP", "SFS", "ISR retenido"],
+    filas.map((f) => [f.cedula, f.nombre, f.ingresos, f.afp, f.sfs, f.isr]),
+  );
+
   return (
     <Card className="p-5 mt-4">
-      <h3 className="font-semibold mb-2">IR-17 · Retenciones de asalariados</h3>
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+        <h3 className="font-semibold">IR-17 · Retenciones de asalariados</h3>
+        <Button size="sm" variant="outline" onClick={exportarXlsx} disabled={filas.length === 0}>
+          <FileSpreadsheet className="h-4 w-4 mr-2" />Exportar Excel
+        </Button>
+      </div>
       <p className="text-sm text-muted-foreground mb-4">
         Retenciones de ISR aplicadas en nóminas cerradas/pagadas del período. Total retenido: <b>{fmtMoney(totalIsr)}</b>
       </p>
+
       {filas.length === 0 ? (
         <div className="text-sm text-muted-foreground">Sin nóminas en el período.</div>
       ) : (
