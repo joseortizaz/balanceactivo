@@ -103,7 +103,13 @@ function NuevaFactura() {
     if (lineas.some((l) => !l.descripcion || l.cantidad <= 0 || l.precio < 0)) return toast.error("Revisa las líneas");
     if (condicion === "credito" && cuotas.length > 0) {
       const suma = cuotas.reduce((s, c) => s + Number(c.monto), 0);
-      if (Math.abs(suma - totales.total) > 0.05) return toast.error(`La suma de las cuotas (${suma.toFixed(2)}) no coincide con el total (${totales.total.toFixed(2)})`);
+      const inicial = Math.max(0, Math.min(pagoInicial || 0, totales.total));
+      const saldoAFinanciar = Math.max(0, totales.total - inicial);
+      if (Math.abs(suma - saldoAFinanciar) > 0.05) {
+        return toast.error(
+          `La suma de las cuotas (${suma.toFixed(2)}) no coincide con el saldo a financiar (${saldoAFinanciar.toFixed(2)}) = total (${totales.total.toFixed(2)}) − pago inicial (${inicial.toFixed(2)})`,
+        );
+      }
     }
     setLoading(true);
     const { error } = isEdit
