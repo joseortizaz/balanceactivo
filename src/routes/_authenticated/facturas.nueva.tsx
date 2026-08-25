@@ -101,9 +101,9 @@ function NuevaFactura() {
   const guardar = async () => {
     if (!clienteId) return toast.error("Selecciona un cliente");
     if (lineas.some((l) => !l.descripcion || l.cantidad <= 0 || l.precio < 0)) return toast.error("Revisa las líneas");
+    const inicial = Math.max(0, Math.min(pagoInicial || 0, totales.total));
     if (condicion === "credito" && cuotas.length > 0) {
       const suma = cuotas.reduce((s, c) => s + Number(c.monto), 0);
-      const inicial = Math.max(0, Math.min(pagoInicial || 0, totales.total));
       const saldoAFinanciar = Math.max(0, totales.total - inicial);
       if (Math.abs(suma - saldoAFinanciar) > 0.05) {
         return toast.error(
@@ -112,7 +112,7 @@ function NuevaFactura() {
       }
     }
     setLoading(true);
-    const { error } = isEdit
+    const { data, error } = isEdit
       ? await (supabase.rpc as any)("actualizar_factura", {
           _factura_id: editId, _cliente_id: clienteId, _condicion: condicion, _fecha: fecha,
           _tipo_descuento: tipoDescuento, _descuento_valor: descuentoValor,
@@ -125,9 +125,37 @@ function NuevaFactura() {
           _lineas: lineas as any,
           _cuotas: condicion === "credito" && cuotas.length > 0 ? (cuotas as any) : null,
         });
+    if (error) {
+      setLoading(false);
+      return toast.error(error.message);
+    }
+
+    // Factura nueva a crédito con pago inicial: registrarlo ya mismo como un
+    // cobro real (entra a caja y cancela parte de la cuenta por cobrar). Sin
+    // esto la factura queda registrada como si se debiera el total completo,
+    // aunque ya se haya cobrado parte por adelantado. Solo aplica al crear
+    // (no al editar) para no duplicar el cobro en cada guardado.
+    if (!isEdit && condicion === "credito" && inicial > 0) {
+      const { error: errCobro } = await supabase.rpc("registrar_cobro", {
+        _factura_id: data as string,
+        _monto: inicial,
+        _metodo: "Pago inicial",
+        _fecha: fecha,
+      });
+      if (errCobro) {
+        setLoading(false);
+        toast.error(`Factura creada, pero no se pudo registrar el pago inicial (${errCobro.message}). Regístralo manualmente desde Cobros.`);
+        navigate({ to: "/facturas" });
+        return;
+      }
+    }
+
     setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success(isEdit ? "Factura actualizada" : "Factura creada con NCF asignado");
+    toast.success(
+      isEdit
+        ? "Factura actualizada"
+        : `Factura creada con NCF asignado${inicial > 0 ? " y pago inicial registrado" : ""}`,
+    );
     navigate({ to: "/facturas" });
   };
 
