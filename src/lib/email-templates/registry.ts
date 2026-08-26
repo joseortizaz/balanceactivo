@@ -19,8 +19,12 @@ export interface TemplateEntry {
  */
 import { template as reciboCobro } from './recibo-cobro'
 import { template as factura } from './factura'
+import { template as recordatorioCuota } from './recordatorio-cuota'
+import { template as avisoMora } from './aviso-mora'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'recibo-cobro': reciboCobro,
   'factura': factura,
+  'recordatorio-cuota': recordatorioCuota,
+  'aviso-mora': avisoMora,
 }
