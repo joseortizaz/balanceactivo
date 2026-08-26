@@ -42,15 +42,16 @@ function CuentasPorCobrar() {
   const [search, setSearch] = useState("");
   const [estado, setEstado] = useState<"todos" | EstadoCobro>("todos");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["cuentas-por-cobrar"],
-    queryFn: async () =>
-      (
-        await supabase
-          .from("v_cuentas_por_cobrar")
-          .select("*")
-          .order("dias_mora", { ascending: false })
-      ).data as CuentaRow[] ?? [],
+    queryFn: async () => {
+      const res = await supabase
+        .from("v_cuentas_por_cobrar")
+        .select("*")
+        .order("dias_mora", { ascending: false });
+      if (res.error) throw res.error;
+      return (res.data ?? []) as CuentaRow[];
+    },
   });
 
   const filtered = useMemo(() => {
@@ -139,7 +140,18 @@ function CuentasPorCobrar() {
             {isLoading && (
               <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">Cargando…</td></tr>
             )}
-            {!isLoading && filtered.length === 0 && (
+            {!isLoading && error && (
+              <tr>
+                <td colSpan={7} className="p-6 text-center text-destructive">
+                  No se pudo cargar la información ({(error as Error).message || "error desconocido"}).
+                  <br />
+                  Si el mensaje menciona "v_cuentas_por_cobrar" o "does not exist", la migración de esta función
+                  todavía no se aplicó en la base de datos — hay que correrla desde Supabase antes de que esta
+                  página pueda mostrar datos.
+                </td>
+              </tr>
+            )}
+            {!isLoading && !error && filtered.length === 0 && (
               <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">No hay cuentas para este filtro.</td></tr>
             )}
             {filtered.map((c) => {
