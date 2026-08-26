@@ -19,9 +19,9 @@ function SuscripcionPage() {
   const { data: s, isLoading } = useQuery({
     queryKey: ["suscripcion-actual", auth.tenantId],
     enabled: !!auth.tenantId,
-    queryFn: async () => (await supabase.from("suscripciones" as any)
+    queryFn: async () => (await supabase.from("suscripciones")
       .select("*").eq("tenant_id", auth.tenantId!)
-      .order("created_at", { ascending: false }).limit(1).maybeSingle()).data as any,
+      .order("created_at", { ascending: false }).limit(1).maybeSingle()).data,
   });
 
   const copy = (t: string) => { navigator.clipboard.writeText(t); toast.success("Copiado al portapapeles"); };

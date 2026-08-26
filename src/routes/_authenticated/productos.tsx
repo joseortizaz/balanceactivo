@@ -36,7 +36,7 @@ function Productos() {
 
   const { data } = useQuery({
     queryKey: ["productos"],
-    queryFn: async () => (await supabase.from("productos" as any).select("*").order("nombre")).data ?? [],
+    queryFn: async () => (await supabase.from("productos").select("*").order("nombre")).data ?? [],
   });
 
   const { data: movs } = useQuery({
@@ -70,11 +70,11 @@ function Productos() {
     if (!f.nombre) return toast.error("El nombre es obligatorio");
     if (editId) {
       const { stock: _ignored, ...patch } = f;
-      const { error } = await (supabase.from("productos" as any) as any).update(patch).eq("id", editId);
+      const { error } = await supabase.from("productos").update(patch).eq("id", editId);
       if (error) return toast.error(error.message);
       toast.success("Producto actualizado");
     } else {
-      const { error } = await (supabase.from("productos" as any) as any).insert({ ...f, tenant_id: auth.tenantId });
+      const { error } = await supabase.from("productos").insert({ ...f, tenant_id: auth.tenantId });
       if (error) return toast.error(error.message);
       toast.success("Producto creado");
     }

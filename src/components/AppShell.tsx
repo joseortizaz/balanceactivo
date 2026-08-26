@@ -44,7 +44,7 @@ export function AppShell() {
     refetchInterval: 30000,
     queryFn: async () => {
       const { count } = await supabase
-        .from("suscripciones" as any)
+        .from("suscripciones")
         .select("id", { count: "exact", head: true })
         .eq("estado", "pendiente");
       return count ?? 0;

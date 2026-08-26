@@ -31,7 +31,7 @@ function SuscripcionesAdmin() {
   const { data: subs } = useQuery({
     queryKey: ["sa-subs"],
     enabled: auth.roles.includes("super_admin"),
-    queryFn: async () => (await supabase.from("suscripciones" as any)
+    queryFn: async () => (await supabase.from("suscripciones")
       .select("*").order("created_at", { ascending: false })).data ?? [],
   });
   const { data: tenants } = useQuery({
@@ -115,7 +115,7 @@ function SuscripcionesAdmin() {
         nomina_fecha_termino: editing.nomina_fecha_termino,
       };
     }
-    const { error } = await supabase.from("suscripciones" as any).update(payload).eq("id", editing.id);
+    const { error } = await supabase.from("suscripciones").update(payload).eq("id", editing.id);
     if (error) return toast.error(error.message);
     toast.success("Suscripción actualizada");
     setEditing(null); setAccion(null);

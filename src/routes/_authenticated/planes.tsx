@@ -29,7 +29,7 @@ function PlanesPage() {
   const { data: actual } = useQuery({
     queryKey: ["suscripcion-actual", auth.tenantId],
     enabled: !!auth.tenantId,
-    queryFn: async () => (await supabase.from("suscripciones" as any)
+    queryFn: async () => (await supabase.from("suscripciones")
       .select("*").eq("tenant_id", auth.tenantId!)
       .order("created_at", { ascending: false }).limit(1).maybeSingle()).data,
   });
@@ -43,8 +43,8 @@ function PlanesPage() {
     const incluyeNomina = nomina[codigo];
     const precioNomina = incluyeNomina ? plan.precioNomina : 0;
     setSaving(true);
-    const { error } = await supabase.from("suscripciones" as any).insert({
-      tenant_id: auth.tenantId,
+    const { error } = await supabase.from("suscripciones").insert({
+      tenant_id: auth.tenantId!,
       plan: codigo,
       incluye_nomina: incluyeNomina,
       nomina_estado: incluyeNomina ? "pendiente" : "no_solicitado",
