@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # NOTA: si este workflow falla en "Install dependencies" la primera vez
+      # que corre, probablemente sea porque bun.lock quedó desactualizado tras
+      # agregar vitest a package.json en este mismo PR. Corré `bun install`
+      # localmente una vez y commiteá el bun.lock actualizado.
+      - name: Install dependencies
+        run: bun install
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun run test
+
+      - name: Build
+        run: bun run build
+        env:
+          # Placeholders: el build no necesita conectarse a un Supabase real,
+          # solo que las variables existan para no fallar en tiempo de build.
+          VITE_SUPABASE_URL: https://placeholder.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: placeholder
+          VITE_SUPABASE_PROJECT_ID: placeholder
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: placeholder
+          SUPABASE_PROJECT_ID: placeholder
