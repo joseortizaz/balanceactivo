@@ -781,7 +781,9 @@ export type Database = {
           id: string
           monto: number
           monto_pagado: number
+          mora_notificado_at: string | null
           numero_cuota: number
+          recordatorio_enviado_at: string | null
           tenant_id: string
         }
         Insert: {
@@ -792,7 +794,9 @@ export type Database = {
           id?: string
           monto: number
           monto_pagado?: number
+          mora_notificado_at?: string | null
           numero_cuota: number
+          recordatorio_enviado_at?: string | null
           tenant_id: string
         }
         Update: {
@@ -803,7 +807,9 @@ export type Database = {
           id?: string
           monto?: number
           monto_pagado?: number
+          mora_notificado_at?: string | null
           numero_cuota?: number
+          recordatorio_enviado_at?: string | null
           tenant_id?: string
         }
         Relationships: [
@@ -1819,6 +1825,7 @@ export type Database = {
       tenants: {
         Row: {
           created_at: string
+          dias_aviso_cuota: number
           direccion: string | null
           firma_url: string | null
           id: string
@@ -1836,6 +1843,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          dias_aviso_cuota?: number
           direccion?: string | null
           firma_url?: string | null
           id?: string
@@ -1853,6 +1861,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          dias_aviso_cuota?: number
           direccion?: string | null
           firma_url?: string | null
           id?: string
@@ -2115,7 +2124,26 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_cuentas_por_cobrar: {
+        Row: {
+          cliente_email: string | null
+          cliente_id: string
+          cliente_nombre: string
+          condicion_pago: Database["public"]["Enums"]["condicion_pago"]
+          dias_mora: number
+          estado_cobro: string
+          estado_factura: Database["public"]["Enums"]["estado_factura"]
+          factura_id: string
+          fecha: string
+          monto_pagado: number
+          ncf: string
+          proxima_fecha_vencimiento: string | null
+          saldo_pendiente: number
+          tenant_id: string
+          total: number
+        }
+        Relationships: []
+      }
     }
     Functions: {
       actualizar_cotizacion: {

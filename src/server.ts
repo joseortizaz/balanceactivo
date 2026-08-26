@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { ejecutarRecordatoriosDeCuotas } from "./lib/recordatorios-cuotas.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -75,6 +76,18 @@ export default {
     } catch (error) {
       console.error(error);
       return brandedErrorResponse();
+    }
+  },
+
+  // Cloudflare Cron Trigger — ver wrangler.jsonc (triggers.crons). Corre una
+  // vez al día: revisa cuotas próximas a vencer / vencidas y envía los
+  // correos de recordatorio y mora correspondientes.
+  async scheduled(_event: unknown, _env: unknown, _ctx: unknown) {
+    try {
+      const result = await ejecutarRecordatoriosDeCuotas();
+      console.log("[cron] recordatorios de cuotas completados", result);
+    } catch (error) {
+      console.error("[cron] fallo ejecutando recordatorios de cuotas", error);
     }
   },
 };

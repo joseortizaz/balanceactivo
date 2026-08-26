@@ -48,6 +48,7 @@ function Configuracion() {
       regimen_fiscal: form.regimen_fiscal, direccion: form.direccion, telefono: form.telefono,
       itbis_tasa_principal: form.itbis_tasa_principal, itbis_tasa_reducida: form.itbis_tasa_reducida,
       retencion_isr_servicios: form.retencion_isr_servicios, retencion_isr_alquileres: form.retencion_isr_alquileres,
+      dias_aviso_cuota: form.dias_aviso_cuota,
     }).eq("id", auth.tenantId!);
     if (error) return toast.error(error.message);
     toast.success("Configuración guardada");
@@ -102,6 +103,28 @@ function Configuracion() {
               <div><Label htmlFor="cfg-itbis-reducido">ITBIS reducido (%)</Label><Input id="cfg-itbis-reducido" type="number" step="0.01" value={form.itbis_tasa_reducida ?? 16} onChange={(e) => setForm({ ...form, itbis_tasa_reducida: Number(e.target.value) })} /></div>
               <div><Label htmlFor="cfg-isr-servicios">Retención ISR servicios (%)</Label><Input id="cfg-isr-servicios" type="number" step="0.01" value={form.retencion_isr_servicios ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_servicios: Number(e.target.value) })} /></div>
               <div><Label htmlFor="cfg-isr-alquileres">Retención ISR alquileres (%)</Label><Input id="cfg-isr-alquileres" type="number" step="0.01" value={form.retencion_isr_alquileres ?? 10} onChange={(e) => setForm({ ...form, retencion_isr_alquileres: Number(e.target.value) })} /></div>
+            </div>
+            <Button onClick={save} className="w-full">Guardar cambios</Button>
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <h2 className="font-semibold mb-1">Recordatorios de cobro</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Días de anticipación con que se avisa por correo a un cliente antes de que venza una cuota.
+            Los avisos de mora (cuota ya vencida) se envían aparte, una sola vez por cuota.
+          </p>
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="cfg-dias-aviso">Días de anticipación</Label>
+              <Input
+                id="cfg-dias-aviso"
+                type="number"
+                min={0}
+                step="1"
+                value={form.dias_aviso_cuota ?? 5}
+                onChange={(e) => setForm({ ...form, dias_aviso_cuota: Number(e.target.value) })}
+              />
             </div>
             <Button onClick={save} className="w-full">Guardar cambios</Button>
           </div>
