@@ -98,11 +98,15 @@ function ReportesInternos() {
     },
   });
 
-  const { data: gastos = [], isLoading: loadGas } = useQuery({
+  const { data: gastos = [], isLoading: loadGas, error: errGastos } = useQuery({
     queryKey: ["ri-gastos", inicio, fin],
-    queryFn: async () => (await supabase.from("gastos")
-      .select("fecha, concepto, categoria, subtotal, itbis, total, estado, proveedores(razon_social), cuentas_contables!gastos_cuenta_gasto_id_fkey(codigo, nombre)")
-      .gte("fecha", inicio).lte("fecha", fin).neq("estado", "anulado").order("fecha")).data ?? [],
+    queryFn: async () => {
+      const res = await supabase.from("gastos")
+        .select("fecha, concepto, categoria, subtotal, itbis, total, estado, proveedores(razon_social), cuentas_contables!gastos_cuenta_gasto_id_fkey(codigo, nombre)")
+        .gte("fecha", inicio).lte("fecha", fin).neq("estado", "anulado").order("fecha");
+      if (res.error) throw res.error;
+      return res.data ?? [];
+    },
   });
 
   const totIng = ingresos.reduce((s, f: any) => s + Number(f.subtotal), 0);
@@ -218,6 +222,15 @@ function ReportesInternos() {
           <FileSpreadsheet className="h-4 w-4 mr-2" />Resumen Excel
         </Button>
       </Card>
+
+      {errGastos && (
+        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+          No se pudieron cargar los gastos: {(errGastos as any).message ?? String(errGastos)}
+          {String((errGastos as any).message ?? "").toLowerCase().includes("relationship") && (
+            <> — probablemente falta aplicar la migración que agrega las foreign keys de <code>gastos.proveedor_id</code> y <code>gastos.cuenta_gasto_id</code>.</>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3 mb-4">
         <Kpi label="Ingresos (sin ITBIS)" value={totIng} icon={TrendingUp} tone="success" loading={loadIng} />

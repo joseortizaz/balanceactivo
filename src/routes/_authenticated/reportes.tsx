@@ -67,15 +67,18 @@ function useTenantRnc() {
 // -------------------- 606: Compras --------------------
 function Reporte606({ inicio, fin, periodoDgii }: Props) {
   const rnc = useTenantRnc();
-  const { data } = useQuery({
+  const { data, error: errGastos606 } = useQuery({
     queryKey: ["reporte-606", inicio, fin],
-    queryFn: async () => (await supabase
-      .from("gastos")
-      .select("*, proveedores(razon_social, documento, tipo_documento)")
-      .gte("fecha", inicio).lte("fecha", fin)
-      .neq("estado", "anulado")
-      .order("fecha")
-    ).data ?? [],
+    queryFn: async () => {
+      const res = await supabase
+        .from("gastos")
+        .select("*, proveedores(razon_social, documento, tipo_documento)")
+        .gte("fecha", inicio).lte("fecha", fin)
+        .neq("estado", "anulado")
+        .order("fecha");
+      if (res.error) throw res.error;
+      return res.data ?? [];
+    },
   });
 
   const gastos = data ?? [];
@@ -127,6 +130,12 @@ function Reporte606({ inicio, fin, periodoDgii }: Props) {
   );
 
   return (
+    <>
+    {errGastos606 && (
+      <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+        No se pudieron cargar los gastos para el 606: {(errGastos606 as any).message ?? String(errGastos606)}
+      </div>
+    )}
     <TabaBlock
       titulo="606 · Compras de Bienes y Servicios"
       resumen={`${gastos.length} comprobantes · Subtotal ${fmtMoney(totales.monto)} · ITBIS ${fmtMoney(totales.itbis)} · Retenido ITBIS ${fmtMoney(totales.itbisRet)} · Retenido ISR ${fmtMoney(totales.isrRet)}`}
@@ -146,6 +155,7 @@ function Reporte606({ inicio, fin, periodoDgii }: Props) {
         fmtMoney(g.total),
       ])}
     />
+    </>
   );
 }
 
