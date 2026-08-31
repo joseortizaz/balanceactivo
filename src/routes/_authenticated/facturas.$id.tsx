@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileDown, Printer } from "lucide-react";
+import { ArrowLeft, FileDown, Printer, Ban, Lock } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { fmtDate } from "@/lib/format";
 import { FacturaPreview } from "@/components/FacturaPreview";
 import { generateFacturaPdf } from "@/lib/factura-pdf";
@@ -12,6 +15,12 @@ export const Route = createFileRoute("/_authenticated/facturas/$id")({ component
 
 function VerFactura() {
   const { id } = Route.useParams();
+  const qc = useQueryClient();
+  const [motivoOpen, setMotivoOpen] = useState(false);
+  const [accion, setAccion] = useState<"anular" | "cerrar" | null>(null);
+  const [motivo, setMotivo] = useState("");
+  const [saving, setSaving] = useState(false);
+
   const { data, isLoading } = useQuery({
     queryKey: ["factura-view", id],
     queryFn: async () => {
@@ -78,20 +87,81 @@ function VerFactura() {
     }
   };
 
+  const abrirMotivo = (acc: "anular" | "cerrar") => {
+    setAccion(acc); setMotivo(""); setMotivoOpen(true);
+  };
+
+  const confirmarMotivo = async () => {
+    if (!accion) return;
+    if (motivo.trim().length < 3) return toast.error("Motivo requerido (mínimo 3 caracteres)");
+    setSaving(true);
+    const fn = accion === "anular" ? "anular_factura" : "cerrar_factura";
+    const { error } = await supabase.rpc(fn as any, { _factura_id: id, _motivo: motivo.trim() });
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success(accion === "anular" ? "Factura anulada" : "Factura cerrada");
+    setMotivoOpen(false);
+    qc.invalidateQueries({ queryKey: ["factura-view", id] });
+    qc.invalidateQueries({ queryKey: ["facturas"] });
+  };
+
+  const puedeAnularOCerrar = f.estado !== "anulada" && f.estado !== "cerrada";
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 print:hidden">
+      <div className="flex items-center justify-between mb-4 print:hidden flex-wrap gap-2">
         <Link to="/facturas"><Button variant="ghost" size="sm"><ArrowLeft className="h-4 w-4 mr-1" />Volver</Button></Link>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline" size="sm" onClick={() => window.print()}>
             <Printer className="h-4 w-4 mr-1" />Imprimir
           </Button>
           <Button size="sm" onClick={descargarPdf}>
             <FileDown className="h-4 w-4 mr-1" />Descargar PDF
           </Button>
+          {puedeAnularOCerrar && f.estado !== "pagada" && (
+            <Button size="sm" variant="outline" className="text-muted-foreground" onClick={() => abrirMotivo("cerrar")}>
+              <Lock className="h-4 w-4 mr-1" />Cerrar
+            </Button>
+          )}
+          {puedeAnularOCerrar && (
+            <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => abrirMotivo("anular")}>
+              <Ban className="h-4 w-4 mr-1" />Anular
+            </Button>
+          )}
         </div>
       </div>
+      {f.motivo_estado && (
+        <div className="mb-4 rounded-md border border-border bg-secondary/50 p-3 text-sm text-muted-foreground print:hidden">
+          <span className="font-medium text-foreground">
+            {f.estado === "anulada" ? "Motivo de anulación: " : f.estado === "cerrada" ? "Motivo de cierre: " : "Motivo: "}
+          </span>
+          {f.motivo_estado}
+        </div>
+      )}
       <FacturaPreview d={previewData} />
+
+      <Dialog open={motivoOpen} onOpenChange={setMotivoOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{accion === "anular" ? "Anular factura" : "Cerrar factura sin completar el pago"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              {accion === "anular"
+                ? "Indica el motivo de anulación. Esta acción revierte el asiento contable y restaura el inventario. Quedará registrada en auditoría."
+                : "Indica el motivo del cierre. La factura quedará marcada como cerrada con saldo pendiente y se registrará en auditoría."}
+            </p>
+            <Textarea value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={4} placeholder="Motivo…" />
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setMotivoOpen(false)}>Cancelar</Button>
+            <Button onClick={confirmarMotivo} disabled={saving}
+              className={accion === "anular" ? "bg-red-600 hover:bg-red-700 text-white" : ""}>
+              {saving ? "Procesando…" : accion === "anular" ? "Anular" : "Cerrar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
