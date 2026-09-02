@@ -135,7 +135,8 @@ function Clientes() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label htmlFor="cliente-telefono">Teléfono</Label><Input id="cliente-telefono" value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-telefono">Número de contacto principal</Label><Input id="cliente-telefono" value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-telefono-secundario">Número de contacto secundario (célular)</Label><Input id="cliente-telefono-secundario" value={f.telefono_secundario} onChange={(e) => setF({ ...f, telefono_secundario: e.target.value })} /></div>
                 <div><Label htmlFor="cliente-email">Email</Label><Input id="cliente-email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
                 <Button onClick={guardar} className="w-full">{editId ? "Actualizar" : "Guardar"}</Button>
               </div>
