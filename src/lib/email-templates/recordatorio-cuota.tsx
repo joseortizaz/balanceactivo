@@ -43,7 +43,7 @@ const RecordatorioCuotaEmail = ({
 }: RecordatorioCuotaProps) => (
   <Html lang="es" dir="ltr">
     <Head />
-    <Preview>Recordatorio: cuota {cuotaNumero} de la factura {invoiceNcf} vence pronto</Preview>
+    <Preview>Recordatorio: cuota {String(cuotaNumero)} de la factura {invoiceNcf} vence pronto</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>{companyName}</Heading>
