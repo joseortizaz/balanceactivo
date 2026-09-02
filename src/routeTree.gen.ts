@@ -30,6 +30,7 @@ import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
 import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCuentasPorCobrarRouteImport } from './routes/_authenticated/cuentas-por-cobrar'
 import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
 import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
 import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated/cobros'
@@ -178,6 +179,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCuentasPorCobrarRoute =
+  AuthenticatedCuentasPorCobrarRouteImport.update({
+    id: '/cuentas-por-cobrar',
+    path: '/cuentas-por-cobrar',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedCuentasRoute = AuthenticatedCuentasRouteImport.update({
   id: '/cuentas',
   path: '/cuentas',
@@ -406,6 +413,7 @@ export interface FileRoutesByFullPath {
   '/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
+  '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
@@ -466,6 +474,7 @@ export interface FileRoutesByTo {
   '/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/configuracion': typeof AuthenticatedConfiguracionRoute
   '/cuentas': typeof AuthenticatedCuentasRoute
+  '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
@@ -528,6 +537,7 @@ export interface FileRoutesById {
   '/_authenticated/cobros': typeof AuthenticatedCobrosRouteWithChildren
   '/_authenticated/configuracion': typeof AuthenticatedConfiguracionRoute
   '/_authenticated/cuentas': typeof AuthenticatedCuentasRoute
+  '/_authenticated/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/gastos': typeof AuthenticatedGastosRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
@@ -590,6 +600,7 @@ export interface FileRouteTypes {
     | '/cobros'
     | '/configuracion'
     | '/cuentas'
+    | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
     | '/perfil-empresa'
@@ -650,6 +661,7 @@ export interface FileRouteTypes {
     | '/cobros'
     | '/configuracion'
     | '/cuentas'
+    | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
     | '/perfil-empresa'
@@ -711,6 +723,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cobros'
     | '/_authenticated/configuracion'
     | '/_authenticated/cuentas'
+    | '/_authenticated/cuentas-por-cobrar'
     | '/_authenticated/dashboard'
     | '/_authenticated/gastos'
     | '/_authenticated/perfil-empresa'
@@ -927,6 +940,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cuentas-por-cobrar': {
+      id: '/_authenticated/cuentas-por-cobrar'
+      path: '/cuentas-por-cobrar'
+      fullPath: '/cuentas-por-cobrar'
+      preLoaderRoute: typeof AuthenticatedCuentasPorCobrarRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/cuentas': {
@@ -1217,6 +1237,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCobrosRoute: typeof AuthenticatedCobrosRouteWithChildren
   AuthenticatedConfiguracionRoute: typeof AuthenticatedConfiguracionRoute
   AuthenticatedCuentasRoute: typeof AuthenticatedCuentasRoute
+  AuthenticatedCuentasPorCobrarRoute: typeof AuthenticatedCuentasPorCobrarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGastosRoute: typeof AuthenticatedGastosRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
@@ -1255,6 +1276,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCobrosRoute: AuthenticatedCobrosRouteWithChildren,
   AuthenticatedConfiguracionRoute: AuthenticatedConfiguracionRoute,
   AuthenticatedCuentasRoute: AuthenticatedCuentasRoute,
+  AuthenticatedCuentasPorCobrarRoute: AuthenticatedCuentasPorCobrarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGastosRoute: AuthenticatedGastosRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,

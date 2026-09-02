@@ -375,6 +375,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "cobros_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "v_cuentas_por_cobrar"
+            referencedColumns: ["factura_id"]
+          },
+          {
             foreignKeyName: "cobros_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -820,6 +827,13 @@ export type Database = {
             referencedRelation: "facturas"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "factura_cuotas_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "v_cuentas_por_cobrar"
+            referencedColumns: ["factura_id"]
+          },
         ]
       }
       factura_lineas: {
@@ -869,6 +883,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "facturas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "factura_lineas_factura_id_fkey"
+            columns: ["factura_id"]
+            isOneToOne: false
+            referencedRelation: "v_cuentas_por_cobrar"
+            referencedColumns: ["factura_id"]
           },
           {
             foreignKeyName: "factura_lineas_tenant_id_fkey"
@@ -1147,7 +1168,22 @@ export type Database = {
           tipo_ncf_compra?: Database["public"]["Enums"]["tipo_ncf_compra"]
           total?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "gastos_cuenta_gasto_id_fkey"
+            columns: ["cuenta_gasto_id"]
+            isOneToOne: false
+            referencedRelation: "cuentas_contables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gastos_proveedor_id_fkey"
+            columns: ["proveedor_id"]
+            isOneToOne: false
+            referencedRelation: "proveedores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       isr_escalas: {
         Row: {
@@ -2127,22 +2163,37 @@ export type Database = {
       v_cuentas_por_cobrar: {
         Row: {
           cliente_email: string | null
-          cliente_id: string
-          cliente_nombre: string
-          condicion_pago: Database["public"]["Enums"]["condicion_pago"]
-          dias_mora: number
-          estado_cobro: string
-          estado_factura: Database["public"]["Enums"]["estado_factura"]
-          factura_id: string
-          fecha: string
-          monto_pagado: number
-          ncf: string
+          cliente_id: string | null
+          cliente_nombre: string | null
+          condicion_pago: Database["public"]["Enums"]["condicion_pago"] | null
+          dias_mora: number | null
+          estado_cobro: string | null
+          estado_factura: Database["public"]["Enums"]["estado_factura"] | null
+          factura_id: string | null
+          fecha: string | null
+          monto_pagado: number | null
+          ncf: string | null
           proxima_fecha_vencimiento: string | null
-          saldo_pendiente: number
-          tenant_id: string
-          total: number
+          saldo_pendiente: number | null
+          tenant_id: string | null
+          total: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "facturas_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "facturas_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
@@ -2561,12 +2612,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2590,11 +2641,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2615,11 +2666,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2640,11 +2691,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -2657,11 +2708,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
