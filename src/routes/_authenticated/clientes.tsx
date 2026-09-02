@@ -20,7 +20,7 @@ import { PROVINCIAS_RD } from "@/lib/provincias-rd";
 
 export const Route = createFileRoute("/_authenticated/clientes")({ component: Clientes });
 
-const empty = { tipo_documento: "rnc_empresa", documento: "", razon_social: "", direccion: "", provincia: "", telefono: "", email: "" };
+const empty = { tipo_documento: "rnc_empresa", documento: "", razon_social: "", direccion: "", provincia: "", telefono: "", telefono_secundario: "", email: "" };
 
 function Clientes() {
   const qc = useQueryClient();
@@ -63,7 +63,7 @@ function Clientes() {
     const q = search.trim().toLowerCase();
     if (!q) return data ?? [];
     return (data ?? []).filter((c: any) =>
-      [c.razon_social, c.documento, c.email, c.telefono, c.provincia]
+      [c.razon_social, c.documento, c.email, c.telefono, c.telefono_secundario, c.provincia]
         .filter(Boolean).some((v: string) => v.toLowerCase().includes(q)),
     );
   }, [data, search]);
@@ -73,7 +73,8 @@ function Clientes() {
     setEditId(c.id);
     setF({
       tipo_documento: c.tipo_documento, documento: c.documento ?? "", razon_social: c.razon_social ?? "",
-      direccion: c.direccion ?? "", provincia: c.provincia ?? "", telefono: c.telefono ?? "", email: c.email ?? "",
+      direccion: c.direccion ?? "", provincia: c.provincia ?? "", telefono: c.telefono ?? "",
+      telefono_secundario: c.telefono_secundario ?? "", email: c.email ?? "",
     });
     setOpen(true);
   };
@@ -134,7 +135,8 @@ function Clientes() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div><Label htmlFor="cliente-telefono">Teléfono</Label><Input id="cliente-telefono" value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-telefono">Número de contacto principal</Label><Input id="cliente-telefono" value={f.telefono} onChange={(e) => setF({ ...f, telefono: e.target.value })} /></div>
+                <div><Label htmlFor="cliente-telefono-secundario">Número de contacto secundario (célular)</Label><Input id="cliente-telefono-secundario" value={f.telefono_secundario} onChange={(e) => setF({ ...f, telefono_secundario: e.target.value })} /></div>
                 <div><Label htmlFor="cliente-email">Email</Label><Input id="cliente-email" type="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></div>
                 <Button onClick={guardar} className="w-full">{editId ? "Actualizar" : "Guardar"}</Button>
               </div>
@@ -177,7 +179,7 @@ function Clientes() {
                     >
                       <div className="font-medium truncate" title={c.razon_social}>{c.razon_social}</div>
                       <div className="font-mono text-xs text-muted-foreground truncate" title={c.documento}>{c.documento}</div>
-                      <div className="text-xs text-muted-foreground truncate">{c.telefono ?? "—"}</div>
+                      <div className="text-xs text-muted-foreground truncate">{[c.telefono, c.telefono_secundario].filter(Boolean).join(" / ") || "—"}</div>
                       <div className="text-xs text-muted-foreground truncate" title={c.email ?? ""}>{c.email ?? "—"}</div>
                       <div className="flex items-center justify-end gap-1">
                         <Button
