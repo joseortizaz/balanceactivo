@@ -10,6 +10,7 @@ const createSchema = z.object({
   tipo_documento: z.enum(["rnc_empresa", "rnc_persona", "cedula"]).default("rnc_empresa"),
   email: z.string().email().optional().nullable(),
   telefono: z.string().optional().nullable(),
+  telefono_secundario: z.string().optional().nullable(),
   direccion: z.string().optional().nullable(),
   provincia: z.string().optional().nullable(),
 });
