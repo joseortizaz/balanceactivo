@@ -259,6 +259,7 @@ export type Database = {
           provincia: string | null
           razon_social: string
           telefono: string | null
+          telefono_secundario: string | null
           tenant_id: string
           tipo_documento: Database["public"]["Enums"]["tipo_documento"]
         }
@@ -273,6 +274,7 @@ export type Database = {
           provincia?: string | null
           razon_social: string
           telefono?: string | null
+          telefono_secundario?: string | null
           tenant_id: string
           tipo_documento?: Database["public"]["Enums"]["tipo_documento"]
         }
@@ -287,6 +289,7 @@ export type Database = {
           provincia?: string | null
           razon_social?: string
           telefono?: string | null
+          telefono_secundario?: string | null
           tenant_id?: string
           tipo_documento?: Database["public"]["Enums"]["tipo_documento"]
         }
