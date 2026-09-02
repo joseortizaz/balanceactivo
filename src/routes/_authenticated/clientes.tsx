@@ -179,7 +179,7 @@ function Clientes() {
                     >
                       <div className="font-medium truncate" title={c.razon_social}>{c.razon_social}</div>
                       <div className="font-mono text-xs text-muted-foreground truncate" title={c.documento}>{c.documento}</div>
-                      <div className="text-xs text-muted-foreground truncate">{c.telefono ?? "—"}</div>
+                      <div className="text-xs text-muted-foreground truncate">{[c.telefono, c.telefono_secundario].filter(Boolean).join(" / ") || "—"}</div>
                       <div className="text-xs text-muted-foreground truncate" title={c.email ?? ""}>{c.email ?? "—"}</div>
                       <div className="flex items-center justify-end gap-1">
                         <Button
