@@ -20,7 +20,7 @@ import { PROVINCIAS_RD } from "@/lib/provincias-rd";
 
 export const Route = createFileRoute("/_authenticated/clientes")({ component: Clientes });
 
-const empty = { tipo_documento: "rnc_empresa", documento: "", razon_social: "", direccion: "", provincia: "", telefono: "", email: "" };
+const empty = { tipo_documento: "rnc_empresa", documento: "", razon_social: "", direccion: "", provincia: "", telefono: "", telefono_secundario: "", email: "" };
 
 function Clientes() {
   const qc = useQueryClient();
@@ -63,7 +63,7 @@ function Clientes() {
     const q = search.trim().toLowerCase();
     if (!q) return data ?? [];
     return (data ?? []).filter((c: any) =>
-      [c.razon_social, c.documento, c.email, c.telefono, c.provincia]
+      [c.razon_social, c.documento, c.email, c.telefono, c.telefono_secundario, c.provincia]
         .filter(Boolean).some((v: string) => v.toLowerCase().includes(q)),
     );
   }, [data, search]);
@@ -73,7 +73,8 @@ function Clientes() {
     setEditId(c.id);
     setF({
       tipo_documento: c.tipo_documento, documento: c.documento ?? "", razon_social: c.razon_social ?? "",
-      direccion: c.direccion ?? "", provincia: c.provincia ?? "", telefono: c.telefono ?? "", email: c.email ?? "",
+      direccion: c.direccion ?? "", provincia: c.provincia ?? "", telefono: c.telefono ?? "",
+      telefono_secundario: c.telefono_secundario ?? "", email: c.email ?? "",
     });
     setOpen(true);
   };
