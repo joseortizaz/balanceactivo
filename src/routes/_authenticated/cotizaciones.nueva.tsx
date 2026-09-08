@@ -18,13 +18,14 @@ export const Route = createFileRoute("/_authenticated/cotizaciones/nueva")({
   validateSearch: (s: Record<string, unknown>) => ({ id: (s.id as string) || undefined }),
 });
 
-type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number };
+type Linea = { descripcion: string; cantidad: number; precio: number; tasa_itbis: number; producto_id?: string | null };
 
 function NuevaCot() {
   const navigate = useNavigate();
   const { id: editId } = Route.useSearch();
   const isEdit = !!editId;
   const { data: clientes } = useQuery({ queryKey: ["clientes-sel"], queryFn: async () => (await supabase.from("clientes").select("id, razon_social, documento").order("razon_social")).data ?? [] });
+  const { data: productos } = useQuery({ queryKey: ["productos-sel"], queryFn: async () => (await supabase.from("productos").select("id, nombre, codigo, precio, tasa_itbis").eq("activo", true).order("nombre")).data ?? [] });
   const [clienteId, setClienteId] = useState("");
   const [fecha, setFecha] = useState(today());
   const [validez, setValidez] = useState(30);
@@ -59,6 +60,16 @@ function NuevaCot() {
   }, [lineas, descuentoValor, tipoDescuento]);
 
   const setLinea = (i: number, p: Partial<Linea>) => setLineas(lineas.map((l, idx) => idx === i ? { ...l, ...p } : l));
+  const seleccionarProducto = (i: number, productoId: string) => {
+    const p: any = (productos ?? []).find((x: any) => x.id === productoId);
+    if (!p) return;
+    setLinea(i, {
+      producto_id: p.id,
+      descripcion: p.codigo ? `${p.codigo} — ${p.nombre}` : p.nombre,
+      precio: Number(p.precio ?? 0),
+      tasa_itbis: Number(p.tasa_itbis ?? 18),
+    });
+  };
   const addLinea = () => setLineas([...lineas, { descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const delLinea = (i: number) => setLineas(lineas.filter((_, idx) => idx !== i));
 
@@ -121,7 +132,20 @@ function NuevaCot() {
             <div className="space-y-2">
               {lineas.map((l, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-end">
-                  <div className="col-span-5"><Input placeholder="Descripción" value={l.descripcion} onChange={(e) => setLinea(i, { descripcion: e.target.value })} /></div>
+                  <div className="col-span-5 space-y-1">
+                    <Select onValueChange={(v) => seleccionarProducto(i, v)}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Elegir producto…" /></SelectTrigger>
+                      <SelectContent>
+                        {(productos ?? []).map((p: any) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.codigo ? `${p.codigo} — ` : ""}{p.nombre} ({fmtMoney(p.precio)})
+                          </SelectItem>
+                        ))}
+                        {(!productos || productos.length === 0) && <div className="px-2 py-1 text-xs text-muted-foreground">Sin productos</div>}
+                      </SelectContent>
+                    </Select>
+                    <Input placeholder="Descripción" value={l.descripcion} onChange={(e) => setLinea(i, { descripcion: e.target.value })} />
+                  </div>
                   <div className="col-span-2"><Input type="number" step="0.001" value={l.cantidad} onChange={(e) => setLinea(i, { cantidad: Number(e.target.value) })} /></div>
                   <div className="col-span-2"><Input type="number" step="0.01" value={l.precio} onChange={(e) => setLinea(i, { precio: Number(e.target.value) })} /></div>
                   <div className="col-span-2">
