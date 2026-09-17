@@ -14,6 +14,7 @@ import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SeguridadRouteImport } from './routes/seguridad'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CambiarPasswordRouteImport } from './routes/cambiar-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -93,6 +94,11 @@ const SignupRoute = SignupRouteImport.update({
 const SeguridadRoute = SeguridadRouteImport.update({
   id: '/seguridad',
   path: '/seguridad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -401,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cambiar-password': typeof CambiarPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -462,6 +469,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cambiar-password': typeof CambiarPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -525,6 +533,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/cambiar-password': typeof CambiarPasswordRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/seguridad': typeof SeguridadRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -588,6 +597,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cambiar-password'
     | '/login'
+    | '/reset-password'
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
@@ -649,6 +659,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cambiar-password'
     | '/login'
+    | '/reset-password'
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
@@ -711,6 +722,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/cambiar-password'
     | '/login'
+    | '/reset-password'
     | '/seguridad'
     | '/signup'
     | '/sitemap.xml'
@@ -774,6 +786,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CambiarPasswordRoute: typeof CambiarPasswordRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SeguridadRoute: typeof SeguridadRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -828,6 +841,13 @@ declare module '@tanstack/react-router' {
       path: '/seguridad'
       fullPath: '/seguridad'
       preLoaderRoute: typeof SeguridadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1339,6 +1359,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CambiarPasswordRoute: CambiarPasswordRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SeguridadRoute: SeguridadRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
