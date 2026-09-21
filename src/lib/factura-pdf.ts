@@ -8,6 +8,10 @@ export interface FacturaPdfLinea {
 }
 
 export interface FacturaPdfData {
+  // Documento (permite reusar este generador para cotizaciones)
+  documentTitle?: string; // default: "FACTURA"
+  clienteLabel?: string; // default: "FACTURAR A"
+
   // Empresa emisora
   companyName: string;
   companyRnc?: string | null;
@@ -20,6 +24,11 @@ export interface FacturaPdfData {
   ncf: string;
   fechaEmision: string;
   fechaVencimiento?: string | null;
+  // Texto ya formateado sobre la condición/plazo del documento, p. ej.
+  // "Crédito — 30 días (vence 20/10/2026)" o "Válida por 30 días (vence
+  // 20/10/2026)". Si no se provee pero sí fechaVencimiento, se muestra
+  // "Vencimiento: <fecha>" como antes.
+  condicionTexto?: string | null;
   estado: string;
 
   // Cliente
@@ -93,10 +102,11 @@ export async function generateFacturaPdf(d: FacturaPdfData): Promise<jsPDF> {
     }
   }
 
+  const title = d.documentTitle || "FACTURA";
   doc.setFont("helvetica", "bold");
   doc.setFontSize(28);
   doc.setTextColor(20, 28, 56);
-  doc.text("FACTURA", right, 70, { align: "right" });
+  doc.text(title, right, 70, { align: "right" });
 
   doc.setFontSize(11);
   doc.setTextColor(20, 28, 56);
@@ -106,12 +116,20 @@ export async function generateFacturaPdf(d: FacturaPdfData): Promise<jsPDF> {
   doc.setFontSize(10);
   doc.setTextColor(90);
   doc.text(`Fecha Emisión: ${d.fechaEmision}`, right, 106, { align: "right" });
-  if (d.fechaVencimiento) {
-    doc.text(`Vencimiento: ${d.fechaVencimiento}`, right, 120, { align: "right" });
+  const terminoTexto = d.condicionTexto || (d.fechaVencimiento ? `Vencimiento: ${d.fechaVencimiento}` : null);
+  if (terminoTexto) {
+    const terminoLines = doc.splitTextToSize(terminoTexto, 220);
+    doc.text(terminoLines, right, 120, { align: "right" });
   }
 
+  // ----- Nombre de la empresa (siempre visible, con o sin logo) -----
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(20, 28, 56);
+  doc.text(d.companyName || "", left, yLogoBottom + 16);
+
   // ----- Datos empresa emisora -----
-  let y = Math.max(yLogoBottom + 20, 160);
+  let y = Math.max(yLogoBottom + 36, 176);
   doc.setTextColor(90);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
@@ -134,7 +152,7 @@ export async function generateFacturaPdf(d: FacturaPdfData): Promise<jsPDF> {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(20, 28, 56);
-  doc.text("FACTURAR A", left, y);
+  doc.text(d.clienteLabel || "FACTURAR A", left, y);
   doc.text("ESTADO", midX + 20, y);
 
   doc.setDrawColor(220);

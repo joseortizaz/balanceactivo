@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Pencil, FileDown, Search, Ban, Lock, Eye, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { fmtMoney, fmtDate } from "@/lib/format";
+import { fmtMoney, fmtDate, condicionFacturaTexto } from "@/lib/format";
 import { generateFacturaPdf } from "@/lib/factura-pdf";
 import { Label } from "@/components/ui/label";
 import { sendTransactionalEmail } from "@/lib/email/send";
@@ -67,16 +67,22 @@ function Facturas() {
       if (!f) return toast.error("Factura no encontrada");
       const t: any = (tenantRows ?? [])[0] ?? {};
       const c: any = (f as any).clientes ?? {};
+      let logoUrl: string | null = null;
+      if (t.logo_url) {
+        const { data: sig } = await supabase.storage.from("tenant-assets").createSignedUrl(t.logo_url, 3600);
+        logoUrl = sig?.signedUrl ?? null;
+      }
       const doc = await generateFacturaPdf({
         companyName: t.nombre_comercial || t.razon_social || "",
         companyRnc: t.rnc,
         companyAddress: t.direccion,
         companyPhone: t.telefono,
         companyEmail: null,
-        companyLogoUrl: t.logo_url,
+        companyLogoUrl: logoUrl,
         ncf: f.ncf,
         fechaEmision: fmtDate(f.fecha),
         fechaVencimiento: f.fecha_vencimiento ? fmtDate(f.fecha_vencimiento) : null,
+        condicionTexto: condicionFacturaTexto(f.condicion_pago, f.fecha, f.fecha_vencimiento),
         estado: f.estado,
         clienteNombre: c.razon_social || "—",
         clienteDocumento: c.documento,

@@ -8,6 +8,9 @@ export interface FacturaPreviewLinea {
 }
 
 export interface FacturaPreviewData {
+  documentTitle?: string; // default: "FACTURA"
+  clienteLabel?: string; // default: "FACTURAR A"
+
   companyName: string;
   companyRnc?: string | null;
   companyAddress?: string | null;
@@ -18,6 +21,8 @@ export interface FacturaPreviewData {
   ncf: string;
   fechaEmision: string;
   fechaVencimiento?: string | null;
+  // Texto ya formateado sobre condición/plazo, ver factura-pdf.ts
+  condicionTexto?: string | null;
   estado: string;
 
   clienteNombre: string;
@@ -45,25 +50,26 @@ export function FacturaPreview({ d }: { d: FacturaPreviewData }) {
       <div className="p-6 sm:p-10 font-sans">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
-          <div className="flex-1 min-w-0">
-            {d.companyLogoUrl ? (
+          <div className="flex-1 min-w-0 space-y-2">
+            {d.companyLogoUrl && (
               <img
                 src={d.companyLogoUrl}
                 alt={d.companyName}
                 className="max-h-24 max-w-[180px] object-contain"
               />
-            ) : (
-              <div className="text-xl font-semibold text-neutral-800">{d.companyName}</div>
             )}
+            <div className="text-xl font-semibold text-neutral-800">{d.companyName}</div>
           </div>
           <div className="text-left sm:text-right">
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-900">
-              FACTURA
+              {d.documentTitle || "FACTURA"}
             </h1>
             <div className="mt-2 text-sm font-semibold text-neutral-800">N°: {d.ncf}</div>
             <div className="mt-1 text-sm text-neutral-500">Fecha Emisión: {d.fechaEmision}</div>
-            {d.fechaVencimiento && (
-              <div className="text-sm text-neutral-500">Vencimiento: {d.fechaVencimiento}</div>
+            {(d.condicionTexto || d.fechaVencimiento) && (
+              <div className="text-sm text-neutral-500">
+                {d.condicionTexto || `Vencimiento: ${d.fechaVencimiento}`}
+              </div>
             )}
           </div>
         </div>
@@ -82,7 +88,7 @@ export function FacturaPreview({ d }: { d: FacturaPreviewData }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <div className="text-xs font-semibold tracking-widest text-neutral-500 pb-2 border-b border-neutral-200">
-              FACTURAR A
+              {d.clienteLabel || "FACTURAR A"}
             </div>
             <div className="mt-3 font-semibold text-neutral-900">{d.clienteNombre}</div>
             <div className="mt-1 text-sm text-neutral-600 space-y-0.5">

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileDown, Printer, Ban, Lock } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { fmtDate } from "@/lib/format";
+import { fmtDate, condicionFacturaTexto } from "@/lib/format";
 import { FacturaPreview } from "@/components/FacturaPreview";
 import { generateFacturaPdf } from "@/lib/factura-pdf";
 import { toast } from "sonner";
@@ -58,6 +58,7 @@ function VerFactura() {
     ncf: f.ncf,
     fechaEmision: fmtDate(f.fecha),
     fechaVencimiento: f.fecha_vencimiento ? fmtDate(f.fecha_vencimiento) : null,
+    condicionTexto: condicionFacturaTexto(f.condicion_pago, f.fecha, f.fecha_vencimiento),
     estado: f.estado,
     clienteNombre: c.razon_social || "—",
     clienteDocumento: c.documento,

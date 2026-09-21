@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
-import { fmtMoney, today } from "@/lib/format";
+import { fmtMoney, fmtDate, today } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/facturas/nueva")({
   component: NuevaFactura,
@@ -36,6 +36,7 @@ function NuevaFactura() {
   const [lineas, setLineas] = useState<Linea[]>([{ descripcion: "", cantidad: 1, precio: 0, tasa_itbis: 18 }]);
   const [cuotas, setCuotas] = useState<Cuota[]>([]);
   const [pagoInicial, setPagoInicial] = useState<number>(0);
+  const [diasCredito, setDiasCredito] = useState<number>(30);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -55,6 +56,10 @@ function NuevaFactura() {
       setFecha(f.fecha);
       setTipoDescuento(f.tipo_descuento as any);
       setDescuentoValor(Number(f.descuento_valor));
+      if (f.condicion_pago === "credito" && f.fecha_vencimiento) {
+        const dias = Math.round((new Date(f.fecha_vencimiento + "T00:00:00Z").getTime() - new Date(f.fecha + "T00:00:00Z").getTime()) / 86400000);
+        if (dias > 0) setDiasCredito(dias);
+      }
       const { data: ls } = await supabase.from("factura_lineas").select("descripcion, cantidad, precio, tasa_itbis, producto_id").eq("factura_id", editId);
       if (ls && ls.length) setLineas(ls.map((l: any) => ({ descripcion: l.descripcion, cantidad: Number(l.cantidad), precio: Number(l.precio), tasa_itbis: Number(l.tasa_itbis), producto_id: (l as any).producto_id })));
       const { data: cs } = await supabase.from("factura_cuotas").select("fecha_vencimiento, monto, numero_cuota").eq("factura_id", editId).order("numero_cuota");
@@ -128,6 +133,30 @@ function NuevaFactura() {
     if (error) {
       setLoading(false);
       return toast.error(error.message);
+    }
+
+    const facturaId = (isEdit ? editId : (data as string)) as string;
+
+    // Vencimiento / plazo de crédito: crear_factura y actualizar_factura no
+    // guardan facturas.fecha_vencimiento (no está en su firma), así que se
+    // completa aquí con un UPDATE directo. Si hay plan de cuotas, el
+    // vencimiento "real" de la factura es el de la última cuota; si es
+    // crédito a pago único, se calcula a partir de los días de crédito.
+    let fechaVencimientoFinal: string | null = null;
+    if (condicion === "credito") {
+      if (cuotas.length > 0) {
+        fechaVencimientoFinal = cuotas.reduce((max, c) => (c.fecha > max ? c.fecha : max), cuotas[0].fecha);
+      } else if (diasCredito > 0) {
+        const base = new Date(fecha + "T00:00:00Z");
+        base.setUTCDate(base.getUTCDate() + diasCredito);
+        fechaVencimientoFinal = base.toISOString().slice(0, 10);
+      }
+    }
+    const { error: errVenc } = await supabase.from("facturas")
+      .update({ fecha_vencimiento: fechaVencimientoFinal })
+      .eq("id", facturaId);
+    if (errVenc) {
+      console.error("No se pudo guardar el vencimiento de la factura", errVenc);
     }
 
     // Factura nueva a crédito con pago inicial: registrarlo ya mismo como un
@@ -281,7 +310,26 @@ function NuevaFactura() {
                   Saldo a financiar: {fmtMoney(Math.max(0, totales.total - (pagoInicial || 0)))}
                 </div>
               </div>
-              {cuotas.length === 0 && <p className="text-xs text-muted-foreground">Sin plan de cuotas. Si lo dejas vacío, la factura queda como pago único a crédito.</p>}
+              {cuotas.length === 0 && (
+                <div className="grid grid-cols-12 gap-2 items-end mb-3">
+                  <div className="col-span-4">
+                    <Label htmlFor="fac-dias-credito" className="text-xs">Días de crédito</Label>
+                    <Input
+                      id="fac-dias-credito"
+                      type="number"
+                      min={0}
+                      step="1"
+                      value={diasCredito}
+                      onChange={(e) => setDiasCredito(Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="col-span-8 text-xs text-muted-foreground pb-2">
+                    {diasCredito > 0
+                      ? `Pago único a crédito. Vence el ${fmtDate(new Date(new Date(fecha + "T00:00:00Z").getTime() + diasCredito * 86400000).toISOString().slice(0, 10))}.`
+                      : "Sin plazo definido: la factura queda a crédito sin fecha de vencimiento."}
+                  </div>
+                </div>
+              )}
               <div className="space-y-2">
                 {cuotas.map((c, i) => (
                   <div key={i} className="grid grid-cols-12 gap-2 items-end">
