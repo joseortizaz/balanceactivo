@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { authenticate, corsOptions, jsonError, jsonOk } from "@/lib/api-auth.server";
+import { today } from "@/lib/format";
 
 const lineaSchema = z.object({
   producto_id: z.string().uuid().optional().nullable(),
@@ -17,7 +18,7 @@ const createSchema = z.object({
   cliente_id: z.string().uuid(),
   tipo_ncf: z.enum(["b01", "b02", "b14", "b15"]),
   condicion_pago: z.enum(["contado", "credito"]).default("contado"),
-  fecha: z.string().default(() => new Date().toISOString().slice(0, 10)),
+  fecha: z.string().default(today),
   tipo_descuento: z.enum(["monto", "porcentaje"]).default("monto"),
   descuento_valor: z.number().nonnegative().default(0),
   lineas: z.array(lineaSchema).min(1),

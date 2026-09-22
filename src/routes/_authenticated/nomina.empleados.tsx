@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Plus, Pencil } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { fmtMoney } from "@/lib/format";
+import { fmtMoney, today } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/nomina/empleados")({ component: Empleados });
 
@@ -23,7 +23,7 @@ const FORM_INIT: any = {
   banco: "", cuenta_bancaria: "", tipo_cuenta: "ahorro",
   departamento_id: null, cargo_id: null,
   tipo_contrato: "indefinido", forma_pago: "mensual", salario_base: 0,
-  fecha_ingreso: new Date().toISOString().slice(0, 10), dependientes: 0, estado: "activo",
+  fecha_ingreso: today(), dependientes: 0, estado: "activo",
 };
 
 function Empleados() {

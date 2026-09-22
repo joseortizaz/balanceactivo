@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { fmtMoney } from "@/lib/format";
+import { fmtMoney, today } from "@/lib/format";
 import { Building2, Users, FileText, DollarSign, CheckCircle2, Pause, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,7 +68,7 @@ function SuperAdmin() {
       ? { estado: "suspendida" }
       : {
           estado: "activa",
-          fecha_inicio: sub.fecha_inicio ?? new Date().toISOString().slice(0, 10),
+          fecha_inicio: sub.fecha_inicio ?? today(),
           fecha_termino: sub.fecha_termino ?? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
           activado_at: new Date().toISOString(),
           activado_por: auth.user?.id,
@@ -88,7 +88,7 @@ function SuperAdmin() {
       : {
           nomina_estado: "activa",
           incluye_nomina: true,
-          nomina_fecha_inicio: sub.nomina_fecha_inicio ?? new Date().toISOString().slice(0, 10),
+          nomina_fecha_inicio: sub.nomina_fecha_inicio ?? today(),
           nomina_fecha_termino: sub.nomina_fecha_termino ?? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
           nomina_activado_at: new Date().toISOString(),
           nomina_activado_por: auth.user?.id,

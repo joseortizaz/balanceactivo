@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { authenticate, corsOptions, jsonError, jsonOk } from "@/lib/api-auth.server";
+import { today } from "@/lib/format";
 
 const createSchema = z.object({
   factura_id: z.string().uuid(),
   monto: z.number().positive(),
   metodo: z.enum(["transferencia", "deposito", "cheque", "efectivo"]),
-  fecha: z.string().default(() => new Date().toISOString().slice(0, 10)),
+  fecha: z.string().default(today),
   banco_id: z.string().uuid().optional().nullable(),
   nota: z.string().optional().nullable(),
 });

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Plus, DollarSign, Pencil } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { fmtMoney, fmtDate } from "@/lib/format";
+import { fmtMoney, fmtDate, today } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/gastos")({ component: Gastos });
 
@@ -54,7 +54,7 @@ function Gastos() {
   const [editId, setEditId] = useState<string | null>(null);
 
   const [f, setF] = useState<any>({
-    fecha: new Date().toISOString().slice(0, 10),
+    fecha: today(),
     proveedor_id: "",
     ncf: "",
     tipo_ncf_compra: "B01",
@@ -72,10 +72,10 @@ function Gastos() {
     notas: "",
   });
 
-  const [pago, setPago] = useState<any>({ monto: 0, cuenta_pago_id: "", fecha: new Date().toISOString().slice(0, 10), metodo: "Transferencia" });
+  const [pago, setPago] = useState<any>({ monto: 0, cuenta_pago_id: "", fecha: today(), metodo: "Transferencia" });
 
   const resetForm = () => setF({
-    fecha: new Date().toISOString().slice(0, 10), proveedor_id: "", ncf: "", tipo_ncf_compra: "B01",
+    fecha: today(), proveedor_id: "", ncf: "", tipo_ncf_compra: "B01",
     categoria: "05_operacionales", concepto: "", cuenta_gasto_id: "", condicion_pago: "contado",
     fecha_vencimiento: "", subtotal: 0, itbis: 0, total: 0, itbis_retenido: 0, isr_retenido: 0,
     cuenta_pago_id: "", notas: "",
@@ -219,7 +219,7 @@ function Gastos() {
     if (error) return toast.error(error.message);
     toast.success("Pago registrado");
     setPagoOpen(null);
-    setPago({ monto: 0, cuenta_pago_id: "", fecha: new Date().toISOString().slice(0, 10), metodo: "Transferencia" });
+    setPago({ monto: 0, cuenta_pago_id: "", fecha: today(), metodo: "Transferencia" });
     qc.invalidateQueries({ queryKey: ["gastos"] });
     qc.invalidateQueries({ queryKey: ["asientos"] });
   };

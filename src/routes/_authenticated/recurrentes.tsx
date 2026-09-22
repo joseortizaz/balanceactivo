@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Trash2, RefreshCw } from "lucide-react";
-import { fmtDate } from "@/lib/format";
+import { fmtDate, today } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/recurrentes")({ component: Recurrentes });
 
@@ -31,7 +31,7 @@ function Recurrentes() {
   const [form, setForm] = useState({
     nombre: "", cliente_id: "", tipo_ncf: "B02" as const, condicion_pago: "contado" as "contado"|"credito",
     frecuencia: "mensual" as "diaria"|"semanal"|"quincenal"|"mensual"|"bimestral"|"trimestral"|"anual",
-    proxima_emision: new Date().toISOString().slice(0,10),
+    proxima_emision: today(),
     fecha_fin: "", num_cuotas: 1,
     tipo_descuento: "monto" as "monto"|"porcentaje", descuento_valor: 0,
   });
