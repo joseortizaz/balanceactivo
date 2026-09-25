@@ -37,6 +37,25 @@ function Configuracion() {
   const [form, setForm] = useState<any>({});
   useEffect(() => { if (tenant) setForm(tenant); }, [tenant]);
 
+  const { data: certificado, refetch: refetchCertificado } = useQuery({
+    queryKey: ["ecf-certificado", auth.tenantId],
+    enabled: !!auth.tenantId,
+    queryFn: async () => (await (supabase as any)
+      .from("tenant_certificados_digitales")
+      .select("id, titular_nombre, titular_documento, entidad_certificadora, valido_desde, valido_hasta, activo, created_at")
+      .eq("activo", true)
+      .maybeSingle()).data,
+  });
+  const { data: ecfSecuencias } = useQuery({
+    queryKey: ["ecf-secuencias", auth.tenantId],
+    enabled: !!auth.tenantId,
+    queryFn: async () => (await (supabase as any).from("ecf_secuencias").select("*").order("tipo_ecf")).data ?? [],
+  });
+  const [certForm, setCertForm] = useState<any>({ titular_nombre: "", titular_documento: "", entidad_certificadora: "", valido_desde: "", valido_hasta: "", passphrase: "" });
+  const [certFile, setCertFile] = useState<File | null>(null);
+  const [subiendoCert, setSubiendoCert] = useState(false);
+  const [nuevaSecEcf, setNuevaSecEcf] = useState<any>({ tipo_ecf: "31", secuencia_desde: 1, secuencia_hasta: 1000, fecha_vencimiento: "" });
+
   if (!auth.hasRole("administrador")) {
     return <div className="text-muted-foreground">Solo el administrador puede ver esta sección.</div>;
   }
@@ -74,6 +93,66 @@ function Configuracion() {
     const { error } = await (supabase as any).from("bancos").update({ activo: !activo }).eq("id", id);
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["bancos"] });
+  };
+
+  const saveEcfAmbiente = async (ambiente: string) => {
+    const { error } = await supabase.from("tenants").update({ ecf_ambiente: ambiente } as any).eq("id", auth.tenantId!);
+    if (error) return toast.error(error.message);
+    toast.success("Ambiente de e-CF actualizado");
+    qc.invalidateQueries({ queryKey: ["tenant"] });
+  };
+
+  const subirCertificado = async () => {
+    if (!certFile) return toast.error("Selecciona el archivo del certificado (.p12/.pfx)");
+    if (!certForm.passphrase) return toast.error("Indica la contraseña del certificado");
+    if (!certForm.titular_nombre.trim()) return toast.error("Indica el nombre del titular del certificado");
+    if (!certForm.valido_hasta) return toast.error("Indica la fecha de vencimiento del certificado");
+    setSubiendoCert(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Sesión inválida, vuelve a iniciar sesión");
+      const fd = new FormData();
+      fd.append("certificado", certFile);
+      fd.append("passphrase", certForm.passphrase);
+      fd.append("titular_nombre", certForm.titular_nombre);
+      fd.append("titular_documento", certForm.titular_documento || "");
+      fd.append("entidad_certificadora", certForm.entidad_certificadora || "");
+      fd.append("valido_desde", certForm.valido_desde || "");
+      fd.append("valido_hasta", certForm.valido_hasta);
+      const res = await fetch("/api/internal/ecf-certificado", {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body?.error?.message || "No se pudo subir el certificado");
+      toast.success("Certificado guardado. Balance Activo lo custodiará para firmar tus e-CF.");
+      setCertForm({ titular_nombre: "", titular_documento: "", entidad_certificadora: "", valido_desde: "", valido_hasta: "", passphrase: "" });
+      setCertFile(null);
+      refetchCertificado();
+    } catch (e: any) {
+      toast.error(e.message ?? "Error al subir el certificado");
+    } finally {
+      setSubiendoCert(false);
+    }
+  };
+
+  const agregarSecuenciaEcf = async () => {
+    if (!nuevaSecEcf.secuencia_hasta || nuevaSecEcf.secuencia_hasta < nuevaSecEcf.secuencia_desde) {
+      return toast.error("Revisa el rango de la secuencia");
+    }
+    const { error } = await (supabase as any).from("ecf_secuencias").insert({
+      tenant_id: auth.tenantId,
+      tipo_ecf: nuevaSecEcf.tipo_ecf,
+      secuencia_desde: nuevaSecEcf.secuencia_desde,
+      secuencia_actual: nuevaSecEcf.secuencia_desde - 1,
+      secuencia_hasta: nuevaSecEcf.secuencia_hasta,
+      fecha_vencimiento: nuevaSecEcf.fecha_vencimiento || null,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Secuencia e-NCF registrada");
+    qc.invalidateQueries({ queryKey: ["ecf-secuencias"] });
   };
 
   return (
@@ -177,6 +256,126 @@ function Configuracion() {
               </div>
             ))}
             {(!bancos || bancos.length === 0) && <div className="text-sm text-muted-foreground">Aún no has registrado bancos.</div>}
+          </div>
+        </Card>
+
+        <Card className="p-5 lg:col-span-2">
+          <h2 className="font-semibold mb-1">Facturación Electrónica (e-CF)</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Infraestructura previa para emitir Comprobantes Fiscales Electrónicos ante la DGII.
+            Esto NO reemplaza el trámite regulatorio: la DGII exige certificarse primero como
+            Emisor Electrónico (Solicitud, Sets de Pruebas, Declaración Jurada y Certificación)
+            antes de poder emitir e-CF en producción. Ver README.md para el detalle completo.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Estado ante la DGII:</span>
+                <span className={
+                  form.ecf_estado === "certificado" ? "text-green-600 font-semibold" :
+                  form.ecf_estado === "en_pruebas" ? "text-amber-600 font-semibold" :
+                  form.ecf_estado === "suspendido" ? "text-destructive font-semibold" :
+                  "text-muted-foreground"
+                }>
+                  {form.ecf_estado === "certificado" ? "Certificado (puede emitir e-CF)" :
+                   form.ecf_estado === "en_pruebas" ? "En pruebas (TesteCF)" :
+                   form.ecf_estado === "suspendido" ? "Suspendido" : "No iniciado"}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Este estado se actualiza manualmente por ahora, según el avance real del trámite
+                en la Oficina Virtual de la DGII. Todavía no hay envío automático de e-CF.
+              </p>
+              <div>
+                <Label htmlFor="cfg-ecf-ambiente">Ambiente</Label>
+                <Select value={form.ecf_ambiente ?? "testecf"} onValueChange={(v) => { setForm({ ...form, ecf_ambiente: v }); saveEcfAmbiente(v); }}>
+                  <SelectTrigger id="cfg-ecf-ambiente"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="testecf">TesteCF (pruebas)</SelectItem>
+                    <SelectItem value="certificacion">Certificación</SelectItem>
+                    <SelectItem value="produccion">Producción</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="border-t border-border pt-3 mt-3">
+                <div className="font-medium text-sm mb-2">Certificado digital</div>
+                {certificado ? (
+                  <div className="text-sm space-y-1">
+                    <div><span className="text-muted-foreground">Titular:</span> {certificado.titular_nombre}</div>
+                    {certificado.entidad_certificadora && <div><span className="text-muted-foreground">Entidad certificadora:</span> {certificado.entidad_certificadora}</div>}
+                    <div><span className="text-muted-foreground">Vigente hasta:</span> {certificado.valido_hasta}</div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Balance Activo custodia este certificado de forma cifrada para firmar tus e-CF.
+                      Sube uno nuevo abajo para reemplazarlo (por ejemplo, al renovarlo).
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground mb-2">Aún no se ha registrado un certificado digital para este tenant.</p>
+                )}
+                <div className="space-y-2 mt-3">
+                  <div>
+                    <Label htmlFor="cfg-cert-archivo" className="text-xs">Archivo (.p12 / .pfx)</Label>
+                    <Input id="cfg-cert-archivo" type="file" accept=".p12,.pfx" onChange={(e) => setCertFile(e.target.files?.[0] ?? null)} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div><Label className="text-xs">Contraseña</Label><Input type="password" value={certForm.passphrase} onChange={(e) => setCertForm({ ...certForm, passphrase: e.target.value })} /></div>
+                    <div><Label className="text-xs">Titular</Label><Input value={certForm.titular_nombre} onChange={(e) => setCertForm({ ...certForm, titular_nombre: e.target.value })} /></div>
+                    <div><Label className="text-xs">Documento del titular</Label><Input value={certForm.titular_documento} onChange={(e) => setCertForm({ ...certForm, titular_documento: e.target.value })} /></div>
+                    <div><Label className="text-xs">Entidad certificadora</Label><Input value={certForm.entidad_certificadora} onChange={(e) => setCertForm({ ...certForm, entidad_certificadora: e.target.value })} /></div>
+                    <div><Label className="text-xs">Válido desde</Label><Input type="date" value={certForm.valido_desde} onChange={(e) => setCertForm({ ...certForm, valido_desde: e.target.value })} /></div>
+                    <div><Label className="text-xs">Válido hasta</Label><Input type="date" value={certForm.valido_hasta} onChange={(e) => setCertForm({ ...certForm, valido_hasta: e.target.value })} /></div>
+                  </div>
+                  <Button size="sm" onClick={subirCertificado} disabled={subiendoCert} className="w-full">
+                    {subiendoCert ? "Subiendo…" : "Guardar certificado"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="font-medium text-sm mb-2">Secuencias e-NCF asignadas por la DGII</div>
+              <p className="text-xs text-muted-foreground mb-3">
+                A diferencia del NCF tradicional, estos rangos los asigna la DGII bajo demanda
+                (Oficina Virtual) una vez certificados como Emisor Electrónico. Regístralos aquí
+                tal como te los entregó la DGII.
+              </p>
+              <div className="space-y-2 mb-4">
+                {(ecfSecuencias ?? []).map((s: any) => (
+                  <div key={s.id} className="border border-border rounded-md p-2 text-xs flex items-center justify-between">
+                    <span className="font-mono">e-{s.tipo_ecf}</span>
+                    <span>{s.secuencia_actual} / {s.secuencia_hasta}</span>
+                    <span className={s.activo ? "text-green-600" : "text-muted-foreground"}>{s.activo ? "activa" : "inactiva"}</span>
+                  </div>
+                ))}
+                {(!ecfSecuencias || ecfSecuencias.length === 0) && <div className="text-xs text-muted-foreground">Sin secuencias e-NCF registradas todavía.</div>}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Tipo e-CF</Label>
+                  <Select value={nuevaSecEcf.tipo_ecf} onValueChange={(v) => setNuevaSecEcf({ ...nuevaSecEcf, tipo_ecf: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="31">31 - Crédito Fiscal</SelectItem>
+                      <SelectItem value="32">32 - Consumo</SelectItem>
+                      <SelectItem value="33">33 - Nota de Débito</SelectItem>
+                      <SelectItem value="34">34 - Nota de Crédito</SelectItem>
+                      <SelectItem value="41">41 - Compras</SelectItem>
+                      <SelectItem value="43">43 - Gastos Menores</SelectItem>
+                      <SelectItem value="44">44 - Regímenes Especiales</SelectItem>
+                      <SelectItem value="45">45 - Gubernamental</SelectItem>
+                      <SelectItem value="46">46 - Exportaciones</SelectItem>
+                      <SelectItem value="47">47 - Pagos al Exterior</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div><Label className="text-xs">Vencimiento</Label><Input type="date" value={nuevaSecEcf.fecha_vencimiento} onChange={(e) => setNuevaSecEcf({ ...nuevaSecEcf, fecha_vencimiento: e.target.value })} /></div>
+                <div><Label className="text-xs">Desde</Label><Input type="number" value={nuevaSecEcf.secuencia_desde} onChange={(e) => setNuevaSecEcf({ ...nuevaSecEcf, secuencia_desde: Number(e.target.value) })} /></div>
+                <div><Label className="text-xs">Hasta</Label><Input type="number" value={nuevaSecEcf.secuencia_hasta} onChange={(e) => setNuevaSecEcf({ ...nuevaSecEcf, secuencia_hasta: Number(e.target.value) })} /></div>
+              </div>
+              <Button size="sm" variant="outline" onClick={agregarSecuenciaEcf} className="w-full mt-2">Registrar secuencia</Button>
+            </div>
           </div>
         </Card>
       </div>

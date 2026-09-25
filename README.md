@@ -57,6 +57,65 @@ Nota sobre el historial actual: hay migraciones que recrean el mismo objeto vari
 
 `bun run test` corre Vitest sobre `src/**/*.test.ts`. Hoy la cobertura es la lógica pura de `src/lib/dgii.ts` y `src/lib/format.ts` (formato DGII, validación de RNC/cédula). Es un punto de partida, no cobertura completa — falta lo más importante: las funciones de Postgres (`crear_factura`, cálculo de ITBIS/ISR, generación de NCF, nómina). Esas viven en SQL y necesitarían un entorno de Supabase local (`supabase start`) para testear de verdad contra Postgres.
 
+## Facturación Electrónica (e-CF)
+
+Objetivo del proyecto: que Balance Activo se convierta en **Proveedor de Servicios de Facturación
+Electrónica** autorizado por la DGII, para que las empresas que lo usan puedan emitir e-CF desde
+la propia app (Balance Activo custodiaría el certificado digital de cada tenant y firmaría en su
+nombre — es uno de los dos modelos operativos que la DGII reconoce explícitamente para
+proveedores).
+
+**Camino regulatorio (orden obligatorio, según la DGII):**
+
+1. **Emisor Electrónico** — requiere RNC activo, clave OFV, un Certificado Digital para
+   Procedimientos Tributarios (emitido por una entidad certificadora autorizada por INDOTEL),
+   completar el Formulario FI-GDF-016, y aprobar Sets de Pruebas (Datos, Simulación,
+   Comunicación) contra el ambiente TesteCF de la DGII, más una Declaración Jurada.
+2. **Proveedor de Servicios de FE** — solo se puede solicitar después de completar el paso 1.
+   Requiere además actividad económica de venta/desarrollo de software y su propio proceso de
+   solicitud + declaración jurada + certificación.
+
+Fuentes oficiales usadas para diseñar esta infraestructura (revisar antes de continuar el
+desarrollo, por si la DGII actualiza el proceso):
+- [Guía para ser Emisor Electrónico](https://dgii.gov.do/publicacionesOficiales/bibliotecaVirtual/contribuyentes/facturacion/Documents/Facturaci%C3%B3n%20Electr%C3%B3nica/Guia-Basica-para-ser-Emisor-Electronico.pdf)
+- [Guía para ser Proveedor de Servicios de FE](https://dgii.gov.do/publicacionesOficiales/bibliotecaVirtual/contribuyentes/facturacion/Documents/Facturaci%C3%B3n%20Electr%C3%B3nica/Guia-Basica-Proveedor-de-Servicios-de-Facturacion-Electronica.pdf)
+- [Documentación técnica y formatos XML](https://dgii.gov.do/cicloContribuyente/facturacion/comprobantesFiscalesElectronicosE-CF/Paginas/documentacionSobreE-CF.aspx)
+
+**Qué existe hoy en el código (infraestructura previa, NO envío real todavía):**
+
+- Modelo de datos multi-tenant (migración `20260925090000_infraestructura_ecf.sql`): tipos de
+  e-CF (31/32/33/34/41/43/44/45/46/47), estado del tenant ante la DGII (`tenants.ecf_estado`,
+  `ecf_ambiente`), tabla `tenant_certificados_digitales` (custodia cifrada del certificado por
+  tenant), tabla `ecf_secuencias` (rangos e-NCF asignados por la DGII, distintos de
+  `ncf_secuencias` que es autogestionado), columnas de rastreo de envío en `facturas`
+  (`es_ecf`, `e_ncf`, `ecf_track_id`, `ecf_estado_envio`, etc.) y `ecf_eventos` para auditar
+  cada paso de la comunicación con la DGII.
+- Cifrado de la passphrase del certificado (`src/lib/ecf/crypto.server.ts`, AES-256-GCM con la
+  clave `CERT_ENCRYPTION_KEY`). El archivo `.p12`/`.pfx` en sí se guarda en el bucket privado
+  `certificados-digitales`, sin ninguna política de acceso para el rol `authenticated` — solo
+  se lee con `service_role`, nunca desde el navegador.
+- Ruta de servidor para subir el certificado (`src/routes/api/internal/ecf-certificado.ts`),
+  autenticada con la sesión del usuario administrador (`src/lib/internal-auth.server.ts` — un
+  patrón nuevo, distinto del de la API pública con API keys).
+- Sección "Facturación Electrónica" en Configuración: estado, ambiente (TesteCF/Certificación/
+  Producción), carga del certificado, y registro manual de secuencias e-NCF.
+
+**Qué falta (a propósito no implementado todavía, para no inventar contenido regulatorio):**
+
+- `src/lib/ecf/build-xml.ts` — generar el XML del e-CF según el XSD real de la DGII (Formato
+  e-CF v1.0). Sin el XSD/documentación técnica completa, cualquier estructura que se escriba
+  ahora sería una adivinanza.
+- `src/lib/ecf/sign-xml.ts` — firma XML-DSig con el certificado del tenant. Pendiente validar
+  si `nodejs_compat` en el Worker (ya activado en `wrangler.jsonc`) alcanza para una librería
+  tipo `node-forge` + `xml-crypto`, o si esta operación necesita moverse a una Supabase Edge
+  Function (Deno).
+- `src/lib/ecf/dgii-client.ts` — cliente REST real contra los servicios web de la DGII (envío,
+  TrackId, consulta de estado, Acuse de Recibo/Aprobación Comercial). Las URLs actuales en el
+  archivo son placeholders.
+- Representación Impresa (RI) del e-CF con código QR y enlace de verificación.
+- Manejo de contingencia (sin conexión / e-NCF no disponible) según los plazos que exige la
+  norma vigente.
+
 ## CI
 
 `.github/workflows/ci.yml` corre lint + test + build en cada push/PR contra `main`.
