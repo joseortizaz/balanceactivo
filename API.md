@@ -149,7 +149,7 @@ Respuesta `201`:
 - `monto_inicial` = `max(total − suma(cuotas), 0)` (inicial o inscripción, que no es una cuota).
 - `saldo` (factura) = `max(total − monto_pagado, 0)`; `saldo` (cuota) = `monto − monto_pagado`.
 - `estado` de la cuota: `pagada` · `vencida` (impaga con fecha anterior a hoy, hora de RD) · `parcial` · `pendiente`.
-- **Regla de aplicación de pagos:** los cobros cubren primero el inicial y después las cuotas, de la más antigua a la más nueva. Se recalcula automáticamente al registrar, editar o anular un cobro, y al crear o editar la factura. Facturas `pagada`: todas sus cuotas `pagada`. Facturas `anulada`: las cuotas no se tocan (ignorarlas).
+- **Regla de aplicación de pagos:** los cobros cubren primero el inicial y después las cuotas, de la más antigua a la más nueva. Se recalcula automáticamente al registrar, editar o anular un cobro, y al crear o editar la factura. Facturas `pagada`: todas sus cuotas `pagada`. Facturas `anulada` y `cerrada`: las cuotas no se recalculan (ignorarlas).
 - Un job diario (00:05 hora RD) marca como `vencida` las cuotas impagas cuya fecha ya pasó.
 
 ---
