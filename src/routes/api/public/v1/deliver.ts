@@ -20,7 +20,7 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(bufA, bufB);
 }
 
-export const Route = createFileRoute("/api/public/v1/_deliver")({
+export const Route = createFileRoute("/api/public/v1/deliver")({
   server: {
     handlers: {
       POST: async ({ request }) => {

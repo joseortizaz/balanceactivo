@@ -65,7 +65,7 @@ import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
 import { Route as ApiPublicV1CobrosRouteImport } from './routes/api/public/v1/cobros'
 import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
-import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/_deliver'
+import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/deliver'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 import { Route as ApiPublicV1FacturasIdRouteImport } from './routes/api/public/v1/facturas.$id'
@@ -376,8 +376,8 @@ const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicV1DeliverRoute = ApiPublicV1DeliverRouteImport.update({
-  id: '/api/public/v1/_deliver',
-  path: '/api/public/v1',
+  id: '/api/public/v1/deliver',
+  path: '/api/public/v1/deliver',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedNominaPeriodosNuevaRoute =
@@ -451,7 +451,7 @@ export interface FileRoutesByFullPath {
   '/nomina/': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1': typeof ApiPublicV1DeliverRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
@@ -513,7 +513,7 @@ export interface FileRoutesByTo {
   '/nomina': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1': typeof ApiPublicV1DeliverRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
@@ -577,7 +577,7 @@ export interface FileRoutesById {
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/_deliver': typeof ApiPublicV1DeliverRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
@@ -641,7 +641,7 @@ export interface FileRouteTypes {
     | '/nomina/'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
-    | '/api/public/v1'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
@@ -703,7 +703,7 @@ export interface FileRouteTypes {
     | '/nomina'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
-    | '/api/public/v1'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
@@ -766,7 +766,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/'
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
-    | '/api/public/v1/_deliver'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
     | '/api/public/v1/facturas'
@@ -1200,10 +1200,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1ClientesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/v1/_deliver': {
-      id: '/api/public/v1/_deliver'
-      path: '/api/public/v1'
-      fullPath: '/api/public/v1'
+    '/api/public/v1/deliver': {
+      id: '/api/public/v1/deliver'
+      path: '/api/public/v1/deliver'
+      fullPath: '/api/public/v1/deliver'
       preLoaderRoute: typeof ApiPublicV1DeliverRouteImport
       parentRoute: typeof rootRouteImport
     }

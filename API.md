@@ -149,7 +149,7 @@ Respuesta `201`:
 - `monto_inicial` = `max(total − suma(cuotas), 0)` (inicial o inscripción, que no es una cuota).
 - `saldo` (factura) = `max(total − monto_pagado, 0)`; `saldo` (cuota) = `monto − monto_pagado`.
 - `estado` de la cuota: `pagada` · `vencida` (impaga con fecha anterior a hoy, hora de RD) · `parcial` · `pendiente`.
-- **Regla de aplicación de pagos:** los cobros cubren primero el inicial y después las cuotas, de la más antigua a la más nueva. Se recalcula automáticamente al registrar, editar o anular un cobro, y al crear o editar la factura. Facturas `pagada`: todas sus cuotas `pagada`. Facturas `anulada`: las cuotas no se tocan (ignorarlas).
+- **Regla de aplicación de pagos:** los cobros cubren primero el inicial y después las cuotas, de la más antigua a la más nueva. Se recalcula automáticamente al registrar, editar o anular un cobro, y al crear o editar la factura. Facturas `pagada`: todas sus cuotas `pagada`. Facturas `anulada` y `cerrada`: las cuotas no se recalculan (ignorarlas).
 - Un job diario (00:05 hora RD) marca como `vencida` las cuotas impagas cuya fecha ya pasó.
 
 ---
@@ -183,9 +183,17 @@ Balance Activo envía eventos por HTTP POST a la URL que registres.
 **API & Webhooks → Crear webhook**. Ingresa URL, elige eventos y guarda el **secret HMAC** (se muestra una sola vez).
 
 ### 4.2 Eventos
-- `cliente.created`, `cliente.updated`
-- `factura.created`, `factura.updated`, `factura.paid`
-- `cobro.created`
+
+Todos los eventos de factura y cobro incluyen `cliente_id`.
+
+| Evento | `data` |
+|---|---|
+| `cliente.created`, `cliente.updated` | `id, nombre, rnc, email, telefono` |
+| `factura.created` | `id, ncf, cliente_id, fecha, total, estado, condicion_pago` |
+| `factura.updated` | `id, ncf, cliente_id, total, estado, monto_pagado` |
+| `factura.paid` | `id, ncf, cliente_id, total, monto_pagado` |
+| `cobro.created` | `id, factura_id, cliente_id, monto, fecha, metodo, banco_id, estado` |
+| `cobro.updated` | igual que `cobro.created` (se emite al anular o cambiar monto/fecha) |
 - `cobro.updated` (un cobro se anula o cambia su monto/fecha; el payload incluye `estado`: `activo | anulado`)
 
 ### 4.3 Formato
@@ -223,7 +231,15 @@ function verify(rawBody: string, header: string | null, secret: string): boolean
 }
 ```
 
-### 4.5 Reintentos
+### 4.5 Despachador
+
+Los eventos se encolan en `webhook_deliveries` y los envía `POST /api/public/v1/deliver`
+(protegido con el header `x-dispatch-secret` = `WEBHOOK_DISPATCH_SECRET`), invocado cada
+minuto por pg_cron (`despachar-webhooks`). Procesa 20 eventos por corrida. La firma va en
+`x-ba-signature: sha256=<hmac_sha256_hex(cuerpo_crudo, secret_del_endpoint)>`.
+Pasos de activación: `supabase/manual/20261006_activar_webhooks_academia.sql`.
+
+### 4.6 Reintentos
 - **Éxito**: cualquier respuesta HTTP `2xx`.
 - **Reintentos**: backoff exponencial (~60s, 120s, 240s, 480s, 960s) hasta **5 intentos**.
 - Responde en < 5s; encola el trabajo pesado. Usa `delivery_id` como clave de **idempotencia**.
