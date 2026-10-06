@@ -3,6 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { authenticate, corsOptions, jsonError, jsonOk } from "@/lib/api-auth.server";
 import { today } from "@/lib/format";
+import { FACTURA_CUOTAS_SELECT, conCuotas } from "@/lib/cuotas-api.server";
 
 const lineaSchema = z.object({
   producto_id: z.string().uuid().optional().nullable(),
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/api/public/v1/facturas")({
         const offset = Math.max(Number(url.searchParams.get("offset") ?? 0), 0);
         let q = supabaseAdmin
           .from("facturas")
-          .select("*", { count: "exact" })
+          .select(`*, ${FACTURA_CUOTAS_SELECT}`, { count: "exact" })
           .eq("tenant_id", auth.tenantId)
           .order("fecha", { ascending: false })
           .range(offset, offset + limit - 1);
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/api/public/v1/facturas")({
         if (hasta) q = q.lte("fecha", hasta);
         const { data, error, count } = await q;
         if (error) return jsonError(500, "db_error", error.message);
-        return jsonOk({ data, count, limit, offset });
+        return jsonOk({ data: ((data ?? []) as unknown[]).map(conCuotas), count, limit, offset });
       },
       POST: async ({ request }) => {
         const auth = await authenticate(request);
