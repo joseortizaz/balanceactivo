@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
@@ -68,6 +69,7 @@ function Configuracion() {
       itbis_tasa_principal: form.itbis_tasa_principal, itbis_tasa_reducida: form.itbis_tasa_reducida,
       retencion_isr_servicios: form.retencion_isr_servicios, retencion_isr_alquileres: form.retencion_isr_alquileres,
       dias_aviso_cuota: form.dias_aviso_cuota,
+      recordatorios_cuotas_activos: form.recordatorios_cuotas_activos ?? true,
     }).eq("id", auth.tenantId!);
     if (error) return toast.error(error.message);
     toast.success("Configuración guardada");
@@ -203,6 +205,16 @@ function Configuracion() {
                 step="1"
                 value={form.dias_aviso_cuota ?? 5}
                 onChange={(e) => setForm({ ...form, dias_aviso_cuota: Number(e.target.value) })}
+              />
+            </div>
+            <div className="flex items-center justify-between gap-3 rounded-md border p-3">
+              <Label htmlFor="cfg-recordatorios-activos" className="cursor-pointer">
+                Enviar recordatorios y avisos de mora por correo
+              </Label>
+              <Switch
+                id="cfg-recordatorios-activos"
+                checked={form.recordatorios_cuotas_activos ?? true}
+                onCheckedChange={(v) => setForm({ ...form, recordatorios_cuotas_activos: v })}
               />
             </div>
             <Button onClick={save} className="w-full">Guardar cambios</Button>

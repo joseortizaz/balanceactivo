@@ -129,13 +129,34 @@ Respuesta `201`:
 }
 ```
 
-**`GET /facturas/:id`** — devuelve factura con `factura_lineas` y `cobros`.
+**`GET /facturas/:id`** — devuelve factura con `factura_lineas`, `cobros` y las mismas cuotas/campos extra de `GET /facturas`.
+
+**Cuotas, `monto_inicial` y `saldo`** — `GET /facturas` y `GET /facturas/:id` agregan estos campos (no se quitó ni renombró ninguno):
+
+```json
+{
+  "id": "…", "cliente_id": "…", "condicion_pago": "credito",
+  "total": 10000, "monto_pagado": 4000,
+  "monto_inicial": 2000, "saldo": 6000, "estado": "pendiente",
+  "cuotas": [
+    { "id": "…", "numero": 1, "fecha_vencimiento": "2026-09-30", "monto": 2000, "monto_pagado": 2000, "saldo": 0,    "estado": "pagada" },
+    { "id": "…", "numero": 2, "fecha_vencimiento": "2026-10-30", "monto": 2000, "monto_pagado": 0,    "saldo": 2000, "estado": "pendiente" }
+  ]
+}
+```
+
+- `cuotas` va ordenado por `numero`. Facturas de contado o sin cuotas: `"cuotas": []` y `"monto_inicial": 0`.
+- `monto_inicial` = `max(total − suma(cuotas), 0)` (inicial o inscripción, que no es una cuota).
+- `saldo` (factura) = `max(total − monto_pagado, 0)`; `saldo` (cuota) = `monto − monto_pagado`.
+- `estado` de la cuota: `pagada` · `vencida` (impaga con fecha anterior a hoy, hora de RD) · `parcial` · `pendiente`.
+- **Regla de aplicación de pagos:** los cobros cubren primero el inicial y después las cuotas, de la más antigua a la más nueva. Se recalcula automáticamente al registrar, editar o anular un cobro, y al crear o editar la factura. Facturas `pagada`: todas sus cuotas `pagada`. Facturas `anulada`: las cuotas no se tocan (ignorarlas).
+- Un job diario (00:05 hora RD) marca como `vencida` las cuotas impagas cuya fecha ya pasó.
 
 ---
 
 ### 3.4 Cobros
 
-**`GET /cobros`** — query: `limit`, `offset`, `factura_id`.
+**`GET /cobros`** — query: `limit`, `offset`, `factura_id`, `cliente_id` (devuelve solo los cobros de las facturas de ese cliente; cada cobro incluye `cliente_id`).
 
 **`POST /cobros`** — registra pago; actualiza estado (`parcial` → `pagada`) y genera recibo.
 
@@ -165,6 +186,7 @@ Balance Activo envía eventos por HTTP POST a la URL que registres.
 - `cliente.created`, `cliente.updated`
 - `factura.created`, `factura.updated`, `factura.paid`
 - `cobro.created`
+- `cobro.updated` (un cobro se anula o cambia su monto/fecha; el payload incluye `estado`: `activo | anulado`)
 
 ### 4.3 Formato
 

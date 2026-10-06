@@ -15,7 +15,7 @@ import { createApiKey, createWebhookEndpoint } from "@/lib/api-keys.functions";
 const EVENTS = [
   "cliente.created", "cliente.updated",
   "factura.created", "factura.updated", "factura.paid",
-  "cobro.created",
+  "cobro.created", "cobro.updated",
 ];
 
 export const Route = createFileRoute("/_authenticated/api-integraciones")({ component: ApiIntegraciones });

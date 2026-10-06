@@ -1865,6 +1865,7 @@ export type Database = {
         Row: {
           created_at: string
           dias_aviso_cuota: number
+          recordatorios_cuotas_activos: boolean
           direccion: string | null
           firma_url: string | null
           id: string
@@ -1883,6 +1884,7 @@ export type Database = {
         Insert: {
           created_at?: string
           dias_aviso_cuota?: number
+          recordatorios_cuotas_activos?: boolean
           direccion?: string | null
           firma_url?: string | null
           id?: string
@@ -1901,6 +1903,7 @@ export type Database = {
         Update: {
           created_at?: string
           dias_aviso_cuota?: number
+          recordatorios_cuotas_activos?: boolean
           direccion?: string | null
           firma_url?: string | null
           id?: string

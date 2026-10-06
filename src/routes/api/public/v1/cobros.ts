@@ -24,15 +24,22 @@ export const Route = createFileRoute("/api/public/v1/cobros")({
         const facturaId = url.searchParams.get("factura_id");
         const limit = Math.min(Number(url.searchParams.get("limit") ?? 50), 200);
         const offset = Math.max(Number(url.searchParams.get("offset") ?? 0), 0);
-        let q = supabaseAdmin
-          .from("cobros").select("*", { count: "exact" })
+        const clienteId = url.searchParams.get("cliente_id");
+        // cobros no tiene cliente_id: se filtra a través de la factura (inner join).
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let q = (supabaseAdmin as any)
+          .from("cobros").select(clienteId ? "*, facturas!inner(cliente_id)" : "*", { count: "exact" })
           .eq("tenant_id", auth.tenantId)
           .order("fecha", { ascending: false })
           .range(offset, offset + limit - 1);
         if (facturaId) q = q.eq("factura_id", facturaId);
+        if (clienteId) q = q.eq("facturas.cliente_id", clienteId);
         const { data, error, count } = await q;
         if (error) return jsonError(500, "db_error", error.message);
-        return jsonOk({ data, count, limit, offset });
+        // Se devuelve cada cobro sin el objeto anidado, con cliente_id plano.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const rows = ((data ?? []) as any[]).map(({ facturas, ...c }) => (clienteId ? { ...c, cliente_id: facturas?.cliente_id ?? clienteId } : c));
+        return jsonOk({ data: rows, count, limit, offset });
       },
       POST: async ({ request }) => {
         const auth = await authenticate(request);

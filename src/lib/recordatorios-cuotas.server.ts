@@ -61,7 +61,9 @@ export async function ejecutarRecordatoriosDeCuotas(): Promise<RecordatoriosResu
 
   const { data: tenants, error: tErr } = await supabaseAdmin
     .from("tenants")
-    .select("id, razon_social, nombre_comercial, rnc, direccion, telefono, dias_aviso_cuota");
+    .select("id, razon_social, nombre_comercial, rnc, direccion, telefono, dias_aviso_cuota")
+    // Interruptor por tenant (p. ej. Ceapsi: los avisos los envía su LMS).
+    .eq("recordatorios_cuotas_activos", true);
 
   if (tErr || !tenants) {
     console.error("[recordatorios-cuotas] no se pudo leer tenants", tErr);
