@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { TwoFactorCard } from "@/components/TwoFactorCard";
 import { fmtMoney, today } from "@/lib/format";
 import { Building2, Users, FileText, DollarSign, CheckCircle2, Pause, Briefcase } from "lucide-react";
 import { toast } from "sonner";
@@ -108,6 +109,10 @@ function SuperAdmin() {
         <Stat icon={Users} label="Usuarios" value={String(profiles?.length ?? 0)} />
         <Stat icon={FileText} label="Facturas emitidas" value={String(facturas?.length ?? 0)} />
         <Stat icon={DollarSign} label="Volumen total" value={fmtMoney(totalFacturado)} />
+      </div>
+
+      <div className="mb-6">
+        <TwoFactorCard />
       </div>
 
       <Card className="p-0 overflow-x-auto mb-6">

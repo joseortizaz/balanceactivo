@@ -91,6 +91,11 @@ export function AppShell() {
     if (typeof window !== "undefined") navigate({ to: loggingOut.current ? "/" : "/login" });
     return null;
   }
+  if (auth.mfaPending) {
+    // Sesión con contraseña correcta pero sin el código de la verificación en dos pasos.
+    if (typeof window !== "undefined") navigate({ to: "/login" });
+    return null;
+  }
   if (auth.debeCambiarPassword) {
     if (typeof window !== "undefined") navigate({ to: "/cambiar-password" });
     return null;
