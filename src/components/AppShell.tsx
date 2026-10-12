@@ -95,7 +95,11 @@ export function AppShell() {
       .getAuthenticatorAssuranceLevel()
       .then(({ data }) => {
         if (cancelled) return;
-        if (data?.nextLevel === "aal2" && data.currentAuthenticationMethod !== "aal2") {
+        const metodos = data?.currentAuthenticationMethods ?? [];
+        const tieneAal2 = metodos.some((m) =>
+          typeof m === "string" ? m === "aal2" : m.method === "aal2",
+        );
+        if (data?.nextLevel === "aal2" && !tieneAal2) {
           navigate({ to: "/mfa-challenge", replace: true });
         }
       })
