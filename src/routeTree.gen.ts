@@ -29,6 +29,8 @@ import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenti
 import { Route as AuthenticatedProductosRouteImport } from './routes/_authenticated/productos'
 import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated/planes'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
+import { Route as AuthenticatedMfaChallengeRouteImport } from './routes/_authenticated/mfa-challenge'
+import { Route as AuthenticatedMfaRouteImport } from './routes/_authenticated/mfa'
 import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCuentasPorCobrarRouteImport } from './routes/_authenticated/cuentas-por-cobrar'
@@ -43,6 +45,7 @@ import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
 import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as ApiInternalEcfCertificadoRouteImport } from './routes/api/internal/ecf-certificado'
 import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin_.suscripciones'
 import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
 import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
@@ -63,9 +66,9 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
 import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
+import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/deliver'
 import { Route as ApiPublicV1CobrosRouteImport } from './routes/api/public/v1/cobros'
 import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
-import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/deliver'
 import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
 import { Route as ApiPublicV1FacturasIdRouteImport } from './routes/api/public/v1/facturas.$id'
@@ -175,6 +178,17 @@ const AuthenticatedPerfilEmpresaRoute =
     path: '/perfil-empresa',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMfaChallengeRoute =
+  AuthenticatedMfaChallengeRouteImport.update({
+    id: '/mfa-challenge',
+    path: '/mfa-challenge',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedMfaRoute = AuthenticatedMfaRouteImport.update({
+  id: '/mfa',
+  path: '/mfa',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedGastosRoute = AuthenticatedGastosRouteImport.update({
   id: '/gastos',
   path: '/gastos',
@@ -251,6 +265,12 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInternalEcfCertificadoRoute =
+  ApiInternalEcfCertificadoRouteImport.update({
+    id: '/api/internal/ecf-certificado',
+    path: '/api/internal/ecf-certificado',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedSuperadminSuscripcionesRoute =
   AuthenticatedSuperadminSuscripcionesRouteImport.update({
     id: '/superadmin_/suscripciones',
@@ -365,6 +385,11 @@ const ApiPublicV1FacturasRoute = ApiPublicV1FacturasRouteImport.update({
   path: '/api/public/v1/facturas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1DeliverRoute = ApiPublicV1DeliverRouteImport.update({
+  id: '/api/public/v1/deliver',
+  path: '/api/public/v1/deliver',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1CobrosRoute = ApiPublicV1CobrosRouteImport.update({
   id: '/api/public/v1/cobros',
   path: '/api/public/v1/cobros',
@@ -373,11 +398,6 @@ const ApiPublicV1CobrosRoute = ApiPublicV1CobrosRouteImport.update({
 const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
   id: '/api/public/v1/clientes',
   path: '/api/public/v1/clientes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1DeliverRoute = ApiPublicV1DeliverRouteImport.update({
-  id: '/api/public/v1/deliver',
-  path: '/api/public/v1/deliver',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedNominaPeriodosNuevaRoute =
@@ -423,6 +443,8 @@ export interface FileRoutesByFullPath {
   '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
+  '/mfa': typeof AuthenticatedMfaRoute
+  '/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
@@ -445,15 +467,16 @@ export interface FileRoutesByFullPath {
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/api/internal/ecf-certificado': typeof ApiInternalEcfCertificadoRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/nomina/': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -485,6 +508,8 @@ export interface FileRoutesByTo {
   '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
+  '/mfa': typeof AuthenticatedMfaRoute
+  '/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
@@ -507,15 +532,16 @@ export interface FileRoutesByTo {
   '/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/superadmin/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/api/internal/ecf-certificado': typeof ApiInternalEcfCertificadoRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesIndexRoute
   '/facturas': typeof AuthenticatedFacturasIndexRoute
   '/nomina': typeof AuthenticatedNominaIndexRoute
   '/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -549,6 +575,8 @@ export interface FileRoutesById {
   '/_authenticated/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/gastos': typeof AuthenticatedGastosRoute
+  '/_authenticated/mfa': typeof AuthenticatedMfaRoute
+  '/_authenticated/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/_authenticated/planes': typeof AuthenticatedPlanesRoute
   '/_authenticated/productos': typeof AuthenticatedProductosRoute
@@ -571,15 +599,16 @@ export interface FileRoutesById {
   '/_authenticated/nomina/reportes': typeof AuthenticatedNominaReportesRoute
   '/_authenticated/nomina/terminaciones': typeof AuthenticatedNominaTerminacionesRoute
   '/_authenticated/superadmin_/suscripciones': typeof AuthenticatedSuperadminSuscripcionesRoute
+  '/api/internal/ecf-certificado': typeof ApiInternalEcfCertificadoRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/cotizaciones/': typeof AuthenticatedCotizacionesIndexRoute
   '/_authenticated/facturas/': typeof AuthenticatedFacturasIndexRoute
   '/_authenticated/nomina/': typeof AuthenticatedNominaIndexRoute
   '/_authenticated/nomina/periodos/$id': typeof AuthenticatedNominaPeriodosIdRoute
   '/_authenticated/nomina/periodos/nueva': typeof AuthenticatedNominaPeriodosNuevaRoute
-  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/clientes': typeof ApiPublicV1ClientesRouteWithChildren
   '/api/public/v1/cobros': typeof ApiPublicV1CobrosRoute
+  '/api/public/v1/deliver': typeof ApiPublicV1DeliverRoute
   '/api/public/v1/facturas': typeof ApiPublicV1FacturasRouteWithChildren
   '/api/public/v1/me': typeof ApiPublicV1MeRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -613,6 +642,8 @@ export interface FileRouteTypes {
     | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
+    | '/mfa'
+    | '/mfa-challenge'
     | '/perfil-empresa'
     | '/planes'
     | '/productos'
@@ -635,15 +666,16 @@ export interface FileRouteTypes {
     | '/nomina/reportes'
     | '/nomina/terminaciones'
     | '/superadmin/suscripciones'
+    | '/api/internal/ecf-certificado'
     | '/lovable/email/suppression'
     | '/cotizaciones/'
     | '/facturas/'
     | '/nomina/'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
-    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -675,6 +707,8 @@ export interface FileRouteTypes {
     | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
+    | '/mfa'
+    | '/mfa-challenge'
     | '/perfil-empresa'
     | '/planes'
     | '/productos'
@@ -697,15 +731,16 @@ export interface FileRouteTypes {
     | '/nomina/reportes'
     | '/nomina/terminaciones'
     | '/superadmin/suscripciones'
+    | '/api/internal/ecf-certificado'
     | '/lovable/email/suppression'
     | '/cotizaciones'
     | '/facturas'
     | '/nomina'
     | '/nomina/periodos/$id'
     | '/nomina/periodos/nueva'
-    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -738,6 +773,8 @@ export interface FileRouteTypes {
     | '/_authenticated/cuentas-por-cobrar'
     | '/_authenticated/dashboard'
     | '/_authenticated/gastos'
+    | '/_authenticated/mfa'
+    | '/_authenticated/mfa-challenge'
     | '/_authenticated/perfil-empresa'
     | '/_authenticated/planes'
     | '/_authenticated/productos'
@@ -760,15 +797,16 @@ export interface FileRouteTypes {
     | '/_authenticated/nomina/reportes'
     | '/_authenticated/nomina/terminaciones'
     | '/_authenticated/superadmin_/suscripciones'
+    | '/api/internal/ecf-certificado'
     | '/lovable/email/suppression'
     | '/_authenticated/cotizaciones/'
     | '/_authenticated/facturas/'
     | '/_authenticated/nomina/'
     | '/_authenticated/nomina/periodos/$id'
     | '/_authenticated/nomina/periodos/nueva'
-    | '/api/public/v1/deliver'
     | '/api/public/v1/clientes'
     | '/api/public/v1/cobros'
+    | '/api/public/v1/deliver'
     | '/api/public/v1/facturas'
     | '/api/public/v1/me'
     | '/lovable/email/auth/preview'
@@ -793,10 +831,11 @@ export interface RootRouteChildren {
   TerminosRoute: typeof TerminosRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  ApiInternalEcfCertificadoRoute: typeof ApiInternalEcfCertificadoRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
-  ApiPublicV1DeliverRoute: typeof ApiPublicV1DeliverRoute
   ApiPublicV1ClientesRoute: typeof ApiPublicV1ClientesRouteWithChildren
   ApiPublicV1CobrosRoute: typeof ApiPublicV1CobrosRoute
+  ApiPublicV1DeliverRoute: typeof ApiPublicV1DeliverRoute
   ApiPublicV1FacturasRoute: typeof ApiPublicV1FacturasRouteWithChildren
   ApiPublicV1MeRoute: typeof ApiPublicV1MeRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -948,6 +987,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPerfilEmpresaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/mfa-challenge': {
+      id: '/_authenticated/mfa-challenge'
+      path: '/mfa-challenge'
+      fullPath: '/mfa-challenge'
+      preLoaderRoute: typeof AuthenticatedMfaChallengeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mfa': {
+      id: '/_authenticated/mfa'
+      path: '/mfa'
+      fullPath: '/mfa'
+      preLoaderRoute: typeof AuthenticatedMfaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/gastos': {
       id: '/_authenticated/gastos'
       path: '/gastos'
@@ -1044,6 +1097,13 @@ declare module '@tanstack/react-router' {
       path: '/lovable/email/suppression'
       fullPath: '/lovable/email/suppression'
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/internal/ecf-certificado': {
+      id: '/api/internal/ecf-certificado'
+      path: '/api/internal/ecf-certificado'
+      fullPath: '/api/internal/ecf-certificado'
+      preLoaderRoute: typeof ApiInternalEcfCertificadoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/superadmin_/suscripciones': {
@@ -1186,6 +1246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1FacturasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/deliver': {
+      id: '/api/public/v1/deliver'
+      path: '/api/public/v1/deliver'
+      fullPath: '/api/public/v1/deliver'
+      preLoaderRoute: typeof ApiPublicV1DeliverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/cobros': {
       id: '/api/public/v1/cobros'
       path: '/api/public/v1/cobros'
@@ -1198,13 +1265,6 @@ declare module '@tanstack/react-router' {
       path: '/api/public/v1/clientes'
       fullPath: '/api/public/v1/clientes'
       preLoaderRoute: typeof ApiPublicV1ClientesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/deliver': {
-      id: '/api/public/v1/deliver'
-      path: '/api/public/v1/deliver'
-      fullPath: '/api/public/v1/deliver'
-      preLoaderRoute: typeof ApiPublicV1DeliverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/nomina/periodos/nueva': {
@@ -1260,6 +1320,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCuentasPorCobrarRoute: typeof AuthenticatedCuentasPorCobrarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGastosRoute: typeof AuthenticatedGastosRoute
+  AuthenticatedMfaRoute: typeof AuthenticatedMfaRoute
+  AuthenticatedMfaChallengeRoute: typeof AuthenticatedMfaChallengeRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
   AuthenticatedPlanesRoute: typeof AuthenticatedPlanesRoute
   AuthenticatedProductosRoute: typeof AuthenticatedProductosRoute
@@ -1299,6 +1361,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCuentasPorCobrarRoute: AuthenticatedCuentasPorCobrarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGastosRoute: AuthenticatedGastosRoute,
+  AuthenticatedMfaRoute: AuthenticatedMfaRoute,
+  AuthenticatedMfaChallengeRoute: AuthenticatedMfaChallengeRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
   AuthenticatedPlanesRoute: AuthenticatedPlanesRoute,
   AuthenticatedProductosRoute: AuthenticatedProductosRoute,
@@ -1366,10 +1430,11 @@ const rootRouteChildren: RootRouteChildren = {
   TerminosRoute: TerminosRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  ApiInternalEcfCertificadoRoute: ApiInternalEcfCertificadoRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
-  ApiPublicV1DeliverRoute: ApiPublicV1DeliverRoute,
   ApiPublicV1ClientesRoute: ApiPublicV1ClientesRouteWithChildren,
   ApiPublicV1CobrosRoute: ApiPublicV1CobrosRoute,
+  ApiPublicV1DeliverRoute: ApiPublicV1DeliverRoute,
   ApiPublicV1FacturasRoute: ApiPublicV1FacturasRouteWithChildren,
   ApiPublicV1MeRoute: ApiPublicV1MeRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

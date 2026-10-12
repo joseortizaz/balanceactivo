@@ -1861,11 +1861,66 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_certificados_digitales: {
+        Row: {
+          activo: boolean
+          created_at: string
+          created_by: string | null
+          entidad_certificadora: string | null
+          id: string
+          passphrase_cifrada: string
+          passphrase_iv: string
+          storage_path: string
+          tenant_id: string
+          titular_documento: string | null
+          titular_nombre: string
+          valido_desde: string | null
+          valido_hasta: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          entidad_certificadora?: string | null
+          id?: string
+          passphrase_cifrada: string
+          passphrase_iv: string
+          storage_path: string
+          tenant_id: string
+          titular_documento?: string | null
+          titular_nombre: string
+          valido_desde?: string | null
+          valido_hasta: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          entidad_certificadora?: string | null
+          id?: string
+          passphrase_cifrada?: string
+          passphrase_iv?: string
+          storage_path?: string
+          tenant_id?: string
+          titular_documento?: string | null
+          titular_nombre?: string
+          valido_desde?: string | null
+          valido_hasta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_certificados_digitales_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenants: {
         Row: {
           created_at: string
           dias_aviso_cuota: number
-          recordatorios_cuotas_activos: boolean
           direccion: string | null
           firma_url: string | null
           id: string
@@ -1874,6 +1929,7 @@ export type Database = {
           logo_url: string | null
           nombre_comercial: string | null
           razon_social: string
+          recordatorios_cuotas_activos: boolean
           regimen_fiscal: Database["public"]["Enums"]["regimen_fiscal"]
           retencion_isr_alquileres: number
           retencion_isr_servicios: number
@@ -1884,7 +1940,6 @@ export type Database = {
         Insert: {
           created_at?: string
           dias_aviso_cuota?: number
-          recordatorios_cuotas_activos?: boolean
           direccion?: string | null
           firma_url?: string | null
           id?: string
@@ -1893,6 +1948,7 @@ export type Database = {
           logo_url?: string | null
           nombre_comercial?: string | null
           razon_social: string
+          recordatorios_cuotas_activos?: boolean
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
           retencion_isr_alquileres?: number
           retencion_isr_servicios?: number
@@ -1903,7 +1959,6 @@ export type Database = {
         Update: {
           created_at?: string
           dias_aviso_cuota?: number
-          recordatorios_cuotas_activos?: boolean
           direccion?: string | null
           firma_url?: string | null
           id?: string
@@ -1912,6 +1967,7 @@ export type Database = {
           logo_url?: string | null
           nombre_comercial?: string | null
           razon_social?: string
+          recordatorios_cuotas_activos?: boolean
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
           retencion_isr_alquileres?: number
           retencion_isr_servicios?: number
@@ -2398,6 +2454,7 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      marcar_cuotas_vencidas: { Args: never; Returns: number }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -2415,6 +2472,10 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      recalcular_cuotas_factura: {
+        Args: { _factura_id: string }
+        Returns: undefined
       }
       registrar_cobro:
         | {

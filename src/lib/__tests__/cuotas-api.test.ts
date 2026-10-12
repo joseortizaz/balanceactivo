@@ -14,7 +14,7 @@ describe("conCuotas", () => {
     });
     expect(r.monto_inicial).toBe(2000);
     expect(r.saldo).toBe(6000);
-    expect(r.cuotas.map((c) => c.numero)).toEqual([1, 2, 3, 4]);
+    expect(r.cuotas.map((c: { numero: number }) => c.numero)).toEqual([1, 2, 3, 4]);
     expect(r.cuotas[0]).toMatchObject({ saldo: 0, estado: "pagada" });
     expect(r.cuotas[1].saldo).toBe(2000);
     expect("factura_cuotas" in r).toBe(false);

@@ -52,6 +52,18 @@ function LoginPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
+    // Si el usuario tiene MFA (TOTP) activado, exigir el segundo factor antes
+    // de entrar al dashboard (la sesión queda en nivel aal1 hasta verificar).
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    const metodos = aal?.currentAuthenticationMethods ?? [];
+    const tieneAal2 = metodos.some((m) =>
+      typeof m === "string" ? m === "aal2" : m.method === "aal2",
+    );
+    if (aal?.nextLevel === "aal2" && !tieneAal2) {
+      toast.info("Se requiere el código de verificación en dos pasos");
+      navigate({ to: "/mfa-challenge" });
+      return;
+    }
     toast.success("Bienvenido");
     navigate({ to: "/dashboard" });
   };

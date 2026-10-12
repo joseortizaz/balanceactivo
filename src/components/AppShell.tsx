@@ -1,8 +1,8 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useAuth, type AppRole } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
-import { useRef } from "react";
-import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase, TrendingDown, CreditCard, Sparkles, Plug, PieChart, AlertCircle } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, ShieldCheck, BarChart3, LogOut, Wallet, ListChecks, Crown, Building2, FileSpreadsheet, Repeat, Package, Briefcase, TrendingDown, CreditCard, Sparkles, Plug, PieChart, AlertCircle, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -34,6 +34,7 @@ const NAV: Item[] = [
   { to: "/auditoria", label: "Auditoría", icon: ShieldCheck, roles: ["administrador"] },
   { to: "/planes", label: "Planes", icon: Sparkles, roles: ["administrador"] },
   { to: "/suscripcion", label: "Mi Suscripción", icon: CreditCard, roles: ["administrador"] },
+  { to: "/mfa", label: "Verificación en dos pasos", icon: KeyRound },
 ];
 
 export function AppShell() {
@@ -81,6 +82,32 @@ export function AppShell() {
       return data?.signedUrl ?? null;
     },
   });
+
+  // Exigir MFA en toda la app: si el usuario tiene un factor TOTP verificado y
+  // la sesión aún no pasó la verificación en dos pasos (aal1), redirigir a la
+  // pantalla de challenge. Excepciones: la propia pantalla de challenge y la
+  // de gestión (donde se activa por primera vez).
+  useEffect(() => {
+    if (!auth.session) return;
+    if (location === "/mfa-challenge" || location === "/mfa") return;
+    let cancelled = false;
+    supabase.auth.mfa
+      .getAuthenticatorAssuranceLevel()
+      .then(({ data }) => {
+        if (cancelled) return;
+        const metodos = data?.currentAuthenticationMethods ?? [];
+        const tieneAal2 = metodos.some((m) =>
+          typeof m === "string" ? m === "aal2" : m.method === "aal2",
+        );
+        if (data?.nextLevel === "aal2" && !tieneAal2) {
+          navigate({ to: "/mfa-challenge", replace: true });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.session, auth.debeCambiarPassword, location, navigate]);
 
   if (auth.loading) {
     return <div className="flex h-screen items-center justify-center text-muted-foreground">Cargando…</div>;
