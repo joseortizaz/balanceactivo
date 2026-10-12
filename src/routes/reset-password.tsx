@@ -7,14 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import logo from "@/assets/logo-ingresaas-horizontal.png";
 
 export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
   head: () => ({
     meta: [
-      { title: "Restablecer contraseña — Balance Activo" },
-      { name: "description", content: "Define una nueva contraseña para tu cuenta de Balance Activo." },
-      { property: "og:title", content: "Restablecer contraseña — Balance Activo" },
+      { title: "Restablecer contraseña — IngreSaaS" },
+      { name: "description", content: "Define una nueva contraseña para tu cuenta de IngreSaaS." },
+      { property: "og:title", content: "Restablecer contraseña — IngreSaaS" },
       { property: "og:description", content: "Define una nueva contraseña para tu cuenta." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -60,8 +61,7 @@ function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">B</div>
-          <span className="font-semibold">Balance Activo</span>
+          <img src={logo} alt="IngreSaaS" className="h-9 w-auto" />
         </div>
         <h1 className="text-2xl font-semibold mb-1">Restablecer contraseña</h1>
         {ready ? (

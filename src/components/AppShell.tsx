@@ -5,6 +5,7 @@ import { LayoutDashboard, FileText, Users, BookOpen, Truck, Receipt, Settings, S
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+import logo from "@/assets/logo-ingresaas-horizontal.png";
 
 type Item = { to: string; label: string; icon: React.ComponentType<{ className?: string }>; roles?: AppRole[] };
 
@@ -108,10 +109,9 @@ export function AppShell() {
       <aside className="md:w-64 md:min-h-screen bg-card border-r border-border flex flex-col">
         <div className="px-5 py-5 border-b border-border">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">B</div>
             <div>
-              <div className="font-semibold text-foreground">Balance Activo</div>
-              <div className="text-xs text-muted-foreground">Contabilidad RD</div>
+              <img src={logo} alt="IngreSaaS" className="h-8 w-auto" />
+              <div className="text-xs text-muted-foreground mt-1">Contabilidad RD</div>
             </div>
           </Link>
         </div>

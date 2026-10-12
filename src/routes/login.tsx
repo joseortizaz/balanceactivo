@@ -8,21 +8,22 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Turnstile } from "@/components/Turnstile";
 import { toast } from "sonner";
+import logo from "@/assets/logo-ingresaas-horizontal.png";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Iniciar sesión — Balance Activo" },
+      { title: "Iniciar sesión — IngreSaaS" },
       {
         name: "description",
         content:
-          "Accede a tu cuenta de Balance Activo para gestionar facturación, contabilidad y reportes DGII de tu empresa.",
+          "Accede a tu cuenta de IngreSaaS para gestionar facturación, contabilidad y reportes DGII de tu empresa.",
       },
-      { property: "og:title", content: "Iniciar sesión — Balance Activo" },
+      { property: "og:title", content: "Iniciar sesión — IngreSaaS" },
       {
         property: "og:description",
-        content: "Accede a tu cuenta de Balance Activo y gestiona la contabilidad de tu empresa.",
+        content: "Accede a tu cuenta de IngreSaaS y gestiona la contabilidad de tu empresa.",
       },
       { property: "og:url", content: "https://balanceactivo.net/login" },
     ],
@@ -71,8 +72,7 @@ function LoginPage() {
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <Card className="w-full max-w-md p-8">
           <div className="flex items-center gap-2 mb-6">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">B</div>
-            <span className="font-semibold">Balance Activo</span>
+            <img src={logo} alt="IngreSaaS" className="h-9 w-auto" />
           </div>
           <h1 className="text-2xl font-semibold mb-1">Recuperar contraseña</h1>
           {resetSent ? (
@@ -114,8 +114,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center gap-2 mb-6">
-          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold">B</div>
-          <span className="font-semibold">Balance Activo</span>
+          <img src={logo} alt="IngreSaaS" className="h-9 w-auto" />
         </div>
         <h1 className="text-2xl font-semibold mb-1">Iniciar sesión</h1>
         <p className="text-sm text-muted-foreground mb-6">Accede a tu empresa</p>

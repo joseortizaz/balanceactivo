@@ -1,4 +1,4 @@
-# API Pública v1 de Balance Activo
+# API Pública v1 de IngreSaaS
 
 Construir una API REST versionada (`/api/public/v1/*`) autenticada con API keys por tenant, más webhooks salientes para notificar a Ceapsi.
 

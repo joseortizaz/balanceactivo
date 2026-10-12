@@ -203,7 +203,7 @@ export async function generateReciboPdf(d: ReciboPdfData): Promise<jsPDF> {
   doc.setTextColor(140);
   doc.text("Gracias por su preferencia.", pageW / 2, pageH - 50, { align: "center" });
   doc.setFontSize(9);
-  doc.text("Generado por Balance Activo - Software de Contabilidad", pageW / 2, pageH - 34, { align: "center" });
+  doc.text("Generado por IngreSaaS - Software de Contabilidad", pageW / 2, pageH - 34, { align: "center" });
 
   return doc;
 }

@@ -1,6 +1,6 @@
 -- Infraestructura previa para Facturación Electrónica (e-CF), pensada para
 -- el modelo de "Proveedor de Servicios de Facturación Electrónica" ante la
--- DGII: Balance Activo custodiará el certificado digital de cada empresa
+-- DGII: IngreSaaS custodiará el certificado digital de cada empresa
 -- cliente (tenant) y firmará los e-CF en su nombre. Ver README.md, sección
 -- "Facturación Electrónica (e-CF)", para el mapa completo de qué falta y
 -- las referencias oficiales de la DGII usadas para diseñar este esquema.
@@ -10,8 +10,8 @@
 -- modelo ya es multi-tenant desde el inicio (cada empresa-cliente con su
 -- propio certificado y sus propias secuencias e-NCF), pero en la práctica
 -- las primeras pruebas reales contra la DGII (TesteCF) solo podrán
--- correrse con el primer certificado que la empresa dueña de Balance
--- Activo obtenga.
+-- correrse con el primer certificado que la empresa dueña de
+-- IngreSaaS obtenga.
 
 -- ============ ENUMS ============
 
@@ -65,7 +65,7 @@ ALTER TABLE public.tenants
 
 -- ============ CERTIFICADO DIGITAL (custodia por tenant) ============
 --
--- Balance Activo actúa, según el modelo operativo que describe la DGII
+-- IngreSaaS actúa, según el modelo operativo que describe la DGII
 -- para Proveedores de Servicios de FE, como custodio del certificado
 -- digital y de la firma de cada empresa cliente. El archivo .p12/.pfx en
 -- sí ya es un contenedor cifrado con su propia contraseña (PKCS#12); esa

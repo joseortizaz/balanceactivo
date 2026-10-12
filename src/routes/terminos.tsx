@@ -1,22 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FileText, Scale, ShieldCheck, CreditCard, AlertTriangle, Mail, Building2 } from "lucide-react";
-import logo from "@/assets/logo-balance-activo.png";
+import logo from "@/assets/logo-ingresaas-horizontal-light.png";
 
 export const Route = createFileRoute("/terminos")({
   component: Terminos,
   head: () => ({
     meta: [
-      { title: "Términos y Condiciones — Balance Activo" },
+      { title: "Términos y Condiciones — IngreSaaS" },
       {
         name: "description",
         content:
-          "Términos y condiciones de uso del portal Balance Activo, marca de Narnia Tech Solution, SRL (RNC 1-33-74485-6).",
+          "Términos y condiciones de uso del portal IngreSaaS, marca de Narnia Tech Solution, SRL (RNC 1-33-74485-6).",
       },
-      { property: "og:title", content: "Términos y Condiciones — Balance Activo" },
+      { property: "og:title", content: "Términos y Condiciones — IngreSaaS" },
       {
         property: "og:description",
         content:
-          "Condiciones de uso, suscripción, propiedad intelectual y responsabilidades del servicio Balance Activo.",
+          "Condiciones de uso, suscripción, propiedad intelectual y responsabilidades del servicio IngreSaaS.",
       },
       { property: "og:url", content: "https://balanceactivo.net/terminos" },
       { property: "og:type", content: "website" },
@@ -54,7 +54,7 @@ function Terminos() {
       <header className="border-b border-white/5">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Balance Activo" className="h-8 w-auto" />
+            <img src={logo} alt="IngreSaaS" className="h-8 w-auto" />
           </Link>
           <Link to="/" className="text-sm text-white/75 hover:text-white transition">
             Volver al inicio
@@ -72,14 +72,14 @@ function Terminos() {
           </h1>
           <p className="mt-4 text-white/80 max-w-2xl">
             Vigentes desde el {fechaVigencia}. Al registrarte o utilizar
-            Balance Activo aceptas los términos descritos a continuación.
+            IngreSaaS aceptas los términos descritos a continuación.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Section icon={Building2} title="1. Titularidad del servicio">
             <p>
-              <strong>Balance Activo</strong> es una marca comercial propiedad
+              <strong>IngreSaaS</strong> es una marca comercial propiedad
               de <strong>Narnia Tech Solution, SRL</strong>, sociedad
               constituida bajo las leyes de la República Dominicana, con RNC{" "}
               <strong>1-33-74485-6</strong> (en adelante, "Narnia Tech" o "el
@@ -88,7 +88,7 @@ function Terminos() {
             <p>
               Cualquier referencia a "nosotros", "la plataforma" o "el
               servicio" en estos términos se entiende hecha a Narnia Tech
-              Solution, SRL a través de su producto Balance Activo.
+              Solution, SRL a través de su producto IngreSaaS.
             </p>
             <p>
               Sitio del grupo:{" "}
@@ -105,7 +105,7 @@ function Terminos() {
 
           <Section icon={FileText} title="2. Objeto del servicio">
             <p>
-              Balance Activo es un software como servicio (SaaS) de
+              IngreSaaS es un software como servicio (SaaS) de
               contabilidad y facturación orientado a empresas de República
               Dominicana. Permite emitir comprobantes fiscales (NCF), llevar
               inventario, registrar cobros, gestionar nómina y generar
@@ -140,7 +140,7 @@ function Terminos() {
 
           <Section icon={CreditCard} title="4. Planes, pagos y renovaciones">
             <p>
-              Balance Activo puede ofrecerse en planes gratuitos o de pago.
+              IngreSaaS puede ofrecerse en planes gratuitos o de pago.
               Los precios, ciclos de facturación y límites de cada plan se
               informan en la sección de suscripción dentro de la aplicación.
             </p>
@@ -181,7 +181,7 @@ function Terminos() {
           <Section icon={FileText} title="6. Propiedad intelectual">
             <p>
               El software, marca, logotipos, interfaz, código fuente y
-              documentación de Balance Activo son propiedad exclusiva de
+              documentación de IngreSaaS son propiedad exclusiva de
               Narnia Tech Solution, SRL y están protegidos por las leyes
               dominicanas e internacionales de propiedad intelectual.
             </p>
@@ -209,7 +209,7 @@ function Terminos() {
             </p>
             <p>
               La correcta declaración y pago de impuestos ante la DGII es
-              responsabilidad exclusiva del contribuyente. Balance Activo es
+              responsabilidad exclusiva del contribuyente. IngreSaaS es
               una herramienta de apoyo y no sustituye el criterio de un
               profesional contable o legal.
             </p>
@@ -284,7 +284,7 @@ function Terminos() {
 
       <footer className="border-t border-white/5">
         <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-white/70 text-center">
-          © {new Date().getFullYear()} Balance Activo — Narnia Tech Solution, SRL.
+          © {new Date().getFullYear()} IngreSaaS — Narnia Tech Solution, SRL.
         </div>
       </footer>
     </div>

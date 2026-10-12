@@ -89,7 +89,7 @@ function ApiIntegraciones() {
 
   return (
     <div>
-      <PageHeader title="API & Webhooks" description="Integra Balance Activo con aplicaciones externas" />
+      <PageHeader title="API & Webhooks" description="Integra IngreSaaS con aplicaciones externas" />
 
       <div className="grid lg:grid-cols-2 gap-4">
         <Card className="p-5">

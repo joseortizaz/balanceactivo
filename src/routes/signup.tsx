@@ -12,16 +12,16 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
   head: () => ({
     meta: [
-      { title: "Crear empresa — Balance Activo" },
+      { title: "Crear empresa — IngreSaaS" },
       {
         name: "description",
         content:
-          "Crea tu empresa en Balance Activo y comienza a emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 desde el primer día.",
+          "Crea tu empresa en IngreSaaS y comienza a emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 desde el primer día.",
       },
-      { property: "og:title", content: "Crear empresa — Balance Activo" },
+      { property: "og:title", content: "Crear empresa — IngreSaaS" },
       {
         property: "og:description",
-        content: "Registra tu empresa y prueba gratis la contabilidad y facturación de Balance Activo.",
+        content: "Registra tu empresa y prueba gratis la contabilidad y facturación de IngreSaaS.",
       },
       { property: "og:url", content: "https://balanceactivo.net/signup" },
     ],

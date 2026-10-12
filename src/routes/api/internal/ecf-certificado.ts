@@ -1,4 +1,4 @@
-// Subida y registro del certificado digital que Balance Activo custodia
+// Subida y registro del certificado digital que IngreSaaS custodia
 // por tenant para firmar sus e-CF (ver README.md, sección "Facturación
 // Electrónica (e-CF)", y src/lib/ecf/crypto.server.ts).
 //
