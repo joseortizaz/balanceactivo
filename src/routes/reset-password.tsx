@@ -61,7 +61,7 @@ function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md p-8">
         <div className="flex items-center gap-2 mb-6">
-          <img src={logo} alt="IngreSaaS" className="h-9 w-auto" />
+          <Link to="/" aria-label="Ir al inicio" className="inline-flex"><img src={logo} alt="IngreSaaS" className="h-9 w-auto" /></Link>
         </div>
         <h1 className="text-2xl font-semibold mb-1">Restablecer contraseña</h1>
         {ready ? (

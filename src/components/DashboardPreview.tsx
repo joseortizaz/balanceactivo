@@ -21,16 +21,18 @@ const FACTURAS = [
   { c: "Servicios Modelo EIRL", n: "B02••••0125", m: "RD$ 18,200", e: "Pagada", ok: true },
 ];
 
-export function DashboardPreview() {
+export function DashboardPreview({ monitor = false }: { monitor?: boolean }) {
   const max = 100;
   return (
     <div
-      className="relative rounded-2xl border border-line bg-white shadow-[0_30px_80px_-30px_rgba(6,50,102,0.35)] overflow-hidden text-left"
+      className={`relative bg-white overflow-hidden text-left ${
+        monitor ? "" : "rounded-2xl border border-line shadow-[0_30px_80px_-30px_rgba(6,50,102,0.35)]"
+      }`}
       role="img"
       aria-label="Vista ilustrativa del panel de IngreSaaS con ingresos, gastos y facturas de ejemplo"
     >
-      {/* Barra de ventana */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-line bg-surface">
+      {/* Barra de ventana (no se muestra dentro del monitor) */}
+      <div className={`${monitor ? "hidden" : "flex"} items-center gap-2 px-4 py-3 border-b border-line bg-surface`}>
         <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
         <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
         <span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
@@ -39,7 +41,7 @@ export function DashboardPreview() {
 
       <div className="flex">
         {/* Menú lateral */}
-        <aside className="hidden md:flex w-48 flex-col gap-1 border-r border-line bg-surface p-4 text-sm">
+        <aside className="hidden xl:flex w-44 flex-col gap-1 border-r border-line bg-surface p-4 text-sm">
           <div className="flex items-center gap-2 pb-3">
             <img src={logoIcon} alt="" className="h-6 w-auto" />
             <span className="font-semibold text-brand-navy">IngreSaaS</span>
@@ -58,19 +60,19 @@ export function DashboardPreview() {
 
         {/* Contenido */}
         <div className="flex-1 p-4 md:p-6 space-y-5 bg-white">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
             {KPIS.map((k) => (
               <div key={k.t} className="rounded-xl border border-line bg-surface p-3 md:p-4">
                 <div className="text-[11px] md:text-xs text-slate-500">{k.t}</div>
-                <div className="mt-1 text-base md:text-lg font-semibold text-brand-navy">{k.v}</div>
+                <div className="mt-1 text-sm xl:text-base font-semibold text-brand-navy">{k.v}</div>
                 <div className={`mt-0.5 text-[11px] ${k.up ? "text-brand-green-deep" : "text-slate-500"}`}>{k.d}</div>
               </div>
             ))}
           </div>
 
-          <div className="grid lg:grid-cols-5 gap-4">
+          <div className="grid xl:grid-cols-5 gap-4">
             {/* Gráfico */}
-            <div className="lg:col-span-3 rounded-xl border border-line p-4">
+            <div className="xl:col-span-3 rounded-xl border border-line p-4">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-medium text-brand-navy">Ingresos vs. gastos</div>
                 <div className="flex items-center gap-3 text-[11px] text-slate-500">
@@ -92,7 +94,7 @@ export function DashboardPreview() {
             </div>
 
             {/* Facturas recientes */}
-            <div className="lg:col-span-2 rounded-xl border border-line p-4">
+            <div className="xl:col-span-2 rounded-xl border border-line p-4">
               <div className="text-sm font-medium text-brand-navy">Facturas recientes</div>
               <ul className="mt-3 space-y-3">
                 {FACTURAS.map((f) => (
