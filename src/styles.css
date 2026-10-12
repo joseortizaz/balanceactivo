@@ -59,29 +59,44 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-deep: var(--brand-green-deep);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-line: var(--line);
 }
 
 :root {
   --radius: 0.625rem;
+  /* Paleta de marca IngreSaaS (tomada del logo) */
+  --brand-navy: oklch(0.322 0.102 256.1);       /* #063266 */
+  --brand-blue: oklch(0.412 0.129 253.9);       /* #024A8E */
+  --brand-green: oklch(0.713 0.140 170.6);      /* #02BE96 (solo fondos/acentos; no texto blanco encima) */
+  --brand-green-deep: oklch(0.550 0.106 172.6); /* #00856B (verde legible como texto sobre blanco) */
+  --surface: oklch(0.978 0.006 255.5);          /* #F5F8FC */
+  --surface-alt: oklch(0.955 0.012 248.0);      /* #EAF1F8 */
+  --line: oklch(0.921 0.018 250.6);             /* #DCE6F1 */
   --background: oklch(0.99 0.005 240);
-  --foreground: oklch(0.20 0.04 250);
+  --foreground: oklch(0.264 0.068 255.3);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.20 0.04 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.20 0.04 250);
-  --primary: oklch(0.45 0.16 255);
+  --primary: var(--brand-blue);
   --primary-foreground: oklch(0.99 0.005 240);
   --secondary: oklch(0.96 0.01 240);
   --secondary-foreground: oklch(0.25 0.05 250);
   --muted: oklch(0.96 0.01 240);
   --muted-foreground: oklch(0.50 0.03 250);
-  --accent: oklch(0.93 0.04 200);
+  --accent: oklch(0.95 0.04 175);
   --accent-foreground: oklch(0.25 0.05 250);
   --destructive: oklch(0.58 0.22 27);
   --destructive-foreground: oklch(0.99 0 0);
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.92 0.01 250);
-  --ring: oklch(0.45 0.16 255);
+  --ring: var(--brand-blue);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
