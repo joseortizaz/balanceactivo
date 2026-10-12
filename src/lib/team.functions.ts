@@ -169,3 +169,40 @@ export const resetMemberPassword = createServerFn({ method: "POST" })
       .update({ debe_cambiar_password: true }).eq("id", data.userId);
     return { ok: true };
   });
+
+// Recuperación: un administrador quita la verificación en dos pasos de un miembro
+// de su empresa (p. ej. perdió su teléfono). El miembro podrá volver a activarla.
+export const resetMemberMfa = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: roles } = await supabase
+      .from("user_roles").select("role").eq("user_id", userId);
+    if (!(roles ?? []).some((r) => r.role === "administrador")) {
+      throw new Error("Solo administradores pueden quitar la verificación en dos pasos");
+    }
+    const { data: profile } = await supabase
+      .from("profiles").select("tenant_id").eq("id", userId).maybeSingle();
+    const tenantId = profile?.tenant_id;
+    if (!tenantId) throw new Error("Tenant no encontrado");
+
+    const { data: target } = await supabaseAdmin.from("profiles")
+      .select("tenant_id").eq("id", data.userId).maybeSingle();
+    if (!target || target.tenant_id !== tenantId) throw new Error("Miembro de otro tenant");
+
+    // El super administrador no se gestiona desde una empresa
+    const { data: targetRoles } = await supabaseAdmin
+      .from("user_roles").select("role").eq("user_id", data.userId);
+    if ((targetRoles ?? []).some((r) => r.role === "super_admin")) {
+      throw new Error("No se puede modificar a un super administrador");
+    }
+
+    const { data: factors, error: listErr } = await supabaseAdmin.auth.admin.mfa.listFactors({ userId: data.userId });
+    if (listErr) throw new Error(listErr.message);
+    for (const f of factors?.factors ?? []) {
+      const { error } = await supabaseAdmin.auth.admin.mfa.deleteFactor({ id: f.id, userId: data.userId });
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true, removed: (factors?.factors ?? []).length };
+  });

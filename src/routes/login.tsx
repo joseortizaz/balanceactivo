@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Turnstile } from "@/components/Turnstile";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { toast } from "sonner";
 import logo from "@/assets/logo-ingresaas-horizontal.png";
 
@@ -39,6 +40,9 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [forgot, setForgot] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  // Segundo paso (verificación en dos pasos)
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState("");
   const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const captchaRequired = Boolean(import.meta.env.VITE_TURNSTILE_SITE_KEY);
 
@@ -50,22 +54,45 @@ function LoginPage() {
       password,
       options: captchaToken ? { captchaToken } : undefined,
     });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    // Si el usuario tiene MFA (TOTP) activado, exigir el segundo factor antes
-    // de entrar al dashboard (la sesión queda en nivel aal1 hasta verificar).
+    if (error) {
+      setLoading(false);
+      return toast.error(error.message);
+    }
+    // ¿La cuenta tiene verificación en dos pasos? Entonces falta el código.
     const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    const metodos = aal?.currentAuthenticationMethods ?? [];
-    const tieneAal2 = metodos.some((m) =>
-      typeof m === "string" ? m === "aal2" : m.method === "aal2",
-    );
-    if (aal?.nextLevel === "aal2" && !tieneAal2) {
-      toast.info("Se requiere el código de verificación en dos pasos");
-      navigate({ to: "/mfa-challenge" });
-      return;
+    if (aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const totp = factors?.totp?.[0];
+      if (totp) {
+        setLoading(false);
+        setMfaCode("");
+        setMfaFactorId(totp.id);
+        return;
+      }
+    }
+    setLoading(false);
+    toast.success("Bienvenido");
+    navigate({ to: "/dashboard" });
+  };
+
+  const verifyMfa = async () => {
+    if (!mfaFactorId || mfaCode.length !== 6) return;
+    setLoading(true);
+    const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: mfaFactorId, code: mfaCode });
+    setLoading(false);
+    if (error) {
+      setMfaCode("");
+      return toast.error("Código incorrecto. Inténtalo de nuevo.");
     }
     toast.success("Bienvenido");
     navigate({ to: "/dashboard" });
+  };
+
+  const cancelMfa = async () => {
+    await supabase.auth.signOut();
+    setMfaFactorId(null);
+    setMfaCode("");
+    setPassword("");
   };
 
   const submitForgot = async (e: React.FormEvent) => {
@@ -78,6 +105,35 @@ function LoginPage() {
     if (error) return toast.error(error.message);
     setResetSent(true);
   };
+
+  if (mfaFactorId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md p-8">
+          <div className="flex items-center gap-2 mb-6">
+            <Link to="/" aria-label="Ir al inicio" className="inline-flex"><img src={logo} alt="IngreSaaS" className="h-9 w-auto" /></Link>
+          </div>
+          <h1 className="text-2xl font-semibold mb-1">Verificación en dos pasos</h1>
+          <p className="text-sm text-muted-foreground mb-6">
+            Escribe el código de 6 dígitos de tu app de autenticación.
+          </p>
+          <div className="flex justify-center mb-6">
+            <InputOTP maxLength={6} value={mfaCode} onChange={setMfaCode} onComplete={verifyMfa} disabled={loading} autoFocus>
+              <InputOTPGroup>
+                {[0, 1, 2, 3, 4, 5].map((i) => <InputOTPSlot key={i} index={i} />)}
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <Button className="w-full" onClick={verifyMfa} disabled={loading || mfaCode.length !== 6}>
+            {loading ? "Verificando…" : "Verificar"}
+          </Button>
+          <button type="button" onClick={cancelMfa} className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground">
+            Cancelar e iniciar sesión con otra cuenta
+          </button>
+        </Card>
+      </div>
+    );
+  }
 
   if (forgot) {
     return (
