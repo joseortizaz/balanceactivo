@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
@@ -8,7 +10,12 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { TwoFactorCard } from "@/components/TwoFactorCard";
 import { fmtMoney, today } from "@/lib/format";
-import { Building2, Users, FileText, DollarSign, CheckCircle2, Pause, Briefcase } from "lucide-react";
+import { Building2, Users, FileText, DollarSign, CheckCircle2, Pause, Briefcase, Trash2 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { infoCuentasAcceso, eliminarEmpresa } from "@/lib/superadmin.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/superadmin")({ component: SuperAdmin });
@@ -16,6 +23,10 @@ export const Route = createFileRoute("/_authenticated/superadmin")({ component: 
 function SuperAdmin() {
   const auth = useAuth();
   const qc = useQueryClient();
+  const infoFn = useServerFn(infoCuentasAcceso);
+  const eliminarFn = useServerFn(eliminarEmpresa);
+  const [aEliminar, setAEliminar] = useState<any | null>(null);
+  const [eliminando, setEliminando] = useState(false);
 
   const { data: tenants } = useQuery({
     queryKey: ["sa-tenants"],
@@ -36,6 +47,19 @@ function SuperAdmin() {
     queryKey: ["sa-roles"],
     enabled: auth.roles.includes("super_admin"),
     queryFn: async () => (await supabase.from("user_roles").select("user_id, tenant_id, role")).data ?? [],
+  });
+  const { data: cuentas } = useQuery({
+    queryKey: ["sa-cuentas-acceso"],
+    enabled: auth.roles.includes("super_admin"),
+    queryFn: () => infoFn(),
+  });
+  const { data: actividad } = useQuery({
+    queryKey: ["sa-actividad"],
+    enabled: auth.roles.includes("super_admin"),
+    queryFn: async () =>
+      (await supabase.from("logs_auditoria").select("id, accion, detalles, created_at, tenant_id")
+        .in("accion", ["registro_empresa", "empresa_eliminada", "miembro_agregado"])
+        .order("created_at", { ascending: false }).limit(40)).data ?? [],
   });
   const { data: facturas } = useQuery({
     queryKey: ["sa-facturas"],
@@ -61,6 +85,22 @@ function SuperAdmin() {
   // Latest subscription per tenant
   const subByTenant = new Map<string, any>();
   (subs ?? []).forEach((s: any) => { if (!subByTenant.has(s.tenant_id)) subByTenant.set(s.tenant_id, s); });
+
+  const confirmarEliminar = async () => {
+    if (!aEliminar) return;
+    setEliminando(true);
+    try {
+      await eliminarFn({ data: { tenantId: aEliminar.id, motivo: "Eliminada por el super administrador desde el panel" } });
+      toast.success("Empresa eliminada");
+      setAEliminar(null);
+      ["sa-tenants", "sa-profiles", "sa-roles", "sa-subs", "sa-cuentas-acceso", "sa-actividad"]
+        .forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
+    } catch (e: any) {
+      toast.error(e?.message ?? "No se pudo eliminar");
+    } finally {
+      setEliminando(false);
+    }
+  };
 
   const toggleSub = async (sub: any, tenantId: string) => {
     if (!sub) return toast.error("Este tenant no tiene una suscripción registrada");
@@ -121,6 +161,7 @@ function SuperAdmin() {
           <thead className="bg-secondary">
             <tr>
               <th className="text-left p-3">Razón social</th>
+              <th className="text-left p-3">Correo / registro</th>
               <th className="text-left p-3">RNC</th>
               <th className="text-left p-3">Régimen</th>
               <th className="text-right p-3">Usuarios</th>
@@ -136,9 +177,21 @@ function SuperAdmin() {
               const sub = subByTenant.get(t.id);
               const subActiva = sub?.estado === "activa";
               const nominaActiva = sub?.nomina_estado === "activa";
+              const correos = (profiles ?? []).filter((p: any) => p.tenant_id === t.id).map((p: any) => p.email).filter(Boolean);
+              const correoMostrar = correos.length ? correos : t.email_registro ? [t.email_registro] : [];
+              const esPlataforma = t.origen === "plataforma";
+              const acceso = correoMostrar.map((c: string) => cuentas?.[c.toLowerCase()]).find(Boolean);
+              const sinDatos = stats.count === 0;
               return (
                 <tr key={t.id} className="border-t border-border">
                   <td className="p-3 font-medium">{t.razon_social}</td>
+                  <td className="p-3 text-xs">
+                    {correoMostrar.length ? correoMostrar.map((c: string) => <div key={c}>{c}</div>) : <span className="text-muted-foreground">sin dato (cuenta ya eliminada)</span>}
+                    <div className="text-muted-foreground">
+                      {t.origen === "invitacion" ? "agregado por una empresa" : t.origen === "plataforma" ? "plataforma" : "auto-registro"}
+                      {acceso ? ` · ${acceso.confirmada ? "correo confirmado" : "correo sin confirmar"} · ${acceso.ultimoIngreso ? "último ingreso " + new Date(acceso.ultimoIngreso).toLocaleDateString("es-DO") : "nunca ingresó"}` : ""}
+                    </div>
+                  </td>
                   <td className="p-3 font-mono text-xs">{t.rnc ?? "—"}</td>
                   <td className="p-3"><Badge variant="outline">{t.regimen_fiscal}</Badge></td>
                   <td className="p-3 text-right">{usersByTenant.get(t.id) ?? 0}</td>
@@ -166,6 +219,16 @@ function SuperAdmin() {
                         <Briefcase className="h-3 w-3 mr-1" />
                         {nominaActiva ? "Pausar nómina" : "Activar nómina"}
                       </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-destructive"
+                        disabled={esPlataforma || !sinDatos}
+                        onClick={() => setAEliminar({ ...t, correos: correoMostrar })}
+                        title={esPlataforma ? "Empresa de la plataforma" : !sinDatos ? "Tiene facturas: no se puede eliminar" : "Eliminar empresa"}
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />Eliminar
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -174,6 +237,57 @@ function SuperAdmin() {
           </tbody>
         </table>
       </Card>
+
+      <Card className="p-0 overflow-x-auto mb-6">
+        <div className="p-4 border-b border-border font-semibold">Registros y eliminaciones de empresas</div>
+        <table className="w-full text-sm">
+          <thead className="bg-secondary">
+            <tr>
+              <th className="text-left p-3">Fecha</th>
+              <th className="text-left p-3">Evento</th>
+              <th className="text-left p-3">Correo</th>
+              <th className="text-left p-3">Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(actividad ?? []).map((a: any) => {
+              const d = a.detalles ?? {};
+              const evento = a.accion === "registro_empresa" ? "Empresa registrada" : a.accion === "empresa_eliminada" ? "Empresa eliminada" : "Miembro agregado";
+              const correo = d.email ?? d.email_registro ?? (d.correos_eliminados ?? []).join(", ");
+              return (
+                <tr key={a.id} className="border-t border-border">
+                  <td className="p-3 text-xs text-muted-foreground whitespace-nowrap">{new Date(a.created_at).toLocaleString("es-DO")}</td>
+                  <td className="p-3"><Badge variant={a.accion === "empresa_eliminada" ? "destructive" : "secondary"}>{evento}</Badge></td>
+                  <td className="p-3">{correo || "—"}</td>
+                  <td className="p-3 text-xs text-muted-foreground">{d.razon_social ?? ""}{d.reconstruido ? " (reconstruido)" : ""}{d.motivo ? ` · ${d.motivo}` : ""}</td>
+                </tr>
+              );
+            })}
+            {(actividad ?? []).length === 0 && (
+              <tr><td colSpan={4} className="p-4 text-center text-muted-foreground">Sin registros</td></tr>
+            )}
+          </tbody>
+        </table>
+      </Card>
+
+      <AlertDialog open={!!aEliminar} onOpenChange={(o) => !o && !eliminando && setAEliminar(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar esta empresa?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminará «{aEliminar?.razon_social}»
+              {aEliminar?.correos?.length ? ` y las cuentas de acceso ${aEliminar.correos.join(", ")}` : ""}.
+              Esta acción no se puede deshacer y queda registrada en la auditoría.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={eliminando}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction disabled={eliminando} onClick={(e) => { e.preventDefault(); confirmarEliminar(); }}>
+              {eliminando ? "Eliminando…" : "Eliminar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Card className="p-0 overflow-x-auto">
         <div className="p-4 border-b border-border font-semibold">Usuarios de la plataforma</div>

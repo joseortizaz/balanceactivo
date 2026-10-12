@@ -35,7 +35,10 @@ export const addMember = createServerFn({ method: "POST" })
       email: data.email,
       email_confirm: true,
       password: data.password,
-      user_metadata: { nombre: data.nombre, invited_to_tenant: tenantId },
+      user_metadata: { nombre: data.nombre },
+      // app_metadata solo la escribe el servidor: handle_new_user() la usa para
+      // dejar al miembro directo en esta empresa sin crear una empresa vacía.
+      app_metadata: { invited_to_tenant: tenantId },
     });
     if (createErr) {
       // Si ya existe, buscarlo
@@ -55,10 +58,20 @@ export const addMember = createServerFn({ method: "POST" })
       debe_cambiar_password: true,
     }, { onConflict: "id" });
 
+    // Si la cuenta ya existía en otra empresa, sus roles de allá ya no aplican
+    await supabaseAdmin.from("user_roles").delete()
+      .eq("user_id", newUserId).neq("tenant_id", tenantId).neq("role", "super_admin");
+
     // Asignar rol dentro del tenant del administrador
     await supabaseAdmin.from("user_roles").upsert({
       user_id: newUserId, tenant_id: tenantId, role: data.role,
-    }, { onConflict: "user_id,role" });
+    }, { onConflict: "user_id,tenant_id,role" });
+
+    await supabaseAdmin.from("logs_auditoria").insert({
+      tenant_id: tenantId, user_id: userId, accion: "miembro_agregado",
+      tabla_afectada: "profiles", registro_id: newUserId,
+      detalles: { email: data.email, nombre: data.nombre, rol: data.role },
+    });
 
     return { ok: true, userId: newUserId };
   });
