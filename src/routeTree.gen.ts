@@ -29,6 +29,8 @@ import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenti
 import { Route as AuthenticatedProductosRouteImport } from './routes/_authenticated/productos'
 import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated/planes'
 import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
+import { Route as AuthenticatedMfaChallengeRouteImport } from './routes/_authenticated/mfa-challenge'
+import { Route as AuthenticatedMfaRouteImport } from './routes/_authenticated/mfa'
 import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCuentasPorCobrarRouteImport } from './routes/_authenticated/cuentas-por-cobrar'
@@ -176,6 +178,17 @@ const AuthenticatedPerfilEmpresaRoute =
     path: '/perfil-empresa',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMfaChallengeRoute =
+  AuthenticatedMfaChallengeRouteImport.update({
+    id: '/mfa-challenge',
+    path: '/mfa-challenge',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedMfaRoute = AuthenticatedMfaRouteImport.update({
+  id: '/mfa',
+  path: '/mfa',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedGastosRoute = AuthenticatedGastosRouteImport.update({
   id: '/gastos',
   path: '/gastos',
@@ -430,6 +443,8 @@ export interface FileRoutesByFullPath {
   '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
+  '/mfa': typeof AuthenticatedMfaRoute
+  '/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
@@ -493,6 +508,8 @@ export interface FileRoutesByTo {
   '/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gastos': typeof AuthenticatedGastosRoute
+  '/mfa': typeof AuthenticatedMfaRoute
+  '/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/planes': typeof AuthenticatedPlanesRoute
   '/productos': typeof AuthenticatedProductosRoute
@@ -558,6 +575,8 @@ export interface FileRoutesById {
   '/_authenticated/cuentas-por-cobrar': typeof AuthenticatedCuentasPorCobrarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/gastos': typeof AuthenticatedGastosRoute
+  '/_authenticated/mfa': typeof AuthenticatedMfaRoute
+  '/_authenticated/mfa-challenge': typeof AuthenticatedMfaChallengeRoute
   '/_authenticated/perfil-empresa': typeof AuthenticatedPerfilEmpresaRoute
   '/_authenticated/planes': typeof AuthenticatedPlanesRoute
   '/_authenticated/productos': typeof AuthenticatedProductosRoute
@@ -623,6 +642,8 @@ export interface FileRouteTypes {
     | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
+    | '/mfa'
+    | '/mfa-challenge'
     | '/perfil-empresa'
     | '/planes'
     | '/productos'
@@ -686,6 +707,8 @@ export interface FileRouteTypes {
     | '/cuentas-por-cobrar'
     | '/dashboard'
     | '/gastos'
+    | '/mfa'
+    | '/mfa-challenge'
     | '/perfil-empresa'
     | '/planes'
     | '/productos'
@@ -750,6 +773,8 @@ export interface FileRouteTypes {
     | '/_authenticated/cuentas-por-cobrar'
     | '/_authenticated/dashboard'
     | '/_authenticated/gastos'
+    | '/_authenticated/mfa'
+    | '/_authenticated/mfa-challenge'
     | '/_authenticated/perfil-empresa'
     | '/_authenticated/planes'
     | '/_authenticated/productos'
@@ -960,6 +985,20 @@ declare module '@tanstack/react-router' {
       path: '/perfil-empresa'
       fullPath: '/perfil-empresa'
       preLoaderRoute: typeof AuthenticatedPerfilEmpresaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mfa-challenge': {
+      id: '/_authenticated/mfa-challenge'
+      path: '/mfa-challenge'
+      fullPath: '/mfa-challenge'
+      preLoaderRoute: typeof AuthenticatedMfaChallengeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mfa': {
+      id: '/_authenticated/mfa'
+      path: '/mfa'
+      fullPath: '/mfa'
+      preLoaderRoute: typeof AuthenticatedMfaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/gastos': {
@@ -1281,6 +1320,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCuentasPorCobrarRoute: typeof AuthenticatedCuentasPorCobrarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGastosRoute: typeof AuthenticatedGastosRoute
+  AuthenticatedMfaRoute: typeof AuthenticatedMfaRoute
+  AuthenticatedMfaChallengeRoute: typeof AuthenticatedMfaChallengeRoute
   AuthenticatedPerfilEmpresaRoute: typeof AuthenticatedPerfilEmpresaRoute
   AuthenticatedPlanesRoute: typeof AuthenticatedPlanesRoute
   AuthenticatedProductosRoute: typeof AuthenticatedProductosRoute
@@ -1320,6 +1361,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCuentasPorCobrarRoute: AuthenticatedCuentasPorCobrarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGastosRoute: AuthenticatedGastosRoute,
+  AuthenticatedMfaRoute: AuthenticatedMfaRoute,
+  AuthenticatedMfaChallengeRoute: AuthenticatedMfaChallengeRoute,
   AuthenticatedPerfilEmpresaRoute: AuthenticatedPerfilEmpresaRoute,
   AuthenticatedPlanesRoute: AuthenticatedPlanesRoute,
   AuthenticatedProductosRoute: AuthenticatedProductosRoute,
