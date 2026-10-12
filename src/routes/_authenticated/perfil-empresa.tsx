@@ -12,8 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Upload, KeyRound, Building2, Users, UserPlus } from "lucide-react";
-import { addMember, updateMemberRole, removeMember, resetMemberPassword } from "@/lib/team.functions";
+import { Trash2, Upload, KeyRound, Building2, Users, UserPlus, ShieldOff } from "lucide-react";
+import { TwoFactorCard } from "@/components/TwoFactorCard";
+import { addMember, updateMemberRole, removeMember, resetMemberPassword, resetMemberMfa } from "@/lib/team.functions";
 
 export const Route = createFileRoute("/_authenticated/perfil-empresa")({ component: PerfilEmpresa });
 
@@ -209,6 +210,7 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
   const updateFn = useServerFn(updateMemberRole);
   const removeFn = useServerFn(removeMember);
   const resetFn = useServerFn(resetMemberPassword);
+  const resetMfaFn = useServerFn(resetMemberMfa);
 
   const [email, setEmail] = useState("");
   const [nombre, setNombre] = useState("");
@@ -264,6 +266,13 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
       setCredenciales({ email: v.email, password: v.password });
       toast.success("Contraseña provisional restablecida");
     },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resetMfa = useMutation({
+    mutationFn: (userId: string) => resetMfaFn({ data: { userId } }),
+    onSuccess: (r) =>
+      toast.success(r.removed > 0 ? "Verificación en dos pasos quitada. El miembro puede volver a activarla." : "Ese miembro no tenía verificación en dos pasos."),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -366,6 +375,18 @@ function EquipoTab({ canEdit }: { canEdit: boolean }) {
                         >
                           <KeyRound className="h-4 w-4" />
                         </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          title="Quitar verificación en dos pasos (si perdió su teléfono)"
+                          disabled={resetMfa.isPending}
+                          onClick={() => {
+                            if (!confirm("¿Quitar la verificación en dos pasos de este miembro? Podrá volver a activarla desde su perfil.")) return;
+                            resetMfa.mutate(m.id);
+                          }}
+                        >
+                          <ShieldOff className="h-4 w-4" />
+                        </Button>
                         <Button size="sm" variant="ghost" onClick={() => { if (confirm("¿Revocar acceso?")) drop.mutate(m.id); }}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -401,6 +422,7 @@ function SeguridadTab() {
   };
 
   return (
+    <div>
     <Card className="p-5 mt-4 max-w-lg">
       <h3 className="font-semibold mb-4">Cambiar contraseña</h3>
       <form className="space-y-3" onSubmit={submit}>
@@ -409,5 +431,7 @@ function SeguridadTab() {
         <Button type="submit" disabled={loading}>{loading ? "Guardando…" : "Actualizar contraseña"}</Button>
       </form>
     </Card>
+    <TwoFactorCard />
+    </div>
   );
 }

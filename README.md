@@ -119,3 +119,11 @@ desarrollo, por si la DGII actualiza el proceso):
 ## CI
 
 `.github/workflows/ci.yml` corre lint + test + build en cada push/PR contra `main`.
+
+## Verificación en dos pasos (TOTP)
+
+Cada usuario (incluido el super administrador) puede activarla desde su panel: Perfil de Empresa → Seguridad, o el Panel Super Administrador. Usa Supabase Auth MFA (app de autenticación).
+
+- Requiere habilitar MFA (TOTP) en la configuración de autenticación de Supabase.
+- La migración `20261012120000_exigir_mfa_en_datos.sql` hace obligatorio el segundo paso en la base de datos: `current_tenant_id()` devuelve NULL a las sesiones sin código de quienes tienen 2FA activo.
+- Recuperación: un administrador puede quitar la 2FA de un miembro (Perfil de Empresa → Equipo). Para un super administrador que perdió su teléfono: `delete from auth.mfa_factors where user_id = '<uuid>';` en el SQL Editor.
