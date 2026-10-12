@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { FileText, Scale, ShieldCheck, CreditCard, AlertTriangle, Mail, Building2 } from "lucide-react";
-import logo from "@/assets/logo-ingresaas-horizontal-light.png";
+import logo from "@/assets/logo-ingresaas-horizontal.png";
 
 export const Route = createFileRoute("/terminos")({
   component: Terminos,
@@ -35,14 +35,14 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/5 p-6 md:p-8">
+    <section className="rounded-2xl border border-line bg-white p-6 md:p-8">
       <div className="flex items-center gap-3 mb-4">
-        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#3b6ef5]/30 to-[#10b981]/30 flex items-center justify-center">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-blue/20 to-brand-green/20 flex items-center justify-center">
           <Icon className="h-5 w-5 text-white" />
         </div>
         <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
       </div>
-      <div className="text-sm text-white/80 space-y-3 leading-relaxed">{children}</div>
+      <div className="text-sm text-slate-600 space-y-3 leading-relaxed">{children}</div>
     </section>
   );
 }
@@ -50,13 +50,13 @@ function Section({
 function Terminos() {
   const fechaVigencia = "11 de julio de 2026";
   return (
-    <div className="min-h-screen bg-[#070a18] text-white">
-      <header className="border-b border-white/5">
+    <div className="min-h-screen bg-surface text-brand-navy">
+      <header className="border-b border-line">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="IngreSaaS" className="h-8 w-auto" />
           </Link>
-          <Link to="/" className="text-sm text-white/75 hover:text-white transition">
+          <Link to="/" className="text-sm text-slate-600 hover:text-brand-navy transition">
             Volver al inicio
           </Link>
         </div>
@@ -64,13 +64,13 @@ function Terminos() {
 
       <main className="max-w-5xl mx-auto px-6 py-16">
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80">
+          <div className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1 text-xs text-slate-600">
             <Scale className="h-3.5 w-3.5" /> Términos y condiciones
           </div>
           <h1 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">
             Términos y condiciones de uso
           </h1>
-          <p className="mt-4 text-white/80 max-w-2xl">
+          <p className="mt-4 text-slate-600 max-w-2xl">
             Vigentes desde el {fechaVigencia}. Al registrarte o utilizar
             IngreSaaS aceptas los términos descritos a continuación.
           </p>
@@ -96,7 +96,7 @@ function Terminos() {
                 href="https://narniats.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline decoration-white/40 hover:decoration-white"
+                className="text-brand-blue underline decoration-brand-blue/40 hover:decoration-brand-blue"
               >
                 narniats.com
               </a>
@@ -170,7 +170,7 @@ function Terminos() {
               datos escribiendo a{" "}
               <a
                 href="mailto:info@balanceactivo.net"
-                className="underline decoration-white/40 hover:decoration-white"
+                className="text-brand-blue underline decoration-brand-blue/40 hover:decoration-brand-blue"
               >
                 info@balanceactivo.net
               </a>
@@ -255,7 +255,7 @@ function Terminos() {
               Correo:{" "}
               <a
                 href="mailto:info@balanceactivo.net"
-                className="underline decoration-white/40 hover:decoration-white"
+                className="text-brand-blue underline decoration-brand-blue/40 hover:decoration-brand-blue"
               >
                 info@balanceactivo.net
               </a>
@@ -265,7 +265,7 @@ function Terminos() {
                 href="https://narniats.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline decoration-white/40 hover:decoration-white"
+                className="text-brand-blue underline decoration-brand-blue/40 hover:decoration-brand-blue"
               >
                 narniats.com
               </a>
@@ -273,17 +273,17 @@ function Terminos() {
           </Section>
         </div>
 
-        <p className="mt-12 text-xs text-white/60">
+        <p className="mt-12 text-xs text-slate-500">
           Ver también nuestra{" "}
-          <Link to="/seguridad" className="underline decoration-white/40 hover:decoration-white">
+          <Link to="/seguridad" className="text-brand-blue underline decoration-brand-blue/40 hover:decoration-brand-blue">
             página de seguridad y privacidad
           </Link>
           .
         </p>
       </main>
 
-      <footer className="border-t border-white/5">
-        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-white/70 text-center">
+      <footer className="border-t border-line">
+        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-slate-500 text-center">
           © {new Date().getFullYear()} IngreSaaS — Narnia Tech Solution, SRL.
         </div>
       </footer>
