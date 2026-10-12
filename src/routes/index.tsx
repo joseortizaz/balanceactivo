@@ -128,43 +128,55 @@ function Index() {
         </div>
       </header>
 
-      {/* Hero */}
+      {/* Hero: texto a la izquierda (35 %) y monitor con el panel a la derecha (65 %) */}
       <main>
       <section className="relative">
-        <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-line bg-white text-xs text-slate-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-green shadow-[0_0_8px_2px_rgba(2,190,150,0.45)]" />
-            Cumplimiento DGII · Norma 06-2018
-          </div>
-          <h1 className="mt-6 text-4xl sm:text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05] text-brand-navy">
-            La contabilidad de tu empresa,{" "}
-            <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-              automatizada y en tiempo real
-            </span>
-          </h1>
-          <p className="mt-6 text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Emite facturas con NCF, calcula ITBIS y nómina, y prepara tus reportes 606/607 desde una plataforma fintech diseñada para República Dominicana.
-          </p>
-          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              to="/signup"
-              className="inline-flex h-12 items-center justify-center gap-2 px-7 rounded-full text-sm font-medium bg-gradient-to-r from-brand-blue to-brand-navy text-white shadow-[0_10px_40px_-10px_rgba(2,74,142,0.6)] hover:shadow-[0_10px_50px_-10px_rgba(2,74,142,0.8)] transition"
-            >
-              Empezar prueba gratuita <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="#features"
-              className="inline-flex h-12 items-center justify-center px-7 rounded-full text-sm font-medium border border-brand-blue text-brand-blue bg-white hover:bg-surface-alt transition"
-            >
-              Ver características
-            </a>
+        <div className="max-w-7xl mx-auto px-6 pt-14 pb-20 md:pt-20 md:pb-28 grid gap-12 lg:gap-10 lg:grid-cols-[35fr_65fr] items-center">
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-line bg-white text-xs text-slate-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand-green shadow-[0_0_8px_2px_rgba(2,190,150,0.45)]" />
+              Cumplimiento DGII · Norma 06-2018
+            </div>
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-4xl xl:text-5xl font-semibold tracking-tight leading-[1.08] text-brand-navy">
+              La contabilidad de tu empresa,{" "}
+              <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+                automatizada y en tiempo real
+              </span>
+            </h1>
+            <p className="mt-6 text-base md:text-lg lg:text-base xl:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Emite facturas con NCF, calcula ITBIS y nómina, y prepara tus reportes 606/607 desde una plataforma fintech diseñada para República Dominicana.
+            </p>
+            <div className="mt-9 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 justify-center lg:justify-start">
+              <Link
+                to="/signup"
+                className="inline-flex h-12 items-center justify-center gap-2 px-7 rounded-full text-sm font-medium bg-gradient-to-r from-brand-blue to-brand-navy text-white shadow-[0_10px_40px_-10px_rgba(2,74,142,0.6)] hover:shadow-[0_10px_50px_-10px_rgba(2,74,142,0.8)] transition"
+              >
+                Empezar prueba gratuita <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href="#features"
+                className="inline-flex h-12 items-center justify-center px-7 rounded-full text-sm font-medium border border-brand-blue text-brand-blue bg-white hover:bg-surface-alt transition"
+              >
+                Ver características
+              </a>
+            </div>
           </div>
 
-          {/* Vista del panel (datos ilustrativos) */}
-          <div className="mt-16 md:mt-20 relative">
-            <div className="absolute inset-x-10 -inset-y-6 bg-gradient-to-r from-brand-blue/15 via-brand-green/15 to-brand-blue/10 blur-3xl rounded-[40px]" />
-            <div className="relative">
-              <DashboardPreview />
+          {/* Monitor de PC con el panel (datos ilustrativos) */}
+          <div className="relative">
+            <div className="absolute inset-x-6 -inset-y-6 bg-gradient-to-r from-brand-blue/15 via-brand-green/15 to-brand-blue/10 blur-3xl rounded-[40px]" />
+            <div className="relative mx-auto w-full">
+              <div className="rounded-[18px] bg-brand-navy p-2.5 md:p-3 shadow-[0_30px_80px_-30px_rgba(6,50,102,0.55)]">
+                <div className="rounded-lg overflow-hidden bg-white">
+                  <DashboardPreview monitor />
+                </div>
+              </div>
+              {/* Pie y base del monitor */}
+              <div
+                className="mx-auto h-5 md:h-7 w-20 md:w-28 bg-gradient-to-b from-slate-300 to-slate-200"
+                style={{ clipPath: "polygon(16% 0, 84% 0, 100% 100%, 0 100%)" }}
+              />
+              <div className="mx-auto h-2 w-40 md:w-60 rounded-full bg-slate-300" />
             </div>
           </div>
         </div>
