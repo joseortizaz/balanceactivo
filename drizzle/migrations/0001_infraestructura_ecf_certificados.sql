@@ -1,0 +1,37 @@
+-- Infraestructura del certificado digital por tenant (custodia IngreSaaS).
+-- El .p12/.pfx se sube al bucket privado "certificados-digitales", al que
+-- ningún rol "authenticated" tiene acceso de lectura: solo service_role.
+CREATE TABLE IF NOT EXISTS public.tenant_certificados_digitales (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id uuid NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+  titular_nombre text NOT NULL,
+  titular_documento text,
+  entidad_certificadora text,
+  storage_path text NOT NULL,
+  passphrase_cifrada text NOT NULL,
+  passphrase_iv text NOT NULL,
+  valido_desde date,
+  valido_hasta date NOT NULL,
+  activo boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  created_by uuid REFERENCES auth.users(id)
+);
+
+-- A lo sumo un certificado activo por tenant a la vez.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tenant_cert_activo_unico
+  ON public.tenant_certificados_digitales(tenant_id) WHERE activo;
+
+ALTER TABLE public.tenant_certificados_digitales ENABLE ROW LEVEL SECURITY;
+
+-- Solo administradores del tenant pueden ver que existe un certificado y
+-- sus metadatos; la passphrase cifrada y su IV se excluyen a nivel de
+-- columna más abajo.
+DROP POLICY IF EXISTS tenant_cert_select ON public.tenant_certificados_digitales;
+CREATE POLICY tenant_cert_select ON public.tenant_certificados_digitales
+  FOR SELECT TO authenticated
+  USING (tenant_id = public.current_tenant_id() AND public.has_role(auth.uid(), 'administrador'::app_role));
+
+REVOKE SELECT ON public.tenant_certificados_digitales FROM authenticated;
+GRANT SELECT (id, tenant_id, titular_nombre, titular_documento, entidad_certificadora, storage_path, valido_desde, valido_hasta, activo, created_at)
+  ON public.tenant_certificados_digitales TO authenticated;
+GRANT ALL ON public.tenant_certificados_digitales TO service_role;

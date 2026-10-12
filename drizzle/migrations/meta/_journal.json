@@ -8,6 +8,13 @@
       "when": 1791767406051,
       "tag": "0000_tenant_certificados_digitales",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791767423538,
+      "tag": "0001_infraestructura_ecf_certificados",
+      "breakpoints": true
     }
   ]
 }
