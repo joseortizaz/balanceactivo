@@ -1861,6 +1861,62 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_certificados_digitales: {
+        Row: {
+          activo: boolean
+          created_at: string
+          created_by: string | null
+          entidad_certificadora: string | null
+          id: string
+          passphrase_cifrada: string
+          passphrase_iv: string
+          storage_path: string
+          tenant_id: string
+          titular_documento: string | null
+          titular_nombre: string
+          valido_desde: string | null
+          valido_hasta: string
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          entidad_certificadora?: string | null
+          id?: string
+          passphrase_cifrada: string
+          passphrase_iv: string
+          storage_path: string
+          tenant_id: string
+          titular_documento?: string | null
+          titular_nombre: string
+          valido_desde?: string | null
+          valido_hasta: string
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          created_by?: string | null
+          entidad_certificadora?: string | null
+          id?: string
+          passphrase_cifrada?: string
+          passphrase_iv?: string
+          storage_path?: string
+          tenant_id?: string
+          titular_documento?: string | null
+          titular_nombre?: string
+          valido_desde?: string | null
+          valido_hasta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_certificados_digitales_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenants: {
         Row: {
           created_at: string

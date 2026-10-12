@@ -9,104 +9,78 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as TerminosRouteImport } from './routes/terminos'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SeguridadRouteImport } from './routes/seguridad'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as CambiarPasswordRouteImport } from './routes/cambiar-password'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
-import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
-import { Route as AuthenticatedReportesInternosRouteImport } from './routes/_authenticated/reportes-internos'
-import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
-import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
-import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
-import { Route as AuthenticatedProductosRouteImport } from './routes/_authenticated/productos'
-import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated/planes'
-import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
-import { Route as AuthenticatedMfaChallengeRouteImport } from './routes/_authenticated/mfa-challenge'
-import { Route as AuthenticatedMfaRouteImport } from './routes/_authenticated/mfa'
-import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCuentasPorCobrarRouteImport } from './routes/_authenticated/cuentas-por-cobrar'
-import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
-import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
-import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated/cobros'
-import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
-import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
-import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as CambiarPasswordRouteImport } from './routes/cambiar-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SeguridadRouteImport } from './routes/seguridad'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedApiIntegracionesRouteImport } from './routes/_authenticated/api-integraciones'
-import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
-import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
-import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiInternalEcfCertificadoRouteImport } from './routes/api/internal/ecf-certificado'
-import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin_.suscripciones'
-import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
-import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
-import { Route as AuthenticatedNominaRegaliaRouteImport } from './routes/_authenticated/nomina.regalia'
-import { Route as AuthenticatedNominaPrestamosRouteImport } from './routes/_authenticated/nomina.prestamos'
-import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_authenticated/nomina.empleados'
-import { Route as AuthenticatedNominaConfiguracionRouteImport } from './routes/_authenticated/nomina.configuracion'
-import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_authenticated/nomina.ausencias'
-import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
-import { Route as AuthenticatedFacturasIdRouteImport } from './routes/_authenticated/facturas.$id'
-import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
+import { Route as AuthenticatedAsientosRouteImport } from './routes/_authenticated/asientos'
+import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
+import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedCobrosRouteImport } from './routes/_authenticated/cobros'
+import { Route as AuthenticatedConfiguracionRouteImport } from './routes/_authenticated/configuracion'
+import { Route as AuthenticatedCuentasRouteImport } from './routes/_authenticated/cuentas'
+import { Route as AuthenticatedCuentasPorCobrarRouteImport } from './routes/_authenticated/cuentas-por-cobrar'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedGastosRouteImport } from './routes/_authenticated/gastos'
+import { Route as AuthenticatedMfaRouteImport } from './routes/_authenticated/mfa'
+import { Route as AuthenticatedMfaChallengeRouteImport } from './routes/_authenticated/mfa-challenge'
+import { Route as AuthenticatedPerfilEmpresaRouteImport } from './routes/_authenticated/perfil-empresa'
+import { Route as AuthenticatedPlanesRouteImport } from './routes/_authenticated/planes'
+import { Route as AuthenticatedProductosRouteImport } from './routes/_authenticated/productos'
+import { Route as AuthenticatedProveedoresRouteImport } from './routes/_authenticated/proveedores'
+import { Route as AuthenticatedRecurrentesRouteImport } from './routes/_authenticated/recurrentes'
+import { Route as AuthenticatedReportesRouteImport } from './routes/_authenticated/reportes'
+import { Route as AuthenticatedReportesInternosRouteImport } from './routes/_authenticated/reportes-internos'
+import { Route as AuthenticatedSuperadminRouteImport } from './routes/_authenticated/superadmin'
+import { Route as AuthenticatedSuscripcionRouteImport } from './routes/_authenticated/suscripcion'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedCobrosIdRouteImport } from './routes/_authenticated/cobros.$id'
+import { Route as AuthenticatedCotizacionesIndexRouteImport } from './routes/_authenticated/cotizaciones.index'
+import { Route as AuthenticatedCotizacionesNuevaRouteImport } from './routes/_authenticated/cotizaciones.nueva'
+import { Route as AuthenticatedFacturasIndexRouteImport } from './routes/_authenticated/facturas.index'
+import { Route as AuthenticatedFacturasIdRouteImport } from './routes/_authenticated/facturas.$id'
+import { Route as AuthenticatedFacturasNuevaRouteImport } from './routes/_authenticated/facturas.nueva'
+import { Route as AuthenticatedNominaIndexRouteImport } from './routes/_authenticated/nomina.index'
+import { Route as AuthenticatedNominaAusenciasRouteImport } from './routes/_authenticated/nomina.ausencias'
+import { Route as AuthenticatedNominaConfiguracionRouteImport } from './routes/_authenticated/nomina.configuracion'
+import { Route as AuthenticatedNominaEmpleadosRouteImport } from './routes/_authenticated/nomina.empleados'
+import { Route as AuthenticatedNominaPrestamosRouteImport } from './routes/_authenticated/nomina.prestamos'
+import { Route as AuthenticatedNominaRegaliaRouteImport } from './routes/_authenticated/nomina.regalia'
+import { Route as AuthenticatedNominaReportesRouteImport } from './routes/_authenticated/nomina.reportes'
+import { Route as AuthenticatedNominaTerminacionesRouteImport } from './routes/_authenticated/nomina.terminaciones'
+import { Route as AuthenticatedSuperadminSuscripcionesRouteImport } from './routes/_authenticated/superadmin_.suscripciones'
+import { Route as ApiInternalEcfCertificadoRouteImport } from './routes/api/internal/ecf-certificado'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedNominaPeriodosIndexRouteImport } from './routes/_authenticated/nomina.periodos.index'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
-import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
-import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/deliver'
-import { Route as ApiPublicV1CobrosRouteImport } from './routes/api/public/v1/cobros'
-import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
-import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
 import { Route as AuthenticatedNominaPeriodosIdRouteImport } from './routes/_authenticated/nomina.periodos.$id'
-import { Route as ApiPublicV1FacturasIdRouteImport } from './routes/api/public/v1/facturas.$id'
+import { Route as AuthenticatedNominaPeriodosNuevaRouteImport } from './routes/_authenticated/nomina.periodos.nueva'
+import { Route as ApiPublicV1ClientesRouteImport } from './routes/api/public/v1/clientes'
+import { Route as ApiPublicV1CobrosRouteImport } from './routes/api/public/v1/cobros'
+import { Route as ApiPublicV1DeliverRouteImport } from './routes/api/public/v1/deliver'
+import { Route as ApiPublicV1FacturasRouteImport } from './routes/api/public/v1/facturas'
+import { Route as ApiPublicV1MeRouteImport } from './routes/api/public/v1/me'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as ApiPublicV1ClientesIdRouteImport } from './routes/api/public/v1/clientes.$id'
+import { Route as ApiPublicV1FacturasIdRouteImport } from './routes/api/public/v1/facturas.$id'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TerminosRoute = TerminosRouteImport.update({
-  id: '/terminos',
-  path: '/terminos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SeguridadRoute = SeguridadRouteImport.update({
-  id: '/seguridad',
-  path: '/seguridad',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CambiarPasswordRoute = CambiarPasswordRouteImport.update({
@@ -114,100 +88,65 @@ const CambiarPasswordRoute = CambiarPasswordRouteImport.update({
   path: '/cambiar-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
+const SeguridadRoute = SeguridadRouteImport.update({
+  id: '/seguridad',
+  path: '/seguridad',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedSuscripcionRoute =
-  AuthenticatedSuscripcionRouteImport.update({
-    id: '/suscripcion',
-    path: '/suscripcion',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedApiIntegracionesRoute =
+  AuthenticatedApiIntegracionesRouteImport.update({
+    id: '/api-integraciones',
+    path: '/api-integraciones',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
-  id: '/superadmin',
-  path: '/superadmin',
+const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
+  id: '/asientos',
+  path: '/asientos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedReportesInternosRoute =
-  AuthenticatedReportesInternosRouteImport.update({
-    id: '/reportes-internos',
-    path: '/reportes-internos',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
-  id: '/reportes',
-  path: '/reportes',
+const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedRecurrentesRoute =
-  AuthenticatedRecurrentesRouteImport.update({
-    id: '/recurrentes',
-    path: '/recurrentes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedProveedoresRoute =
-  AuthenticatedProveedoresRouteImport.update({
-    id: '/proveedores',
-    path: '/proveedores',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedProductosRoute = AuthenticatedProductosRouteImport.update({
-  id: '/productos',
-  path: '/productos',
+const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedPlanesRoute = AuthenticatedPlanesRouteImport.update({
-  id: '/planes',
-  path: '/planes',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedPerfilEmpresaRoute =
-  AuthenticatedPerfilEmpresaRouteImport.update({
-    id: '/perfil-empresa',
-    path: '/perfil-empresa',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedMfaChallengeRoute =
-  AuthenticatedMfaChallengeRouteImport.update({
-    id: '/mfa-challenge',
-    path: '/mfa-challenge',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedMfaRoute = AuthenticatedMfaRouteImport.update({
-  id: '/mfa',
-  path: '/mfa',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedGastosRoute = AuthenticatedGastosRouteImport.update({
-  id: '/gastos',
-  path: '/gastos',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedCuentasPorCobrarRoute =
-  AuthenticatedCuentasPorCobrarRouteImport.update({
-    id: '/cuentas-por-cobrar',
-    path: '/cuentas-por-cobrar',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedCuentasRoute = AuthenticatedCuentasRouteImport.update({
-  id: '/cuentas',
-  path: '/cuentas',
+const AuthenticatedCobrosRoute = AuthenticatedCobrosRouteImport.update({
+  id: '/cobros',
+  path: '/cobros',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedConfiguracionRoute =
@@ -216,36 +155,108 @@ const AuthenticatedConfiguracionRoute =
     path: '/configuracion',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCobrosRoute = AuthenticatedCobrosRouteImport.update({
-  id: '/cobros',
-  path: '/cobros',
+const AuthenticatedCuentasRoute = AuthenticatedCuentasRouteImport.update({
+  id: '/cuentas',
+  path: '/cuentas',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
-  id: '/auditoria',
-  path: '/auditoria',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedAsientosRoute = AuthenticatedAsientosRouteImport.update({
-  id: '/asientos',
-  path: '/asientos',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedApiIntegracionesRoute =
-  AuthenticatedApiIntegracionesRouteImport.update({
-    id: '/api-integraciones',
-    path: '/api-integraciones',
+const AuthenticatedCuentasPorCobrarRoute =
+  AuthenticatedCuentasPorCobrarRouteImport.update({
+    id: '/cuentas-por-cobrar',
+    path: '/cuentas-por-cobrar',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedNominaIndexRoute =
-  AuthenticatedNominaIndexRouteImport.update({
-    id: '/nomina/',
-    path: '/nomina/',
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedGastosRoute = AuthenticatedGastosRouteImport.update({
+  id: '/gastos',
+  path: '/gastos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMfaRoute = AuthenticatedMfaRouteImport.update({
+  id: '/mfa',
+  path: '/mfa',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMfaChallengeRoute =
+  AuthenticatedMfaChallengeRouteImport.update({
+    id: '/mfa-challenge',
+    path: '/mfa-challenge',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPerfilEmpresaRoute =
+  AuthenticatedPerfilEmpresaRouteImport.update({
+    id: '/perfil-empresa',
+    path: '/perfil-empresa',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedPlanesRoute = AuthenticatedPlanesRouteImport.update({
+  id: '/planes',
+  path: '/planes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProductosRoute = AuthenticatedProductosRouteImport.update({
+  id: '/productos',
+  path: '/productos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProveedoresRoute =
+  AuthenticatedProveedoresRouteImport.update({
+    id: '/proveedores',
+    path: '/proveedores',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRecurrentesRoute =
+  AuthenticatedRecurrentesRouteImport.update({
+    id: '/recurrentes',
+    path: '/recurrentes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedReportesRoute = AuthenticatedReportesRouteImport.update({
+  id: '/reportes',
+  path: '/reportes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedReportesInternosRoute =
+  AuthenticatedReportesInternosRouteImport.update({
+    id: '/reportes-internos',
+    path: '/reportes-internos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSuperadminRoute = AuthenticatedSuperadminRouteImport.update({
+  id: '/superadmin',
+  path: '/superadmin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSuscripcionRoute =
+  AuthenticatedSuscripcionRouteImport.update({
+    id: '/suscripcion',
+    path: '/suscripcion',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCobrosIdRoute = AuthenticatedCobrosIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedCobrosRoute,
+} as any)
+const AuthenticatedCotizacionesIndexRoute =
+  AuthenticatedCotizacionesIndexRouteImport.update({
+    id: '/cotizaciones/',
+    path: '/cotizaciones/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCotizacionesNuevaRoute =
+  AuthenticatedCotizacionesNuevaRouteImport.update({
+    id: '/cotizaciones/nueva',
+    path: '/cotizaciones/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedFacturasIndexRoute =
@@ -254,63 +265,21 @@ const AuthenticatedFacturasIndexRoute =
     path: '/facturas/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCotizacionesIndexRoute =
-  AuthenticatedCotizacionesIndexRouteImport.update({
-    id: '/cotizaciones/',
-    path: '/cotizaciones/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
-  getParentRoute: () => rootRouteImport,
+const AuthenticatedFacturasIdRoute = AuthenticatedFacturasIdRouteImport.update({
+  id: '/facturas/$id',
+  path: '/facturas/$id',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
-const ApiInternalEcfCertificadoRoute =
-  ApiInternalEcfCertificadoRouteImport.update({
-    id: '/api/internal/ecf-certificado',
-    path: '/api/internal/ecf-certificado',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedSuperadminSuscripcionesRoute =
-  AuthenticatedSuperadminSuscripcionesRouteImport.update({
-    id: '/superadmin_/suscripciones',
-    path: '/superadmin/suscripciones',
+const AuthenticatedFacturasNuevaRoute =
+  AuthenticatedFacturasNuevaRouteImport.update({
+    id: '/facturas/nueva',
+    path: '/facturas/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedNominaTerminacionesRoute =
-  AuthenticatedNominaTerminacionesRouteImport.update({
-    id: '/nomina/terminaciones',
-    path: '/nomina/terminaciones',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNominaReportesRoute =
-  AuthenticatedNominaReportesRouteImport.update({
-    id: '/nomina/reportes',
-    path: '/nomina/reportes',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNominaRegaliaRoute =
-  AuthenticatedNominaRegaliaRouteImport.update({
-    id: '/nomina/regalia',
-    path: '/nomina/regalia',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNominaPrestamosRoute =
-  AuthenticatedNominaPrestamosRouteImport.update({
-    id: '/nomina/prestamos',
-    path: '/nomina/prestamos',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNominaEmpleadosRoute =
-  AuthenticatedNominaEmpleadosRouteImport.update({
-    id: '/nomina/empleados',
-    path: '/nomina/empleados',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const AuthenticatedNominaConfiguracionRoute =
-  AuthenticatedNominaConfiguracionRouteImport.update({
-    id: '/nomina/configuracion',
-    path: '/nomina/configuracion',
+const AuthenticatedNominaIndexRoute =
+  AuthenticatedNominaIndexRouteImport.update({
+    id: '/nomina/',
+    path: '/nomina/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedNominaAusenciasRoute =
@@ -319,91 +288,63 @@ const AuthenticatedNominaAusenciasRoute =
     path: '/nomina/ausencias',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedFacturasNuevaRoute =
-  AuthenticatedFacturasNuevaRouteImport.update({
-    id: '/facturas/nueva',
-    path: '/facturas/nueva',
+const AuthenticatedNominaConfiguracionRoute =
+  AuthenticatedNominaConfiguracionRouteImport.update({
+    id: '/nomina/configuracion',
+    path: '/nomina/configuracion',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedFacturasIdRoute = AuthenticatedFacturasIdRouteImport.update({
-  id: '/facturas/$id',
-  path: '/facturas/$id',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedCotizacionesNuevaRoute =
-  AuthenticatedCotizacionesNuevaRouteImport.update({
-    id: '/cotizaciones/nueva',
-    path: '/cotizaciones/nueva',
+const AuthenticatedNominaEmpleadosRoute =
+  AuthenticatedNominaEmpleadosRouteImport.update({
+    id: '/nomina/empleados',
+    path: '/nomina/empleados',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedCobrosIdRoute = AuthenticatedCobrosIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AuthenticatedCobrosRoute,
+const AuthenticatedNominaPrestamosRoute =
+  AuthenticatedNominaPrestamosRouteImport.update({
+    id: '/nomina/prestamos',
+    path: '/nomina/prestamos',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaRegaliaRoute =
+  AuthenticatedNominaRegaliaRouteImport.update({
+    id: '/nomina/regalia',
+    path: '/nomina/regalia',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaReportesRoute =
+  AuthenticatedNominaReportesRouteImport.update({
+    id: '/nomina/reportes',
+    path: '/nomina/reportes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedNominaTerminacionesRoute =
+  AuthenticatedNominaTerminacionesRouteImport.update({
+    id: '/nomina/terminaciones',
+    path: '/nomina/terminaciones',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSuperadminSuscripcionesRoute =
+  AuthenticatedSuperadminSuscripcionesRouteImport.update({
+    id: '/superadmin_/suscripciones',
+    path: '/superadmin/suscripciones',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const ApiInternalEcfCertificadoRoute =
+  ApiInternalEcfCertificadoRouteImport.update({
+    id: '/api/internal/ecf-certificado',
+    path: '/api/internal/ecf-certificado',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedNominaPeriodosIndexRoute =
   AuthenticatedNominaPeriodosIndexRouteImport.update({
     id: '/nomina/periodos/',
     path: '/nomina/periodos/',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1MeRoute = ApiPublicV1MeRouteImport.update({
-  id: '/api/public/v1/me',
-  path: '/api/public/v1/me',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1FacturasRoute = ApiPublicV1FacturasRouteImport.update({
-  id: '/api/public/v1/facturas',
-  path: '/api/public/v1/facturas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1DeliverRoute = ApiPublicV1DeliverRouteImport.update({
-  id: '/api/public/v1/deliver',
-  path: '/api/public/v1/deliver',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1CobrosRoute = ApiPublicV1CobrosRouteImport.update({
-  id: '/api/public/v1/cobros',
-  path: '/api/public/v1/cobros',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
-  id: '/api/public/v1/clientes',
-  path: '/api/public/v1/clientes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedNominaPeriodosNuevaRoute =
-  AuthenticatedNominaPeriodosNuevaRouteImport.update({
-    id: '/nomina/periodos/nueva',
-    path: '/nomina/periodos/nueva',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedNominaPeriodosIdRoute =
@@ -412,15 +353,74 @@ const AuthenticatedNominaPeriodosIdRoute =
     path: '/nomina/periodos/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const ApiPublicV1FacturasIdRoute = ApiPublicV1FacturasIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ApiPublicV1FacturasRoute,
+const AuthenticatedNominaPeriodosNuevaRoute =
+  AuthenticatedNominaPeriodosNuevaRouteImport.update({
+    id: '/nomina/periodos/nueva',
+    path: '/nomina/periodos/nueva',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const ApiPublicV1ClientesRoute = ApiPublicV1ClientesRouteImport.update({
+  id: '/api/public/v1/clientes',
+  path: '/api/public/v1/clientes',
+  getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1CobrosRoute = ApiPublicV1CobrosRouteImport.update({
+  id: '/api/public/v1/cobros',
+  path: '/api/public/v1/cobros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1DeliverRoute = ApiPublicV1DeliverRouteImport.update({
+  id: '/api/public/v1/deliver',
+  path: '/api/public/v1/deliver',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1FacturasRoute = ApiPublicV1FacturasRouteImport.update({
+  id: '/api/public/v1/facturas',
+  path: '/api/public/v1/facturas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1MeRoute = ApiPublicV1MeRouteImport.update({
+  id: '/api/public/v1/me',
+  path: '/api/public/v1/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicV1ClientesIdRoute = ApiPublicV1ClientesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ApiPublicV1ClientesRoute,
+} as any)
+const ApiPublicV1FacturasIdRoute = ApiPublicV1FacturasIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicV1FacturasRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -847,60 +847,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terminos': {
-      id: '/terminos'
-      path: '/terminos'
-      fullPath: '/terminos'
-      preLoaderRoute: typeof TerminosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/seguridad': {
-      id: '/seguridad'
-      path: '/seguridad'
-      fullPath: '/seguridad'
-      preLoaderRoute: typeof SeguridadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cambiar-password': {
-      id: '/cambiar-password'
-      path: '/cambiar-password'
-      fullPath: '/cambiar-password'
-      preLoaderRoute: typeof CambiarPasswordRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -910,151 +861,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/cambiar-password': {
+      id: '/cambiar-password'
+      path: '/cambiar-password'
+      fullPath: '/cambiar-password'
+      preLoaderRoute: typeof CambiarPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/suscripcion': {
-      id: '/_authenticated/suscripcion'
-      path: '/suscripcion'
-      fullPath: '/suscripcion'
-      preLoaderRoute: typeof AuthenticatedSuscripcionRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/superadmin': {
-      id: '/_authenticated/superadmin'
-      path: '/superadmin'
-      fullPath: '/superadmin'
-      preLoaderRoute: typeof AuthenticatedSuperadminRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/seguridad': {
+      id: '/seguridad'
+      path: '/seguridad'
+      fullPath: '/seguridad'
+      preLoaderRoute: typeof SeguridadRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/reportes-internos': {
-      id: '/_authenticated/reportes-internos'
-      path: '/reportes-internos'
-      fullPath: '/reportes-internos'
-      preLoaderRoute: typeof AuthenticatedReportesInternosRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/reportes': {
-      id: '/_authenticated/reportes'
-      path: '/reportes'
-      fullPath: '/reportes'
-      preLoaderRoute: typeof AuthenticatedReportesRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/recurrentes': {
-      id: '/_authenticated/recurrentes'
-      path: '/recurrentes'
-      fullPath: '/recurrentes'
-      preLoaderRoute: typeof AuthenticatedRecurrentesRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/proveedores': {
-      id: '/_authenticated/proveedores'
-      path: '/proveedores'
-      fullPath: '/proveedores'
-      preLoaderRoute: typeof AuthenticatedProveedoresRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/productos': {
-      id: '/_authenticated/productos'
-      path: '/productos'
-      fullPath: '/productos'
-      preLoaderRoute: typeof AuthenticatedProductosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/planes': {
-      id: '/_authenticated/planes'
-      path: '/planes'
-      fullPath: '/planes'
-      preLoaderRoute: typeof AuthenticatedPlanesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/perfil-empresa': {
-      id: '/_authenticated/perfil-empresa'
-      path: '/perfil-empresa'
-      fullPath: '/perfil-empresa'
-      preLoaderRoute: typeof AuthenticatedPerfilEmpresaRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/mfa-challenge': {
-      id: '/_authenticated/mfa-challenge'
-      path: '/mfa-challenge'
-      fullPath: '/mfa-challenge'
-      preLoaderRoute: typeof AuthenticatedMfaChallengeRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/mfa': {
-      id: '/_authenticated/mfa'
-      path: '/mfa'
-      fullPath: '/mfa'
-      preLoaderRoute: typeof AuthenticatedMfaRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/gastos': {
-      id: '/_authenticated/gastos'
-      path: '/gastos'
-      fullPath: '/gastos'
-      preLoaderRoute: typeof AuthenticatedGastosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/cuentas-por-cobrar': {
-      id: '/_authenticated/cuentas-por-cobrar'
-      path: '/cuentas-por-cobrar'
-      fullPath: '/cuentas-por-cobrar'
-      preLoaderRoute: typeof AuthenticatedCuentasPorCobrarRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/cuentas': {
-      id: '/_authenticated/cuentas'
-      path: '/cuentas'
-      fullPath: '/cuentas'
-      preLoaderRoute: typeof AuthenticatedCuentasRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/configuracion': {
-      id: '/_authenticated/configuracion'
-      path: '/configuracion'
-      fullPath: '/configuracion'
-      preLoaderRoute: typeof AuthenticatedConfiguracionRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/cobros': {
-      id: '/_authenticated/cobros'
-      path: '/cobros'
-      fullPath: '/cobros'
-      preLoaderRoute: typeof AuthenticatedCobrosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/clientes': {
-      id: '/_authenticated/clientes'
-      path: '/clientes'
-      fullPath: '/clientes'
-      preLoaderRoute: typeof AuthenticatedClientesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/auditoria': {
-      id: '/_authenticated/auditoria'
-      path: '/auditoria'
-      fullPath: '/auditoria'
-      preLoaderRoute: typeof AuthenticatedAuditoriaRouteImport
+    '/_authenticated/api-integraciones': {
+      id: '/_authenticated/api-integraciones'
+      path: '/api-integraciones'
+      fullPath: '/api-integraciones'
+      preLoaderRoute: typeof AuthenticatedApiIntegracionesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/asientos': {
@@ -1064,116 +931,158 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAsientosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/api-integraciones': {
-      id: '/_authenticated/api-integraciones'
-      path: '/api-integraciones'
-      fullPath: '/api-integraciones'
-      preLoaderRoute: typeof AuthenticatedApiIntegracionesRouteImport
+    '/_authenticated/auditoria': {
+      id: '/_authenticated/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AuthenticatedAuditoriaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/nomina/': {
-      id: '/_authenticated/nomina/'
-      path: '/nomina'
-      fullPath: '/nomina/'
-      preLoaderRoute: typeof AuthenticatedNominaIndexRouteImport
+    '/_authenticated/clientes': {
+      id: '/_authenticated/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof AuthenticatedClientesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/facturas/': {
-      id: '/_authenticated/facturas/'
-      path: '/facturas'
-      fullPath: '/facturas/'
-      preLoaderRoute: typeof AuthenticatedFacturasIndexRouteImport
+    '/_authenticated/cobros': {
+      id: '/_authenticated/cobros'
+      path: '/cobros'
+      fullPath: '/cobros'
+      preLoaderRoute: typeof AuthenticatedCobrosRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/configuracion': {
+      id: '/_authenticated/configuracion'
+      path: '/configuracion'
+      fullPath: '/configuracion'
+      preLoaderRoute: typeof AuthenticatedConfiguracionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cuentas': {
+      id: '/_authenticated/cuentas'
+      path: '/cuentas'
+      fullPath: '/cuentas'
+      preLoaderRoute: typeof AuthenticatedCuentasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/cuentas-por-cobrar': {
+      id: '/_authenticated/cuentas-por-cobrar'
+      path: '/cuentas-por-cobrar'
+      fullPath: '/cuentas-por-cobrar'
+      preLoaderRoute: typeof AuthenticatedCuentasPorCobrarRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/gastos': {
+      id: '/_authenticated/gastos'
+      path: '/gastos'
+      fullPath: '/gastos'
+      preLoaderRoute: typeof AuthenticatedGastosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mfa': {
+      id: '/_authenticated/mfa'
+      path: '/mfa'
+      fullPath: '/mfa'
+      preLoaderRoute: typeof AuthenticatedMfaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mfa-challenge': {
+      id: '/_authenticated/mfa-challenge'
+      path: '/mfa-challenge'
+      fullPath: '/mfa-challenge'
+      preLoaderRoute: typeof AuthenticatedMfaChallengeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/perfil-empresa': {
+      id: '/_authenticated/perfil-empresa'
+      path: '/perfil-empresa'
+      fullPath: '/perfil-empresa'
+      preLoaderRoute: typeof AuthenticatedPerfilEmpresaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/planes': {
+      id: '/_authenticated/planes'
+      path: '/planes'
+      fullPath: '/planes'
+      preLoaderRoute: typeof AuthenticatedPlanesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/productos': {
+      id: '/_authenticated/productos'
+      path: '/productos'
+      fullPath: '/productos'
+      preLoaderRoute: typeof AuthenticatedProductosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/proveedores': {
+      id: '/_authenticated/proveedores'
+      path: '/proveedores'
+      fullPath: '/proveedores'
+      preLoaderRoute: typeof AuthenticatedProveedoresRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/recurrentes': {
+      id: '/_authenticated/recurrentes'
+      path: '/recurrentes'
+      fullPath: '/recurrentes'
+      preLoaderRoute: typeof AuthenticatedRecurrentesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/reportes': {
+      id: '/_authenticated/reportes'
+      path: '/reportes'
+      fullPath: '/reportes'
+      preLoaderRoute: typeof AuthenticatedReportesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/reportes-internos': {
+      id: '/_authenticated/reportes-internos'
+      path: '/reportes-internos'
+      fullPath: '/reportes-internos'
+      preLoaderRoute: typeof AuthenticatedReportesInternosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/superadmin': {
+      id: '/_authenticated/superadmin'
+      path: '/superadmin'
+      fullPath: '/superadmin'
+      preLoaderRoute: typeof AuthenticatedSuperadminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/suscripcion': {
+      id: '/_authenticated/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/suscripcion'
+      preLoaderRoute: typeof AuthenticatedSuscripcionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cobros/$id': {
+      id: '/_authenticated/cobros/$id'
+      path: '/$id'
+      fullPath: '/cobros/$id'
+      preLoaderRoute: typeof AuthenticatedCobrosIdRouteImport
+      parentRoute: typeof AuthenticatedCobrosRoute
     }
     '/_authenticated/cotizaciones/': {
       id: '/_authenticated/cotizaciones/'
       path: '/cotizaciones'
       fullPath: '/cotizaciones/'
       preLoaderRoute: typeof AuthenticatedCotizacionesIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/internal/ecf-certificado': {
-      id: '/api/internal/ecf-certificado'
-      path: '/api/internal/ecf-certificado'
-      fullPath: '/api/internal/ecf-certificado'
-      preLoaderRoute: typeof ApiInternalEcfCertificadoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/superadmin_/suscripciones': {
-      id: '/_authenticated/superadmin_/suscripciones'
-      path: '/superadmin/suscripciones'
-      fullPath: '/superadmin/suscripciones'
-      preLoaderRoute: typeof AuthenticatedSuperadminSuscripcionesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/terminaciones': {
-      id: '/_authenticated/nomina/terminaciones'
-      path: '/nomina/terminaciones'
-      fullPath: '/nomina/terminaciones'
-      preLoaderRoute: typeof AuthenticatedNominaTerminacionesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/reportes': {
-      id: '/_authenticated/nomina/reportes'
-      path: '/nomina/reportes'
-      fullPath: '/nomina/reportes'
-      preLoaderRoute: typeof AuthenticatedNominaReportesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/regalia': {
-      id: '/_authenticated/nomina/regalia'
-      path: '/nomina/regalia'
-      fullPath: '/nomina/regalia'
-      preLoaderRoute: typeof AuthenticatedNominaRegaliaRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/prestamos': {
-      id: '/_authenticated/nomina/prestamos'
-      path: '/nomina/prestamos'
-      fullPath: '/nomina/prestamos'
-      preLoaderRoute: typeof AuthenticatedNominaPrestamosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/empleados': {
-      id: '/_authenticated/nomina/empleados'
-      path: '/nomina/empleados'
-      fullPath: '/nomina/empleados'
-      preLoaderRoute: typeof AuthenticatedNominaEmpleadosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/configuracion': {
-      id: '/_authenticated/nomina/configuracion'
-      path: '/nomina/configuracion'
-      fullPath: '/nomina/configuracion'
-      preLoaderRoute: typeof AuthenticatedNominaConfiguracionRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/nomina/ausencias': {
-      id: '/_authenticated/nomina/ausencias'
-      path: '/nomina/ausencias'
-      fullPath: '/nomina/ausencias'
-      preLoaderRoute: typeof AuthenticatedNominaAusenciasRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/facturas/nueva': {
-      id: '/_authenticated/facturas/nueva'
-      path: '/facturas/nueva'
-      fullPath: '/facturas/nueva'
-      preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/facturas/$id': {
-      id: '/_authenticated/facturas/$id'
-      path: '/facturas/$id'
-      fullPath: '/facturas/$id'
-      preLoaderRoute: typeof AuthenticatedFacturasIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/cotizaciones/nueva': {
@@ -1183,95 +1092,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCotizacionesNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/cobros/$id': {
-      id: '/_authenticated/cobros/$id'
-      path: '/$id'
-      fullPath: '/cobros/$id'
-      preLoaderRoute: typeof AuthenticatedCobrosIdRouteImport
-      parentRoute: typeof AuthenticatedCobrosRoute
+    '/_authenticated/facturas/': {
+      id: '/_authenticated/facturas/'
+      path: '/facturas'
+      fullPath: '/facturas/'
+      preLoaderRoute: typeof AuthenticatedFacturasIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/facturas/$id': {
+      id: '/_authenticated/facturas/$id'
+      path: '/facturas/$id'
+      fullPath: '/facturas/$id'
+      preLoaderRoute: typeof AuthenticatedFacturasIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/facturas/nueva': {
+      id: '/_authenticated/facturas/nueva'
+      path: '/facturas/nueva'
+      fullPath: '/facturas/nueva'
+      preLoaderRoute: typeof AuthenticatedFacturasNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/': {
+      id: '/_authenticated/nomina/'
+      path: '/nomina'
+      fullPath: '/nomina/'
+      preLoaderRoute: typeof AuthenticatedNominaIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/ausencias': {
+      id: '/_authenticated/nomina/ausencias'
+      path: '/nomina/ausencias'
+      fullPath: '/nomina/ausencias'
+      preLoaderRoute: typeof AuthenticatedNominaAusenciasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/configuracion': {
+      id: '/_authenticated/nomina/configuracion'
+      path: '/nomina/configuracion'
+      fullPath: '/nomina/configuracion'
+      preLoaderRoute: typeof AuthenticatedNominaConfiguracionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/empleados': {
+      id: '/_authenticated/nomina/empleados'
+      path: '/nomina/empleados'
+      fullPath: '/nomina/empleados'
+      preLoaderRoute: typeof AuthenticatedNominaEmpleadosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/prestamos': {
+      id: '/_authenticated/nomina/prestamos'
+      path: '/nomina/prestamos'
+      fullPath: '/nomina/prestamos'
+      preLoaderRoute: typeof AuthenticatedNominaPrestamosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/regalia': {
+      id: '/_authenticated/nomina/regalia'
+      path: '/nomina/regalia'
+      fullPath: '/nomina/regalia'
+      preLoaderRoute: typeof AuthenticatedNominaRegaliaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/reportes': {
+      id: '/_authenticated/nomina/reportes'
+      path: '/nomina/reportes'
+      fullPath: '/nomina/reportes'
+      preLoaderRoute: typeof AuthenticatedNominaReportesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/nomina/terminaciones': {
+      id: '/_authenticated/nomina/terminaciones'
+      path: '/nomina/terminaciones'
+      fullPath: '/nomina/terminaciones'
+      preLoaderRoute: typeof AuthenticatedNominaTerminacionesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/superadmin_/suscripciones': {
+      id: '/_authenticated/superadmin_/suscripciones'
+      path: '/superadmin/suscripciones'
+      fullPath: '/superadmin/suscripciones'
+      preLoaderRoute: typeof AuthenticatedSuperadminSuscripcionesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/internal/ecf-certificado': {
+      id: '/api/internal/ecf-certificado'
+      path: '/api/internal/ecf-certificado'
+      fullPath: '/api/internal/ecf-certificado'
+      preLoaderRoute: typeof ApiInternalEcfCertificadoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/nomina/periodos/': {
       id: '/_authenticated/nomina/periodos/'
       path: '/nomina/periodos'
       fullPath: '/nomina/periodos/'
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/me': {
-      id: '/api/public/v1/me'
-      path: '/api/public/v1/me'
-      fullPath: '/api/public/v1/me'
-      preLoaderRoute: typeof ApiPublicV1MeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/facturas': {
-      id: '/api/public/v1/facturas'
-      path: '/api/public/v1/facturas'
-      fullPath: '/api/public/v1/facturas'
-      preLoaderRoute: typeof ApiPublicV1FacturasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/deliver': {
-      id: '/api/public/v1/deliver'
-      path: '/api/public/v1/deliver'
-      fullPath: '/api/public/v1/deliver'
-      preLoaderRoute: typeof ApiPublicV1DeliverRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/cobros': {
-      id: '/api/public/v1/cobros'
-      path: '/api/public/v1/cobros'
-      fullPath: '/api/public/v1/cobros'
-      preLoaderRoute: typeof ApiPublicV1CobrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/v1/clientes': {
-      id: '/api/public/v1/clientes'
-      path: '/api/public/v1/clientes'
-      fullPath: '/api/public/v1/clientes'
-      preLoaderRoute: typeof ApiPublicV1ClientesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/nomina/periodos/nueva': {
-      id: '/_authenticated/nomina/periodos/nueva'
-      path: '/nomina/periodos/nueva'
-      fullPath: '/nomina/periodos/nueva'
-      preLoaderRoute: typeof AuthenticatedNominaPeriodosNuevaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/nomina/periodos/$id': {
@@ -1281,12 +1204,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNominaPeriodosIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/api/public/v1/facturas/$id': {
-      id: '/api/public/v1/facturas/$id'
-      path: '/$id'
-      fullPath: '/api/public/v1/facturas/$id'
-      preLoaderRoute: typeof ApiPublicV1FacturasIdRouteImport
-      parentRoute: typeof ApiPublicV1FacturasRoute
+    '/_authenticated/nomina/periodos/nueva': {
+      id: '/_authenticated/nomina/periodos/nueva'
+      path: '/nomina/periodos/nueva'
+      fullPath: '/nomina/periodos/nueva'
+      preLoaderRoute: typeof AuthenticatedNominaPeriodosNuevaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/api/public/v1/clientes': {
+      id: '/api/public/v1/clientes'
+      path: '/api/public/v1/clientes'
+      fullPath: '/api/public/v1/clientes'
+      preLoaderRoute: typeof ApiPublicV1ClientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/cobros': {
+      id: '/api/public/v1/cobros'
+      path: '/api/public/v1/cobros'
+      fullPath: '/api/public/v1/cobros'
+      preLoaderRoute: typeof ApiPublicV1CobrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/deliver': {
+      id: '/api/public/v1/deliver'
+      path: '/api/public/v1/deliver'
+      fullPath: '/api/public/v1/deliver'
+      preLoaderRoute: typeof ApiPublicV1DeliverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/facturas': {
+      id: '/api/public/v1/facturas'
+      path: '/api/public/v1/facturas'
+      fullPath: '/api/public/v1/facturas'
+      preLoaderRoute: typeof ApiPublicV1FacturasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/me': {
+      id: '/api/public/v1/me'
+      path: '/api/public/v1/me'
+      fullPath: '/api/public/v1/me'
+      preLoaderRoute: typeof ApiPublicV1MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/clientes/$id': {
       id: '/api/public/v1/clientes/$id'
@@ -1294,6 +1287,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/v1/clientes/$id'
       preLoaderRoute: typeof ApiPublicV1ClientesIdRouteImport
       parentRoute: typeof ApiPublicV1ClientesRoute
+    }
+    '/api/public/v1/facturas/$id': {
+      id: '/api/public/v1/facturas/$id'
+      path: '/$id'
+      fullPath: '/api/public/v1/facturas/$id'
+      preLoaderRoute: typeof ApiPublicV1FacturasIdRouteImport
+      parentRoute: typeof ApiPublicV1FacturasRoute
     }
   }
 }
