@@ -35,7 +35,7 @@ export function SubscriptionBanner() {
       <Card className="p-4 mb-5 border-primary/40 bg-primary/5 flex items-center gap-3">
         <Info className="h-5 w-5 text-primary shrink-0" />
         <div className="flex-1 text-sm">
-          <strong>Aún no tienes un plan activo.</strong> Explora nuestros planes para empezar a usar Balance Activo.
+          <strong>Aún no tienes un plan activo.</strong> Explora nuestros planes para empezar a usar IngreSaaS.
         </div>
         <Link to="/planes"><Button size="sm">Ver planes</Button></Link>
       </Card>

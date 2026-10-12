@@ -33,7 +33,7 @@ function SuscripcionPage() {
       <div>
         <PageHeader title="Mi suscripción" description="Aún no tienes un plan activo" />
         <Card className="p-8 text-center">
-          <p className="text-muted-foreground mb-4">Selecciona un plan para comenzar a usar Balance Activo.</p>
+          <p className="text-muted-foreground mb-4">Selecciona un plan para comenzar a usar IngreSaaS.</p>
           <Link to="/planes"><Button>Ver planes disponibles</Button></Link>
         </Card>
       </div>

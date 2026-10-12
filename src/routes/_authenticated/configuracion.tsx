@@ -129,7 +129,7 @@ function Configuracion() {
       });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body?.error?.message || "No se pudo subir el certificado");
-      toast.success("Certificado guardado. Balance Activo lo custodiará para firmar tus e-CF.");
+      toast.success("Certificado guardado. IngreSaaS lo custodiará para firmar tus e-CF.");
       setCertForm({ titular_nombre: "", titular_documento: "", entidad_certificadora: "", valido_desde: "", valido_hasta: "", passphrase: "" });
       setCertFile(null);
       refetchCertificado();
@@ -319,7 +319,7 @@ function Configuracion() {
                     {certificado.entidad_certificadora && <div><span className="text-muted-foreground">Entidad certificadora:</span> {certificado.entidad_certificadora}</div>}
                     <div><span className="text-muted-foreground">Vigente hasta:</span> {certificado.valido_hasta}</div>
                     <p className="text-xs text-muted-foreground mt-2">
-                      Balance Activo custodia este certificado de forma cifrada para firmar tus e-CF.
+                      IngreSaaS custodia este certificado de forma cifrada para firmar tus e-CF.
                       Sube uno nuevo abajo para reemplazarlo (por ejemplo, al renovarlo).
                     </p>
                   </div>

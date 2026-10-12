@@ -101,7 +101,7 @@ function SuperAdmin() {
 
   return (
     <div>
-      <PageHeader title="Panel Super Administrador" description="Vista global de toda la plataforma Balance Activo" />
+      <PageHeader title="Panel Super Administrador" description="Vista global de toda la plataforma IngreSaaS" />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <Stat icon={Building2} label="Empresas" value={String(tenants?.length ?? 0)} />

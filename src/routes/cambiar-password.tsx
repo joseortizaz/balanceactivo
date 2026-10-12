@@ -12,13 +12,13 @@ export const Route = createFileRoute("/cambiar-password")({
   component: CambiarPasswordPage,
   head: () => ({
     meta: [
-      { title: "Cambiar contraseña — Balance Activo" },
+      { title: "Cambiar contraseña — IngreSaaS" },
       {
         name: "description",
         content:
-          "Define una contraseña personal para tu cuenta de Balance Activo y reemplaza la contraseña provisional.",
+          "Define una contraseña personal para tu cuenta de IngreSaaS y reemplaza la contraseña provisional.",
       },
-      { property: "og:title", content: "Cambiar contraseña — Balance Activo" },
+      { property: "og:title", content: "Cambiar contraseña — IngreSaaS" },
       {
         property: "og:description",
         content: "Reemplaza tu contraseña provisional por una contraseña personal segura.",

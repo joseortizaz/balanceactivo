@@ -177,7 +177,7 @@ export function FacturaPreview({ d }: { d: FacturaPreviewData }) {
         {/* Footer */}
         <div className="mt-12 pt-6 border-t border-neutral-200 text-center text-xs text-neutral-400 space-y-1">
           <div>Gracias por su preferencia.</div>
-          <div>Generado por Balance Activo - Software de Contabilidad</div>
+          <div>Generado por IngreSaaS - Software de Contabilidad</div>
         </div>
       </div>
     </div>

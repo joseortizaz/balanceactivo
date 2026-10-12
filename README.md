@@ -1,4 +1,4 @@
-# Balance Activo
+# IngreSaaS
 
 SaaS multi-tenant de facturación, contabilidad y nómina para República Dominicana (NCF, ITBIS, reportes DGII 606/607/608, TSS/ISR). Construido con [TanStack Start](https://tanstack.com/start) sobre Cloudflare Workers, con Supabase (Postgres + RLS) como backend.
 
@@ -59,9 +59,9 @@ Nota sobre el historial actual: hay migraciones que recrean el mismo objeto vari
 
 ## Facturación Electrónica (e-CF)
 
-Objetivo del proyecto: que Balance Activo se convierta en **Proveedor de Servicios de Facturación
+Objetivo del proyecto: que IngreSaaS se convierta en **Proveedor de Servicios de Facturación
 Electrónica** autorizado por la DGII, para que las empresas que lo usan puedan emitir e-CF desde
-la propia app (Balance Activo custodiaría el certificado digital de cada tenant y firmaría en su
+la propia app (IngreSaaS custodiaría el certificado digital de cada tenant y firmaría en su
 nombre — es uno de los dos modelos operativos que la DGII reconoce explícitamente para
 proveedores).
 

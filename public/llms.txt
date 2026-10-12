@@ -1,8 +1,8 @@
-# Balance Activo
+# IngreSaaS
 
 > SaaS de contabilidad y facturación con NCF, ITBIS, nómina y reportes 606/607 automáticos para empresas y contadores en República Dominicana.
 
-Balance Activo es una plataforma fintech multi-empresa que permite emitir facturas con NCF (B01, B02, B04, B14, B15), calcular ITBIS y retenciones, registrar gastos, gestionar nómina (TSS, ISR, regalía pascual) y generar estados financieros y reportes DGII en tiempo real.
+IngreSaaS es una plataforma fintech multi-empresa que permite emitir facturas con NCF (B01, B02, B04, B14, B15), calcular ITBIS y retenciones, registrar gastos, gestionar nómina (TSS, ISR, regalía pascual) y generar estados financieros y reportes DGII en tiempo real.
 
 ## Pages
 

@@ -1,5 +1,5 @@
-// Cifrado de la passphrase del certificado digital (.p12) que Balance
-// Activo custodia por cada tenant, según el modelo operativo de "Proveedor
+// Cifrado de la passphrase del certificado digital (.p12) que
+// IngreSaaS custodia por cada tenant, según el modelo operativo de "Proveedor
 // de Servicios de Facturación Electrónica" que describe la DGII (ver
 // README.md, sección "Facturación Electrónica (e-CF)").
 //

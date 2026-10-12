@@ -1,4 +1,4 @@
-# Balance Activo — API Pública v1
+# IngreSaaS — API Pública v1
 
 Integración HTTP/JSON para aplicaciones externas (ej. Ceapsi).
 
@@ -25,7 +25,7 @@ Authorization: Bearer ba_live_XXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### Cómo obtener la key
-1. Iniciar sesión en Balance Activo como **administrador**.
+1. Iniciar sesión en IngreSaaS como **administrador**.
 2. Menú lateral → **API & Webhooks**.
 3. **Crear API Key** → copiar el token (se muestra **una sola vez**).
 4. Cada key pertenece a **un único tenant**; todas las llamadas operan sobre los datos de esa empresa.
@@ -177,7 +177,7 @@ Respuesta `201`:
 
 ## 4. Webhooks
 
-Balance Activo envía eventos por HTTP POST a la URL que registres.
+IngreSaaS envía eventos por HTTP POST a la URL que registres.
 
 ### 4.1 Configurar
 **API & Webhooks → Crear webhook**. Ingresa URL, elige eventos y guarda el **secret HMAC** (se muestra una sola vez).

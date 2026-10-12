@@ -11,7 +11,8 @@ import {
   Check,
   Star,
 } from "lucide-react";
-import logo from "@/assets/logo-balance-activo.png";
+import logo from "@/assets/logo-ingresaas-horizontal.png";
+import logoLight from "@/assets/logo-ingresaas-horizontal-light.png";
 import heroMockup from "@/assets/hero-fintech-mockup.jpg";
 import { PLANES } from "@/lib/planes";
 
@@ -19,13 +20,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Balance Activo — Contabilidad y facturación premium para RD" },
+      { title: "IngreSaaS — Contabilidad y facturación premium para RD" },
       {
         name: "description",
         content:
           "Plataforma fintech para emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 automáticos. Diseñada para PYMEs y contadores en República Dominicana.",
       },
-      { property: "og:title", content: "Balance Activo — Contabilidad y facturación premium para RD" },
+      { property: "og:title", content: "IngreSaaS — Contabilidad y facturación premium para RD" },
       {
         property: "og:description",
         content:
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Balance Activo",
+          name: "IngreSaaS",
           url: "https://balanceactivo.net",
           logo: "https://balanceactivo.net/favicon.ico",
           email: "info@balanceactivo.net",
@@ -53,7 +54,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
-          name: "Balance Activo",
+          name: "IngreSaaS",
           applicationCategory: "AccountingApplication",
           operatingSystem: "Web",
           url: "https://balanceactivo.net",
@@ -73,7 +74,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Balance Activo",
+          name: "IngreSaaS",
           url: "https://balanceactivo.net",
         }),
       },
@@ -112,7 +113,7 @@ function Index() {
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Balance Activo" className="h-9 w-auto" />
+            <img src={logo} alt="IngreSaaS" className="h-9 w-auto" />
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm text-slate-600">
             <a href="#features" className="hover:text-slate-900 transition">Producto</a>
@@ -174,7 +175,7 @@ function Index() {
             <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
               <img
                 src={heroMockup}
-                alt="Dashboard financiero Balance Activo"
+                alt="Dashboard financiero IngreSaaS"
                 width={1536}
                 height={1024}
                 className="w-full h-auto rounded-xl"
@@ -323,7 +324,7 @@ function Index() {
               Lleva tu contabilidad al siguiente nivel
             </h3>
             <p className="mt-4 text-white/80 max-w-xl mx-auto">
-              Únete a las empresas dominicanas que ya emiten, registran y reportan con Balance Activo.
+              Únete a las empresas dominicanas que ya emiten, registran y reportan con IngreSaaS.
             </p>
             <Link
               to="/signup"
@@ -340,7 +341,7 @@ function Index() {
       <footer className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-12 grid gap-10 md:grid-cols-3">
           <div>
-            <img src={logo} alt="Balance Activo" className="h-9 w-auto mb-3" />
+            <img src={logoLight} alt="IngreSaaS" className="h-9 w-auto mb-3" />
             <p className="text-sm text-white/75">
               Contabilidad y facturación premium para República Dominicana.
             </p>
@@ -369,7 +370,7 @@ function Index() {
         </div>
         <div className="border-t border-white/5">
           <div className="max-w-7xl mx-auto px-6 py-5 text-xs text-white/70 text-center">
-            © {new Date().getFullYear()} Balance Activo — Narnia Tech Solution, SRL. Todos los derechos reservados.
+            © {new Date().getFullYear()} IngreSaaS — Narnia Tech Solution, SRL. Todos los derechos reservados.
           </div>
         </div>
       </footer>

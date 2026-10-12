@@ -1,22 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shield, Lock, Database, Mail, FileText, UserCheck, Building2 } from "lucide-react";
-import logo from "@/assets/logo-balance-activo.png";
+import logo from "@/assets/logo-ingresaas-horizontal-light.png";
 
 export const Route = createFileRoute("/seguridad")({
   component: Seguridad,
   head: () => ({
     meta: [
-      { title: "Seguridad y privacidad — Balance Activo" },
+      { title: "Seguridad y privacidad — IngreSaaS" },
       {
         name: "description",
         content:
-          "Cómo Balance Activo protege los datos contables y de facturación de las empresas dominicanas: acceso, alojamiento, retención y contacto de seguridad.",
+          "Cómo IngreSaaS protege los datos contables y de facturación de las empresas dominicanas: acceso, alojamiento, retención y contacto de seguridad.",
       },
-      { property: "og:title", content: "Seguridad y privacidad — Balance Activo" },
+      { property: "og:title", content: "Seguridad y privacidad — IngreSaaS" },
       {
         property: "og:description",
         content:
-          "Controles de acceso, alojamiento, manejo de datos y contacto de seguridad de Balance Activo.",
+          "Controles de acceso, alojamiento, manejo de datos y contacto de seguridad de IngreSaaS.",
       },
       { property: "og:url", content: "https://balanceactivo.net/seguridad" },
       { property: "og:type", content: "website" },
@@ -53,7 +53,7 @@ function Seguridad() {
       <header className="border-b border-white/5">
         <div className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Balance Activo" className="h-8 w-auto" />
+            <img src={logo} alt="IngreSaaS" className="h-8 w-auto" />
           </Link>
           <Link
             to="/"
@@ -73,7 +73,7 @@ function Seguridad() {
             Cómo cuidamos tus datos contables
           </h1>
           <p className="mt-4 text-white/80 max-w-2xl">
-            Esta página la mantiene el equipo de Balance Activo para responder
+            Esta página la mantiene el equipo de IngreSaaS para responder
             las preguntas más comunes sobre seguridad, privacidad y manejo de
             datos de la plataforma. Describe controles habilitados hoy y no
             constituye una certificación independiente.
@@ -83,7 +83,7 @@ function Seguridad() {
         <div className="grid gap-6 md:grid-cols-2">
           <Section icon={Building2} title="Responsable del tratamiento">
             <p>
-              Balance Activo es una marca comercial propiedad de{" "}
+              IngreSaaS es una marca comercial propiedad de{" "}
               <strong>Narnia Tech Solution, SRL</strong>, RNC{" "}
               <strong>1-33-74485-6</strong>, sociedad constituida en la
               República Dominicana. Narnia Tech es la responsable de la
@@ -181,7 +181,7 @@ function Seguridad() {
         </div>
 
         <p className="mt-12 text-xs text-white/60">
-          Esta página describe prácticas vigentes de Balance Activo y puede
+          Esta página describe prácticas vigentes de IngreSaaS y puede
           actualizarse a medida que evolucione el producto. No constituye un
           acuerdo de procesamiento de datos (DPA) ni una certificación de
           cumplimiento.
@@ -195,7 +195,7 @@ function Seguridad() {
 
       <footer className="border-t border-white/5">
         <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-white/70 text-center">
-          © {new Date().getFullYear()} Balance Activo — Narnia Tech Solution, SRL.
+          © {new Date().getFullYear()} IngreSaaS — Narnia Tech Solution, SRL.
         </div>
       </footer>
     </div>

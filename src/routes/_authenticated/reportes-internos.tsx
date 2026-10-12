@@ -18,9 +18,9 @@ export const Route = createFileRoute("/_authenticated/reportes-internos")({
   component: ReportesInternos,
   head: () => ({
     meta: [
-      { title: "Reportes de ingresos y gastos | Balance Activo" },
+      { title: "Reportes de ingresos y gastos | IngreSaaS" },
       { name: "description", content: "Reportes internos de ingresos, gastos y rentabilidad por período, con productos más rentables y desglose de gastos." },
-      { property: "og:title", content: "Reportes de ingresos y gastos | Balance Activo" },
+      { property: "og:title", content: "Reportes de ingresos y gastos | IngreSaaS" },
       { property: "og:description", content: "Analiza ingresos, gastos y productos más rentables por mes, trimestre, semestre, año o período personalizado." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
