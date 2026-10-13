@@ -17,8 +17,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { TEMPLATES } from "@/lib/email-templates/registry";
 
 const SITE_NAME = "balanceactivo";
-const SENDER_DOMAIN = "notify.balanceactivo.net";
-const FROM_DOMAIN = "balanceactivo.net";
+const SENDER_DOMAIN = "notify.ingresaas.net";
+const FROM_DOMAIN = "ingresaas.net";
 
 function redactEmail(email: string | null | undefined): string {
   if (!email) return "***";
