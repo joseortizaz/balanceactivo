@@ -26,9 +26,9 @@ export const Route = createFileRoute("/login")({
         property: "og:description",
         content: "Accede a tu cuenta de IngreSaaS y gestiona la contabilidad de tu empresa.",
       },
-      { property: "og:url", content: "https://balanceactivo.net/login" },
+      { property: "og:url", content: "https://ingresaas.net/login" },
     ],
-    links: [{ rel: "canonical", href: "https://balanceactivo.net/login" }],
+    links: [{ rel: "canonical", href: "https://ingresaas.net/login" }],
   }),
 });
 
