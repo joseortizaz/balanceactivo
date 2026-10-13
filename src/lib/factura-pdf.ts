@@ -30,6 +30,10 @@ export interface FacturaPdfData {
   // "Vencimiento: <fecha>" como antes.
   condicionTexto?: string | null;
   estado: string;
+  // Título de la columna derecha (por defecto "ESTADO"). En cotizaciones se usa
+  // "VÁLIDA HASTA" con la fecha en `estado`, para no exponer el estado interno
+  // (Borrador, Enviada…) al cliente.
+  estadoTitulo?: string;
 
   // Cliente
   clienteNombre: string;
@@ -153,7 +157,7 @@ export async function generateFacturaPdf(d: FacturaPdfData): Promise<jsPDF> {
   doc.setFontSize(11);
   doc.setTextColor(20, 28, 56);
   doc.text(d.clienteLabel || "FACTURAR A", left, y);
-  doc.text("ESTADO", midX + 20, y);
+  doc.text(d.estadoTitulo || "ESTADO", midX + 20, y);
 
   doc.setDrawColor(220);
   doc.line(left, y + 6, midX - 10, y + 6);
