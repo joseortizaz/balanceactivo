@@ -1922,12 +1922,14 @@ export type Database = {
           created_at: string
           dias_aviso_cuota: number
           direccion: string | null
+          email_registro: string | null
           firma_url: string | null
           id: string
           itbis_tasa_principal: number
           itbis_tasa_reducida: number
           logo_url: string | null
           nombre_comercial: string | null
+          origen: string | null
           razon_social: string
           recordatorios_cuotas_activos: boolean
           regimen_fiscal: Database["public"]["Enums"]["regimen_fiscal"]
@@ -1941,12 +1943,14 @@ export type Database = {
           created_at?: string
           dias_aviso_cuota?: number
           direccion?: string | null
+          email_registro?: string | null
           firma_url?: string | null
           id?: string
           itbis_tasa_principal?: number
           itbis_tasa_reducida?: number
           logo_url?: string | null
           nombre_comercial?: string | null
+          origen?: string | null
           razon_social: string
           recordatorios_cuotas_activos?: boolean
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
@@ -1960,12 +1964,14 @@ export type Database = {
           created_at?: string
           dias_aviso_cuota?: number
           direccion?: string | null
+          email_registro?: string | null
           firma_url?: string | null
           id?: string
           itbis_tasa_principal?: number
           itbis_tasa_reducida?: number
           logo_url?: string | null
           nombre_comercial?: string | null
+          origen?: string | null
           razon_social?: string
           recordatorios_cuotas_activos?: boolean
           regimen_fiscal?: Database["public"]["Enums"]["regimen_fiscal"]
