@@ -131,6 +131,15 @@ function Cotizaciones() {
                   {c.estado === "borrador" && <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "enviada" })}>Enviar</Button>}
                   {c.estado === "enviada" && <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "aprobada" })}>Aprobar</Button>}
                   {(c.estado === "aprobada" || c.estado === "enviada") && (
+                    <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "rechazada" })}>Rechazar</Button>
+                  )}
+                  {(c.estado === "aprobada" || c.estado === "enviada") && (
+                    <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "vencida" })}>Vencida</Button>
+                  )}
+                  {(c.estado === "rechazada" || c.estado === "vencida") && (
+                    <Button size="sm" variant="outline" onClick={() => cambiarEstado.mutate({ id: c.id, estado: "enviada" })}>Reabrir</Button>
+                  )}
+                  {(c.estado === "aprobada" || c.estado === "enviada") && (
                     <Button size="sm" onClick={() => convertir(c.id)}><FileCheck className="h-3 w-3 mr-1" />Facturar</Button>
                   )}
                 </td>
