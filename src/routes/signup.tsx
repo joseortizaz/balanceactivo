@@ -23,9 +23,9 @@ export const Route = createFileRoute("/signup")({
         property: "og:description",
         content: "Registra tu empresa y prueba gratis la contabilidad y facturación de IngreSaaS.",
       },
-      { property: "og:url", content: "https://balanceactivo.net/signup" },
+      { property: "og:url", content: "https://ingresaas.net/signup" },
     ],
-    links: [{ rel: "canonical", href: "https://balanceactivo.net/signup" }],
+    links: [{ rel: "canonical", href: "https://ingresaas.net/signup" }],
   }),
 });
 

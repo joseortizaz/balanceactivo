@@ -83,11 +83,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "IngreSaaS — Contabilidad y Facturación RD" },
       { name: "twitter:description", content: "SaaS de contabilidad y facturación con NCF, ITBIS y asientos automáticos para República Dominicana." },
-      { property: "og:image", content: "https://balanceactivo.net/og-image.png" },
-      { name: "twitter:image", content: "https://balanceactivo.net/og-image.png" },
+      { property: "og:image", content: "https://ingresaas.net/og-image.png" },
+      { name: "twitter:image", content: "https://ingresaas.net/og-image.png" },
     ],
     links: [
       { rel: "icon", href: "/favicon.ico", sizes: "any" },
@@ -107,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
       </head>
