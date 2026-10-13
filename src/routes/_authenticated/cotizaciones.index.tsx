@@ -15,9 +15,13 @@ export const Route = createFileRoute("/_authenticated/cotizaciones/")({ componen
 function Cotizaciones() {
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const { data } = useQuery({
+  const { data, error: errLista } = useQuery({
     queryKey: ["cotizaciones"],
-    queryFn: async () => (await supabase.from("cotizaciones").select("*, clientes(razon_social)").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("cotizaciones").select("*, clientes(razon_social)").order("created_at", { ascending: false });
+      if (error) throw error; // antes se ignoraba y la lista salía vacía sin avisar
+      return data ?? [];
+    },
   });
 
   const cambiarEstado = useMutation({
@@ -131,7 +135,8 @@ function Cotizaciones() {
                 </td>
               </tr>
             ))}
-            {(!data || data.length === 0) && <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Sin cotizaciones</td></tr>}
+            {errLista && <tr><td colSpan={6} className="p-6 text-center text-destructive">No se pudieron cargar las cotizaciones: {(errLista as any).message}</td></tr>}
+            {!errLista && (!data || data.length === 0) && <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">Sin cotizaciones</td></tr>}
           </tbody>
         </table>
       </Card>
