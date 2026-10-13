@@ -34,6 +34,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "https://ingresaas.net/" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://ingresaas.net/og-image.png" },
+      { name: "twitter:image", content: "https://ingresaas.net/og-image.png" },
     ],
     links: [{ rel: "canonical", href: "https://ingresaas.net/" }],
     scripts: [
