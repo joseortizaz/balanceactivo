@@ -18,10 +18,10 @@ export const Route = createFileRoute("/terminos")({
         content:
           "Condiciones de uso, suscripción, propiedad intelectual y responsabilidades del servicio IngreSaaS.",
       },
-      { property: "og:url", content: "https://balanceactivo.net/terminos" },
+      { property: "og:url", content: "https://ingresaas.net/terminos" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://balanceactivo.net/terminos" }],
+    links: [{ rel: "canonical", href: "https://ingresaas.net/terminos" }],
   }),
 });
 

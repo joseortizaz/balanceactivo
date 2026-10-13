@@ -32,10 +32,10 @@ export const Route = createFileRoute("/")({
         content:
           "Plataforma fintech para emitir facturas con NCF, calcular ITBIS y generar reportes 606/607 automáticos.",
       },
-      { property: "og:url", content: "https://balanceactivo.net/" },
+      { property: "og:url", content: "https://ingresaas.net/" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://balanceactivo.net/" }],
+    links: [{ rel: "canonical", href: "https://ingresaas.net/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -43,8 +43,8 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "IngreSaaS",
-          url: "https://balanceactivo.net",
-          logo: "https://balanceactivo.net/favicon.ico",
+          url: "https://ingresaas.net",
+          logo: "https://ingresaas.net/favicon.ico",
           email: "info@balanceactivo.net",
           areaServed: "DO",
         }),
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/")({
           name: "IngreSaaS",
           applicationCategory: "AccountingApplication",
           operatingSystem: "Web",
-          url: "https://balanceactivo.net",
+          url: "https://ingresaas.net",
           description:
             "Plataforma fintech de contabilidad y facturación con NCF, ITBIS, nómina y reportes 606/607 para República Dominicana.",
           offers: PLANES.map((p) => ({
@@ -75,7 +75,7 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "IngreSaaS",
-          url: "https://balanceactivo.net",
+          url: "https://ingresaas.net",
         }),
       },
     ],

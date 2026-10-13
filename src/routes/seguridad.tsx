@@ -18,10 +18,10 @@ export const Route = createFileRoute("/seguridad")({
         content:
           "Controles de acceso, alojamiento, manejo de datos y contacto de seguridad de IngreSaaS.",
       },
-      { property: "og:url", content: "https://balanceactivo.net/seguridad" },
+      { property: "og:url", content: "https://ingresaas.net/seguridad" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://balanceactivo.net/seguridad" }],
+    links: [{ rel: "canonical", href: "https://ingresaas.net/seguridad" }],
   }),
 });
 
